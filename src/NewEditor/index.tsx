@@ -24,16 +24,18 @@ type EditorProps = {
 }
 
 export const Editor: React.FC<EditorProps> = (props) => {
-  const [state, setState] = useState<EditorState>(initialState(props.nodes))
+  const [state, setState] = useState<EditorState>(() => initialState(props.nodes))
   const [currentAction, setCurrentAction] = useState<CurrentAction>(undefined)
   const [editorBoundingRect, setEditorBoundingRect] = useState<DOMRect>(undefined)
   const [nodes, setNodes] = useState<NodeType[]>(props.nodes)
+  console.log('Editor rerender', nodes, editorBoundingRect, currentAction, state)
   const endpointCache = new Map<string, Vector2d>()
 
   const select = (type: ItemType | null, id: string | null) => {
     if (!state.selection || state.selection.id !== id) {
       const updateState = () =>
         setState((state) => {
+          console.log('38')
           return { ...state, selection: { id, type } }
         })
       const { config } = props
@@ -51,6 +53,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
 
     if (editorBoundingRect === undefined || editorBoundingRect.x !== rect.x || editorBoundingRect.y !== rect.y) {
       setEditorBoundingRect(rect)
+      console.log('on Editor Update')
       setState((state) => state)
     }
   }
@@ -147,12 +150,13 @@ export const Editor: React.FC<EditorProps> = (props) => {
     const dy = cy * (pt.zoom - zoom) + pt.dy
     const dx = cx * (pt.zoom - zoom) + pt.dx
     const transformation = { dx, dy, zoom }
-
+    console.log('153')
     setState((state) => ({ ...state, transformation }))
   }
 
   const onDragEnded = (e: React.MouseEvent<HTMLElement>) => {
     setCurrentAction(undefined)
+    console.log('159')
     setState((state) => ({ ...state, workingItem: undefined }))
   }
 
@@ -161,6 +165,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
 
     const newPos = { x: e.clientX, y: e.clientY }
     const { x: dx, y: dy } = Vector2d.subtract(newPos, currentAction.lastPos)
+    console.log('168')
     setState((state) => {
       if (currentAction.type === "node") {
         state.nodesState.get(currentAction.id).pos.x += dx
@@ -187,6 +192,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
       } else if (currentAction.type === "translate") {
         const pt = state.transformation
         const transformation = { dx: pt.dx + dx, dy: pt.dy + dy, zoom: pt.zoom }
+        console.log('195')
         setState((state) => ({ ...state, transformation }))
       }
     })
@@ -211,6 +217,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     const desiredState = node.isCollapsed !== undefined ? !node.isCollapsed : !state.nodesState.get(id).isCollapsed
     const updateState = () =>
       setState((state) => {
+        console.log('220')
         state.nodesState.get(id).isCollapsed = desiredState
         return { ...state }
       })
@@ -261,7 +268,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
       if (Array.isArray(outputNode.outputs[output.port].connection))
         (outputNode.outputs[output.port].connection as Connection[]).push(inputConnection)
       else outputNode.outputs[output.port].connection = inputConnection
-
+      console.log('271')
       setState((state) => state)
     }
     if (config.onChanged !== undefined) {
@@ -297,6 +304,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     }
     if (cached === undefined || !Vector2d.compare(offset, cached)) {
       endpointCache.set(key, offset)
+      console.log('307', state.connectionState)
       // TODO: Bundle all connection endpoint updates to one this.setState call
       setTimeout(
         () =>
@@ -323,33 +331,33 @@ export const Editor: React.FC<EditorProps> = (props) => {
       ref={onEditorUpdate}
       tabIndex={0}
       onKeyDown={onKeyDown}
-      onWheel={onWheel}
-      onMouseLeave={onDragEnded}
-      onMouseMove={onDrag}
-      onMouseDown={onMouseGlobalDown}
-      onMouseUp={onDragEnded}
+      // onWheel={onWheel}
+      // onMouseLeave={onDragEnded}
+      // onMouseMove={onDrag}
+      // onMouseDown={onMouseGlobalDown}
+      // onMouseUp={onDragEnded}
       className={classNames("react-flow-editor", props.additionalClassName || [])}
     >
       <Grid componentSize={state.componentSize} grid={props.config.grid} />
-      <Connections state={state} setState={setState} nodes={nodes} select={select} config={props.config} />
+      {/*<Connections state={state} setState={setState} nodes={nodes} select={select} config={props.config} />*/}
 
-      <div style={nodesContainerStyle}>
-        {nodes.map((node) => (
-          <Node
-            state={state}
-            select={select}
-            node={node}
-            onDragStarted={onDragStarted}
-            toggleExpandNode={toggleExpandNode}
-            resolver={props.config.resolver}
-            dir={props.config.direction || "we"}
-            onCreateConnectionStarted={onCreateConnectionStarted}
-            onCreateConnectionEnded={onCreateConnectionEnded}
-            setConnectionEndpoint={setConnectionEndpoint}
-            dropArea={props.config.dragHandler || "header"}
-          />
-        ))}
-      </div>
+      {/*<div style={nodesContainerStyle}>*/}
+      {/*  {nodes.map((node) => (*/}
+      {/*    <Node*/}
+      {/*      state={state}*/}
+      {/*      select={select}*/}
+      {/*      node={node}*/}
+      {/*      onDragStarted={onDragStarted}*/}
+      {/*      toggleExpandNode={toggleExpandNode}*/}
+      {/*      resolver={props.config.resolver}*/}
+      {/*      dir={props.config.direction || "we"}*/}
+      {/*      onCreateConnectionStarted={onCreateConnectionStarted}*/}
+      {/*      onCreateConnectionEnded={onCreateConnectionEnded}*/}
+      {/*      setConnectionEndpoint={setConnectionEndpoint}*/}
+      {/*      dropArea={props.config.dragHandler || "header"}*/}
+      {/*    />*/}
+      {/*  ))}*/}
+      {/*</div>*/}
     </div>
   )
 }
