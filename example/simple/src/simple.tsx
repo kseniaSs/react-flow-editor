@@ -1,7 +1,7 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 
-import { Editor, Node, Config, MenuItem, Connection } from "@kseniass/react-flow-editor"
+import { useEditor, Editor, Node, Config, Connection } from "@kseniass/react-flow-editor"
 import "./simple.scss"
 
 type LogProps = { subscribe: (update: (log: string) => void) => void }
@@ -158,18 +158,71 @@ const config: Config = {
   direction: "we"
 }
 
-ReactDOM.render(
-  <div>
-    <div className="flow-menu">
-      <MenuItem name="Node Type 1" factory={node1Factory} />
-      <MenuItem name="Node Type 2" factory={node2Factory} />
-      <MenuItem name="Node Type 3" factory={node3Factory} />
+const App = () => {
+  const { editorProps, createNewNode, setTransformation } = useEditor({ initialNodes: nodes, config })
+
+  const onWheel = (e: React.WheelEvent<HTMLElement>) => {
+    if (e.ctrlKey) return
+    const pt = editorProps.state.transformation
+    const zoomFactor = Math.pow(1.25, Math.sign(e.deltaY))
+    const zoom = pt.zoom * zoomFactor
+
+    const cx = e.clientX
+    const cy = e.clientY
+    // See https://github.com/lochbrunner/meliodraw/blob/master/Melio.Draw/SharpDX/OrthogonalCamera.cs#L116
+    const dy = cy * (pt.zoom - zoom) + pt.dy
+    const dx = cx * (pt.zoom - zoom) + pt.dx
+
+    const transformation = { dx, dy, zoom }
+
+    setTransformation(transformation)
+  }
+
+  return (
+    <div>
+      <div className="flow-menu">
+        <div
+          onClick={() =>
+            createNewNode(node1Factory(), {
+              x: editorProps.editorBoundingRect.width / 2,
+              y: editorProps.editorBoundingRect.height / 2
+            })
+          }
+        >
+          Create new Node 1
+        </div>
+
+        <div
+          onClick={() =>
+            createNewNode(node2Factory(), {
+              x: editorProps.editorBoundingRect.width / 2,
+              y: editorProps.editorBoundingRect.height / 2
+            })
+          }
+        >
+          Create new Node 2
+        </div>
+
+        <div
+          onClick={() =>
+            createNewNode(node3Factory(), {
+              x: editorProps.editorBoundingRect.width / 2,
+              y: editorProps.editorBoundingRect.height / 2
+            })
+          }
+        >
+          Create new Node 3
+        </div>
+      </div>
+      <Log subscribe={(update) => (log = update)} />
+      <div onWheel={onWheel}>
+        <Editor {...editorProps} />
+      </div>
+      <div className="node-attributes">
+        <NodeAttributes subscribe={(update) => (attributes = update)} />
+      </div>
     </div>
-    <Log subscribe={(update) => (log = update)} />
-    <Editor config={config} nodes={nodes} />
-    <div className="node-attributes">
-      <NodeAttributes subscribe={(update) => (attributes = update)} />
-    </div>
-  </div>,
-  document.getElementById("root")
-)
+  )
+}
+
+ReactDOM.render(<App />, document.getElementById("root"))

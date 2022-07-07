@@ -1,7 +1,8 @@
-export { Editor } from "./Editor"
+export { Editor } from "./NewEditor"
+export { useEditor } from "./useEditor"
 export { Endpoint } from "./Endpoint"
 export { MenuItem } from "./menu"
-export {
+export type {
   NodeRemoved,
   ConnectionRemoved,
   CreatedConnectionInfo,
@@ -12,4 +13,4 @@ export {
   NodeDeselected,
   ChangeAction
 } from "./change-api"
-export { Node, Config, Connection, Port, Style } from "./types"
+export type { Node, Config, Connection, Port, Style } from "./types"
