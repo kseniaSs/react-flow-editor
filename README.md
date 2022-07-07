@@ -1,9 +1,4 @@
-[![npm version](https://badge.fury.io/js/react-flow-editor.svg)](https://badge.fury.io/js/react-flow-editor)
-[![Downloads](https://img.shields.io/npm/dt/react-flow-editor.svg)](https://www.npmjs.com/package/react-flow-editor)
-[![GitHub issues](https://img.shields.io/github/issues/lochbrunner/react-flow-editor.svg)](https://github.com/lochbrunner/react-flow-editor/issues)
-![lib](https://github.com/lochbrunner/react-flow-editor/workflows/lib/badge.svg)
-![examples](https://github.com/lochbrunner/react-flow-editor/workflows/examples/badge.svg)
-
+[![npm version](https://badge.fury.io/js/@kseniass%2Freact-flow-editor.svg)](https://badge.fury.io/js/@kseniass%2Freact-flow-editor.svg)
 # Graph editor
 
 An ui library for creating flow based editors with react and typescript/javascript.
