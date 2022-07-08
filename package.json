@@ -20,14 +20,14 @@
     "lint": "tslint ./{src}/**/*.{ts,tsx}",
     "prettier": "./node_modules/.bin/prettier . --write",
     "refresh-all": "npm run refresh-redux && npm run refresh-simple",
-    "refresh-redux": " rm -rf ./example/redux/node_modules/react-flow-editor/dist && cp -r ./dist ./example/redux/node_modules/react-flow-editor/dist",
     "refresh-simple": " rm -rf ./example/simple/node_modules/@kseniass/react-flow-editor/dist && cp -r ./dist ./example/simple/node_modules/@kseniass/react-flow-editor/dist"
   },
   "dependencies": {
     "classnames": "^2.2.6",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "react": "^16.13.1",
-    "react-dom": "^16.14.0"
+    "react-dom": "^16.14.0",
+    "recoil": "^0.7.4"
   },
   "peerDependencies": {
     "react": "^16.13.1"

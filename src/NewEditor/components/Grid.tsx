@@ -1,9 +1,8 @@
-import React, { useState } from "react"
-import { Size } from "../types"
+import React from "react"
+import { gridState } from "../ducks/store";
+import { useRecoilValue } from "recoil"
 
 type GridProps = {
-  grid?: boolean | { size: number }
-  componentSize: Size
   pattern?: HTMLOrSVGImageElement | HTMLVideoElement | HTMLCanvasElement | ImageBitmap | OffscreenCanvas
 }
 
@@ -15,34 +14,41 @@ const defaultPattern = (): HTMLCanvasElement => {
   const patternContext = patternCanvas.getContext('2d')
   patternCanvas.width = 24
   patternCanvas.height = 24
-  // patternContext.fillStyle = "#f2f2f2"
-  patternContext.fillRect(0, 0, patternCanvas.width / 2, patternCanvas.height / 2)
-  patternContext.fillStyle = '#fec'
+
+  // set Background color
+  patternContext.strokeStyle = "#f2f2f2"
+
+  // horizontal line
+  patternContext.moveTo(0, 24)
+  patternContext.lineTo(24, 24)
+
+  // vertical line
+  patternContext.moveTo(24, 0)
+  patternContext.lineTo(24, 24)
+
   patternContext.stroke()
+
   return patternCanvas
 }
 
 export const Grid: React.FC<GridProps> = (props) => {
-  const [gridSize, setGridSize] = useState<Size>(undefined)
-
-  const { width, height } = props.componentSize
+  const canvasSize = useRecoilValue(gridState)
 
   const draw = (element: HTMLCanvasElement) => {
     if (element === null) return
 
-    if (gridSize !== undefined && gridSize.height === height && gridSize.width === width) return
+    if (canvasSize.width === 0 && canvasSize.height === 0) return
 
-    setGridSize({ height, width })
     const ctx = element.getContext("2d")
     ctx.clearRect(0, 0, element.width, element.height)
     ctx.beginPath()
 
     const currentPattern = props.pattern || defaultPattern()
-    console.log('44', currentPattern, gridSize?.width || 0, gridSize?.height || 0)
+
     ctx.fillStyle = ctx.createPattern(currentPattern, 'repeat')
-    ctx.fillRect(0, 0, gridSize?.width || 0, gridSize?.height || 0)
+    ctx.fillRect(0, 0, canvasSize.width || 0, canvasSize.height || 0)
     ctx.stroke()
   }
 
-  return <canvas className="grid" width={width} height={height} ref={draw} />
+  return <canvas className="grid" width={canvasSize.width} height={canvasSize.height} ref={draw} />
 }
