@@ -20,7 +20,7 @@ type UseEditorOutput = {
 }
 
 export const useEditor = (props: UseEditorInput): UseEditorOutput => {
-  const [state, setState] = useState<EditorState>(initialState(props.initialNodes))
+  const [state, setState] = useState<EditorState>(() => initialState(props.initialNodes))
   const [nodes, setNodes] = useState<NodeType[]>(props.initialNodes)
   const [editorBoundingRect, setEditorBoundingRect] = useState<DOMRect>(undefined)
 

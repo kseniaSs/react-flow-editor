@@ -1,6 +1,6 @@
 {
   "name": "@kseniass/react-flow-editor",
-  "version": "0.7.0",
+  "version": "0.7.2",
   "description": "React component which enables creating flow editors with ease",
   "author": {
     "name": "Matthias Lochbrunner",
@@ -25,8 +25,8 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "lodash": "^4.17.20",
-    "react": "^16.13.1",
-    "react-dom": "^16.14.0"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "peerDependencies": {
     "react": "^16.13.1"
