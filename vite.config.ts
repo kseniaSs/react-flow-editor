@@ -8,9 +8,7 @@ import path from "path"
 export default defineConfig({
   plugins: [
     react({ jsxRuntime: "classic" }),
-    dts({
-      insertTypesEntry: true
-    }),
+    dts(),
     viteStaticCopy({
       targets: [
         {
