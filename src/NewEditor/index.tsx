@@ -1,37 +1,25 @@
-import React, {useState, useLayoutEffect, useEffect, RefObject} from "react";
-import classNames from "classnames"
-import { gridState } from "./ducks/store"
-import { Config, Connection, Node as NodeType } from "../types"
-import { ConnectionType, Endpoint, IEndpoint } from "../Endpoint"
-import { initialState } from "./initialState"
-import {
-  atom,
-  RecoilRoot, useRecoilState, useSetRecoilState
-} from 'recoil';
-import { EditorState } from "../Editor/types"
-import { BUTTON_LEFT, BUTTON_MIDDLE, KEY_CODE_DELETE } from "./constants"
-import { epPredicate, extractConnectionFromId, isEmptyArrayOrUndefined, nodeIdPredicate } from "../Editor/helpers"
-import { removeConnection } from "./removeConnection"
-import { CurrentAction, ItemType, WorkItem } from "./types"
+import React, { useEffect } from "react"
+import _ from "lodash"
+import { gridState, nodesState, selectedNodeState } from "./ducks/store"
+import { Node as NodeType } from "../types"
+import { RecoilRoot, useRecoilValue, useSetRecoilState } from 'recoil'
 import { Grid } from "./components/Grid"
-import { Connections } from "./Connections"
 
-import { Node } from "./Node"
-import { adjust } from "../adjust"
+import { NodeContainer } from "./components/Nodes/NodesContainer"
 
-export type EditorProps = {
-  config: Config
-  nodes: NodeType[]
-  state: EditorState
-  setState: React.Dispatch<React.SetStateAction<EditorState>>
-  editorBoundingRect: DOMRect
-  onEditorUpdate: (element: Element) => void
-}
+type EditorProps = { nodes: NodeType[] }
 
-const Canvas: React.FC = () => {
-  // const { state, setState, nodes, editorBoundingRect, onEditorUpdate } = props
+const Canvas: React.FC<EditorProps> = ({ nodes }) => {
     const setSize = useSetRecoilState(gridState)
+    const setSelectedNode = useSetRecoilState(selectedNodeState)
+    const selectedNode = useRecoilValue(selectedNodeState)
+    const setNodes = useSetRecoilState(nodesState)
     let elementRef: HTMLDivElement | undefined = undefined
+
+    useEffect(() => {
+        console.log('set nodes')
+        setNodes(nodes)
+    }, [nodes])
 
     useEffect(() => {
         const resizeCanvas = () => {
@@ -47,13 +35,15 @@ const Canvas: React.FC = () => {
         return () => window.removeEventListener("resize", resizeCanvas)
     }, [])
 
-    const nodesContainerStyle = {
-        transform: `matrix(${state.transformation.zoom},0,0,${state.transformation.zoom},${state.transformation.dx},${state.transformation.dy})`
+    const onDragEnded = () => {
+        setSelectedNode(undefined)
     }
 
-  // const newNodes = adjust(state.nodesState, state.componentSize, props.nodes)
+    const onDrag = (e: React.MouseEvent<HTMLElement>) => {
+        if (!selectedNode) return
+        console.log('44')
+    }
 
-  // newNodes.forEach((value, key) => state.nodesState.set(key, value))
   console.log("rerender")
   return (
       <div
@@ -64,19 +54,19 @@ const Canvas: React.FC = () => {
               setSize({ width: rect.width, height: rect.height })
             }
           }}
+          onMouseUp={onDragEnded}
+          onMouseMove={onDrag}
           tabIndex={0}
           className="react-flow-editor"
       >
         <Grid />
-          <div style={nodesContainerStyle}>
-
-          </div>
+        <NodeContainer />
       </div>
   )
 }
 
-export const Editor: React.FC = React.memo(() => (
+export const Editor: React.FC<EditorProps> = React.memo(({ nodes }) => (
     <RecoilRoot>
-      <Canvas />
+      <Canvas nodes={nodes} />
     </RecoilRoot>
-))
+), _.isEqual)

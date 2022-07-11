@@ -13,4 +13,4 @@ export type {
   NodeDeselected,
   ChangeAction
 } from "./change-api"
-export type { Node, Config, Connection, Port, Style } from "./types"
+export type { Node, Config, Connection, Port, Style, InputPort, OutputPort } from "./types"

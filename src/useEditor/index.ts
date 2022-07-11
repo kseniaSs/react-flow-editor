@@ -1,8 +1,7 @@
 import _ from "lodash"
-import { useState } from "react"
+import React, { useState } from "react"
 import { Config } from "./../types"
 import { Vector2d } from "../geometry"
-import { EditorProps } from "../NewEditor"
 import { initialState } from "../NewEditor/initialState"
 import { EditorState } from "../NewEditor/types"
 import { Node as NodeType } from "../types"
@@ -10,6 +9,15 @@ import { Node as NodeType } from "../types"
 type UseEditorInput = {
   initialNodes: NodeType[]
   config: Config
+}
+
+export type EditorProps = {
+  config: Config
+  nodes: NodeType[]
+  state: EditorState
+  setState: React.Dispatch<React.SetStateAction<EditorState>>
+  editorBoundingRect: DOMRect
+  onEditorUpdate: (element: Element) => void
 }
 
 type UseEditorOutput = {

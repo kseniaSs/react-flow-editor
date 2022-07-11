@@ -76,20 +76,14 @@ export interface Config {
 }
 
 export interface Node {
-  name: string
-  type: string
   id: string
-  payload?: any
-  inputs: InputPort[]
-  outputs: OutputPort[]
-  position?: Vector2d
-  properties?: { display: "stacked" | "only-dots" }
+  input: InputPort[]
+  output: OutputPort[]
+  position: Vector2d
   classNames?: string[]
-  isCollapsed?: boolean
-  childrenCollapsed?: JSX.Element
-  children?: JSX.Element
-  initial?: { isCollapsed?: boolean }
+  children: JSX.Element
 }
+
 /**
  * Connection endpoint
  * Each connection is defined by a Port and a Connection
@@ -102,29 +96,11 @@ export interface Connection {
    */
   nodeId: string
   /**
-   * The id of the property to connect
-   */
-  port: number
-  /**
    * Example UC: mark invalid connections
    */
   classNames?: string[]
-  /**
-   * Will be printed as title
-   */
-  notes?: string
 }
 
-/**
- * Each connection is between two ports
- */
-export interface Port {
-  name: string
-  connection?: Connection | Connection[] // Should this be restricted to arrays only?
-  payload?: any // No UseCase up to now
-  renderer?: (connection: Port) => JSX.Element // No UseCase up to now
-}
+export type InputPort = Connection[]
 
-export type InputPort = Port & {} // No UseCase up to now
-
-export type OutputPort = Port & {} // No UseCase up to now
+export type OutputPort = Connection[]
