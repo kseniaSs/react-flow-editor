@@ -1,6 +1,6 @@
 {
   "name": "@kseniass/react-flow-editor",
-  "version": "0.7.10",
+  "version": "0.7.11",
   "description": "React component which enables creating flow editors with ease",
   "author": {
     "name": "Matthias Lochbrunner",
@@ -13,7 +13,14 @@
   "main": "./dist/react-flow-editor.umd.js",
   "module": "./dist/react-flow-editor.es.js",
   "types": "./dist/index.d.ts",
-  "style": "dist/_style.scss",
+  "style": "./dist/_style.scss",
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "import": "./dist/react-flow-editor.es.js",
+      "require": "./dist/react-flow-editor.umd.js"
+    }
+  },
   "scripts": {
     "build": "vite build",
     "lint": "tslint ./{src}/**/*.{ts,tsx}",
@@ -26,8 +33,8 @@
     "lodash": "^4.17.20"
   },
   "peerDependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^16.8.0 || ^17.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.10",
