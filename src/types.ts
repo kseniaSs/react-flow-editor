@@ -76,6 +76,9 @@ export interface Config {
 }
 
 export interface Node {
+  /**
+   * Uniqle id
+   */
   id: string
   input: InputPort[]
   output: OutputPort[]

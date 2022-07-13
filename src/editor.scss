@@ -170,6 +170,7 @@ $collapse-animation-duration: 0.4s;
   }
 
   svg.connections {
+    pointer-events: none;
     position: absolute;
     top: 0;
     left: 0;

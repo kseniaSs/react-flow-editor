@@ -12,5 +12,5 @@ export const nodesState = atom({
 
 export const selectedNodeState = atom({
     key: "selectedNodeAtom",
-    default: undefined
+    default: ""
 })

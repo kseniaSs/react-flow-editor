@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { Node as NodeType } from "../../../types"
 import Node from "./Node"
 import { useRecoilValue } from "recoil"
 import { nodesState } from "../../ducks/store"
@@ -22,7 +21,7 @@ export const NodeContainer: React.FC = () => {
     const { transformation, setTransformation } = useNodeHooks()
 
     const nodesContainerStyle = {
-        transform: `matrix(${transformation.zoom},0,0,${transformation.zoom},${transformation.dx},${transformation.dy})`
+        transform: `matrix(${transformation.zoom},0,0,${transformation.zoom},${transformation.dx},${transformation.dy})`,
     }
 
     console.log('node container', nodes)

@@ -16,16 +16,17 @@ type NodeProps = {
 }
 
 const Node: React.FC<NodeProps> = ({ node }) => {
+    const setSelectedNode = useSetRecoilState(selectedNodeState)
+
     const nodeClassNames = classNames(
         "node",
         node.classNames || []
     )
 
     const onDragStarted = (node: NodeType, e: React.MouseEvent<HTMLElement>) => {
-        const setSelectedNode = useSetRecoilState(selectedNodeState)
 
         if (e.button === BUTTON_LEFT) {
-            setSelectedNode(node)
+            setSelectedNode(node.id)
         }
     }
 

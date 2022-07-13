@@ -2,6 +2,7 @@ import React, { useEffect } from "react"
 import _ from "lodash"
 import { gridState, nodesState, selectedNodeState } from "./ducks/store"
 import { Node as NodeType } from "../types"
+import { Container as ConnectionContainer } from "./components/Connections/Container"
 import { RecoilRoot, useRecoilValue, useSetRecoilState } from 'recoil'
 import { Grid } from "./components/Grid"
 
@@ -12,8 +13,9 @@ type EditorProps = { nodes: NodeType[] }
 const Canvas: React.FC<EditorProps> = ({ nodes }) => {
     const setSize = useSetRecoilState(gridState)
     const setSelectedNode = useSetRecoilState(selectedNodeState)
-    const selectedNode = useRecoilValue(selectedNodeState)
+    const selectedNodeId = useRecoilValue(selectedNodeState)
     const setNodes = useSetRecoilState(nodesState)
+    const stateNodes = useRecoilValue(nodesState)
     let elementRef: HTMLDivElement | undefined = undefined
 
     useEffect(() => {
@@ -40,7 +42,12 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
     }
 
     const onDrag = (e: React.MouseEvent<HTMLElement>) => {
-        if (!selectedNode) return
+        if (!selectedNodeId) return
+
+        const currentNode = stateNodes.find((element) => element.id === selectedNodeId)
+        const newPos ={ x: e.screenX - elementRef.offsetLeft, y: e.clientY }
+
+        setNodes(stateNodes.map((element) => element.id === selectedNodeId ? {...element, position: newPos } : element))
         console.log('44')
     }
 
@@ -61,6 +68,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
       >
         <Grid />
         <NodeContainer />
+        <ConnectionContainer />
       </div>
   )
 }
