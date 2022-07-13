@@ -1,5 +1,4 @@
 import React, { useEffect } from "react"
-import _ from "lodash"
 import { gridState, nodesState, selectedNodeState } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
@@ -10,18 +9,13 @@ import { NodeContainer } from "./components/Nodes/NodesContainer"
 
 type EditorProps = { nodes: NodeType[] }
 
-const Canvas: React.FC<EditorProps> = ({ nodes }) => {
+const Canvas: React.FC = () => {
   const setSize = useSetRecoilState(gridState)
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
   const setNodes = useSetRecoilState(nodesState)
   const stateNodes = useRecoilValue(nodesState)
   let elementRef: HTMLDivElement | undefined = undefined
-
-  useEffect(() => {
-    console.log("set nodes")
-    setNodes(nodes)
-  }, [nodes])
 
   useEffect(() => {
     const resizeCanvas = () => {
@@ -72,11 +66,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   )
 }
 
-export const Editor: React.FC<EditorProps> = React.memo(
-  ({ nodes }) => (
-    <RecoilRoot>
-      <Canvas nodes={nodes} />
-    </RecoilRoot>
-  ),
-  _.isEqual
-)
+export const Editor: React.FC<EditorProps> = React.memo(({ nodes }) => (
+  <RecoilRoot initializeState={({ set }) => set(nodesState, nodes)}>
+    <Canvas />
+  </RecoilRoot>
+))
