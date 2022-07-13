@@ -8,7 +8,7 @@ type ContainerProps = {}
 export const Container: React.FC<ContainerProps> = () => {
   const nodes = useRecoilValue(nodesState)
 
-  const connectionContainerStyle = {
+  const connectionContainerStyle: React.CSSProperties = {
     pointerEvents: "none"
   }
 

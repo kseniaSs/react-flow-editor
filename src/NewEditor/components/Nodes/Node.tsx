@@ -1,9 +1,10 @@
 import React from "react"
 import classNames from "classnames"
+import { useRecoilState, useSetRecoilState } from "recoil"
+
 import { Vector2d } from "../../../geometry"
 import { Node as NodeType } from "../../../types"
 import { BUTTON_LEFT } from "../../constants"
-import { useSetRecoilState } from "recoil"
 import { selectedNodeState, newConnectionState } from "../../ducks/store"
 
 const nodeStyle = (pos: Vector2d) => ({
@@ -33,12 +34,12 @@ const Point: React.FC<PointProps> = ({ node }) => {
 }
 
 const Node: React.FC<NodeProps> = ({ node }) => {
-  const setSelectedNode = useSetRecoilState(selectedNodeState)
+  const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
 
   const nodeClassNames = classNames("node", node.classNames || [])
 
   const onDragStarted = (node: NodeType, e: React.MouseEvent<HTMLElement>) => {
-    if (e.button === BUTTON_LEFT) {
+    if (e.button === BUTTON_LEFT && selectedNode !== node.id) {
       setSelectedNode(node.id)
     }
   }
