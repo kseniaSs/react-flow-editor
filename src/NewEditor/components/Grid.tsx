@@ -1,5 +1,5 @@
 import React from "react"
-import { gridState } from "../ducks/store";
+import { gridState } from "../ducks/store"
 import { useRecoilValue } from "recoil"
 
 type GridProps = {
@@ -10,8 +10,8 @@ type GridProps = {
  * Set default pattern for background
  */
 const defaultPattern = (): HTMLCanvasElement => {
-  const patternCanvas = document.createElement('canvas')
-  const patternContext = patternCanvas.getContext('2d')
+  const patternCanvas = document.createElement("canvas")
+  const patternContext = patternCanvas.getContext("2d")
   patternCanvas.width = 24
   patternCanvas.height = 24
 
@@ -45,7 +45,7 @@ export const Grid: React.FC<GridProps> = (props) => {
 
     const currentPattern = props.pattern || defaultPattern()
 
-    ctx.fillStyle = ctx.createPattern(currentPattern, 'repeat')
+    ctx.fillStyle = ctx.createPattern(currentPattern, "repeat")
     ctx.fillRect(0, 0, canvasSize.width || 0, canvasSize.height || 0)
     ctx.stroke()
   }

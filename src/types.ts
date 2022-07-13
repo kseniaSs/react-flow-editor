@@ -1,4 +1,3 @@
-import { NodeState } from "./adjust"
 import { ChangeAction } from "./change-api"
 import { Vector2d } from "./geometry"
 
@@ -80,8 +79,8 @@ export interface Node {
    * Uniqle id
    */
   id: string
-  input: InputPort[]
-  output: OutputPort[]
+  input: InputPort
+  output: OutputPort
   position: Vector2d
   classNames?: string[]
   children: JSX.Element

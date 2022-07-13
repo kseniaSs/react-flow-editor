@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Vector2d } from "./geometry"
-import { BUTTON_LEFT } from "./Editor/constants"
+import { BUTTON_LEFT } from "./NewEditor/constants"
 import { Node } from "./types"
 
 export namespace MenuItem {

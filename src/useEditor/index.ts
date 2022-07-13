@@ -26,7 +26,6 @@ type UseEditorOutput = {
   setTransformation: (transformation: { dx: number; dy: number; zoom: number }) => void
 }
 
-
 export const useEditor = (props: UseEditorInput): UseEditorOutput => {
   const [state, setState] = useState<EditorState>(initialState(props.initialNodes))
 

@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom"
 
 import { useEditor, Editor, Node, InputPort, OutputPort, Config, Connection } from "@kseniass/react-flow-editor"
 import "./simple.scss"
-import {Vector2d} from "../../../src/geometry";
+import { Vector2d } from "../../../src/geometry"
 
 type LogProps = { subscribe: (update: (log: string) => void) => void }
 type LogState = { content: string }
@@ -51,7 +51,7 @@ class NodeAttributes extends React.Component<NodeAttributesProps, NodeAttributes
   }
 }
 
-const node1Factory = (): Omit<Node, "input" | "output">  => ({
+const node1Factory = (): Omit<Node, "input" | "output"> => ({
   id: "Node_1",
   children: <div>Simple children</div>,
   position: {
@@ -68,7 +68,6 @@ const node2Factory = (): Omit<Node, "input" | "output"> => ({
     y: 110
   }
 })
-
 
 const node3Factory = (): Omit<Node, "input" | "output"> => ({
   id: "Node_3",
@@ -192,7 +191,7 @@ const App = () => {
       </div>
       <Log subscribe={(update) => (log = update)} />
       <div
-          // onWheel={onWheel}
+      // onWheel={onWheel}
       >
         <Editor nodes={nodes} />
       </div>
