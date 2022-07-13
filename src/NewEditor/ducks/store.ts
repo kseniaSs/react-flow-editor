@@ -14,3 +14,8 @@ export const selectedNodeState = atom({
   key: "selectedNodeAtom",
   default: ""
 })
+
+export const newConnectionState = atom({
+  key: "newConnectionState",
+  default: undefined
+})
