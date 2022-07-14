@@ -15,6 +15,11 @@ export const selectedNodeState = atom({
   default: ""
 })
 
+export const draggableNodeState = atom({
+  key: "draggableNodeAtom",
+  default: ""
+})
+
 export const newConnectionState = atom({
   key: "newConnectionState",
   default: undefined

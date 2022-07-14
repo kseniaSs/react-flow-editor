@@ -1,8 +1,8 @@
 import React, { useEffect } from "react"
-import { gridState, nodesState, selectedNodeState } from "./ducks/store"
+import { draggableNodeState, gridState, nodesState, selectedNodeState } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
-import { RecoilRoot, useRecoilValue, useSetRecoilState } from "recoil"
+import { RecoilRoot, useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { Grid } from "./components/Grid"
 
 import { NodeContainer } from "./components/Nodes/NodesContainer"
@@ -10,11 +10,10 @@ import { NodeContainer } from "./components/Nodes/NodesContainer"
 type EditorProps = { nodes: NodeType[] }
 
 const Canvas: React.FC = () => {
-  const setSize = useSetRecoilState(gridState)
-  const setSelectedNode = useSetRecoilState(selectedNodeState)
+  const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
+  const setSize = useSetRecoilState(gridState)
   const setNodes = useSetRecoilState(nodesState)
-  const stateNodes = useRecoilValue(nodesState)
   let elementRef: HTMLDivElement | undefined = undefined
 
   useEffect(() => {
@@ -32,19 +31,26 @@ const Canvas: React.FC = () => {
   }, [])
 
   const onDragEnded = () => {
-    setSelectedNode(undefined)
+    setDraggableNode(undefined)
   }
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
-    if (!selectedNodeId) return
+    if (!draggableNodeId) return
 
     const newPos = { x: e.screenX - elementRef.offsetLeft, y: e.clientY }
 
-    setNodes(stateNodes.map((element) => (element.id === selectedNodeId ? { ...element, position: newPos } : element)))
+    setNodes((stateNodes) =>
+      stateNodes.map((element) => (element.id === draggableNodeId ? { ...element, position: newPos } : element))
+    )
     console.log("44")
   }
 
-  console.log("rerender")
+  const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (e.key === "Delete" && selectedNodeId) {
+      setNodes((stateNodes) => stateNodes.filter(({ id }) => selectedNodeId !== id))
+    }
+  }
+
   return (
     <div
       ref={(element) => {
@@ -56,6 +62,7 @@ const Canvas: React.FC = () => {
       }}
       onMouseUp={onDragEnded}
       onMouseMove={onDrag}
+      onKeyDown={onKeyDown}
       tabIndex={0}
       className="react-flow-editor"
     >
