@@ -1,6 +1,7 @@
 import { atom } from "recoil"
+import { Node } from "../../types"
 
-export const nodesState = atom({
+export const nodesState = atom<Node[]>({
   key: "nodesStateAtom",
   default: []
 })

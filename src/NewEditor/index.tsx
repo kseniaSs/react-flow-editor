@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import { draggableNodeState, nodesState, selectedNodeState, zoomState } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
@@ -21,15 +21,13 @@ const Canvas: React.FC = () => {
   const [isViewPortMove, setViewPortMove] = useState(false)
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 })
 
-  let elementRef: HTMLDivElement | undefined = undefined
-
   const onDragEnded = () => {
     setDraggableNode(undefined)
     setViewPortMove(false)
   }
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
-    if (isViewPortMove) {
+    if (isViewPortMove && !draggableNodeId) {
       const newPos = { x: e.clientX, y: e.clientY }
       const offset = { x: newPos.x - lastPos.x, y: newPos.y - lastPos.y }
 
@@ -40,13 +38,21 @@ const Canvas: React.FC = () => {
       })
       setLastPos({ x: e.clientX, y: e.clientY })
     }
+
     if (!draggableNodeId) return
 
-    const newPos = { x: e.screenX - elementRef.offsetLeft, y: e.clientY }
-
     setNodes((stateNodes) =>
-      stateNodes.map((element) => (element.id === draggableNodeId ? { ...element, position: newPos } : element))
+      stateNodes.map((el) => {
+        const newPos = {
+          x: el.position.x + (e.clientX - lastPos.x),
+          y: el.position.y + (e.clientY - lastPos.y)
+        }
+
+        return el.id === draggableNodeId ? { ...el, position: newPos } : el
+      })
     )
+
+    setLastPos({ x: e.clientX, y: e.clientY })
   }
 
   const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {

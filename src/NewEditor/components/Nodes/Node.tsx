@@ -5,11 +5,10 @@ import { useRecoilState, useSetRecoilState } from "recoil"
 import { Vector2d } from "../../../geometry"
 import { Node as NodeType } from "../../../types"
 import { BUTTON_LEFT } from "../../constants"
-import { selectedNodeState, newConnectionState, draggableNodeState } from "../../ducks/store"
+import { selectedNodeState, newConnectionState, draggableNodeState, nodesState } from "../../ducks/store"
 
 const nodeStyle = (pos: Vector2d) => ({
-  top: `${pos.y}px`,
-  left: `${pos.x}px`
+  transform: `translate(${pos.x}px, ${pos.y}px)`
 })
 
 type NodeProps = {
@@ -35,12 +34,12 @@ const Point: React.FC<PointProps> = ({ node }) => {
 
 const Node: React.FC<NodeProps> = ({ node }) => {
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
-  const [draggableNode, setDraggableNode] = useRecoilState(draggableNodeState)
+  const setDraggableNode = useSetRecoilState(draggableNodeState)
 
   const nodeClassNames = classNames("node", node.classNames || [], { selected: selectedNode === node.id })
 
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    if (e.button === BUTTON_LEFT && draggableNode !== node.id) {
+    if (e.button === BUTTON_LEFT) {
       setDraggableNode(node.id)
     }
   }

@@ -11,8 +11,6 @@ const defaultColors = {
   [BackgroundVariant.Lines]: "#eee"
 }
 
-// const transformSelector = (s: ReactFlowState) => s.transform
-
 const Background: FC<BackgroundProps> = ({
   variant = BackgroundVariant.Dots,
   gap = 15,
