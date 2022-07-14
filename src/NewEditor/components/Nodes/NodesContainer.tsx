@@ -24,8 +24,6 @@ export const NodeContainer: React.FC = () => {
     transform: `matrix(${transformation.zoom},0,0,${transformation.zoom},${transformation.dx},${transformation.dy})`
   }
 
-  console.log("node container", nodes)
-
   return (
     <div style={nodesContainerStyle}>
       {nodes.map((node) => (

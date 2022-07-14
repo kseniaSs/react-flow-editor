@@ -15,8 +15,6 @@ type InputConnectionProps = {
 const InputConnection: React.FC<InputConnectionProps> = ({ inputNode, connection }) => {
   const nodes = useRecoilValue(nodesState)
 
-  console.log("connection", connection)
-
   const outputNode = nodes.find((node) => node.id === connection.nodeId)
 
   if (!outputNode) return null

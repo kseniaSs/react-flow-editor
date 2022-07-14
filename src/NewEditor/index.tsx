@@ -1,40 +1,45 @@
-import React, { useEffect } from "react"
-import { draggableNodeState, gridState, nodesState, selectedNodeState } from "./ducks/store"
+import React, { useState } from "react"
+import { draggableNodeState, nodesState, selectedNodeState, zoomState } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
 import { RecoilRoot, useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
-import { Grid } from "./components/Grid"
+import Background from "./components/Background"
 
 import { NodeContainer } from "./components/Nodes/NodesContainer"
+import { BUTTON_LEFT } from "./constants"
 
 type EditorProps = { nodes: NodeType[] }
+
+const ZOOM_STEP = 1.1
 
 const Canvas: React.FC = () => {
   const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
-  const setSize = useSetRecoilState(gridState)
   const setNodes = useSetRecoilState(nodesState)
+
+  const [transformation, setTransformation] = useRecoilState(zoomState)
+  const [isViewPortMove, setViewPortMove] = useState(false)
+  const [lastPos, setLastPos] = useState({ x: 0, y: 0 })
+
   let elementRef: HTMLDivElement | undefined = undefined
-
-  useEffect(() => {
-    const resizeCanvas = () => {
-      console.log("resize Canvas")
-      if (elementRef) {
-        const rect = elementRef.getClientRects()[0]
-        setSize({ width: rect.width, height: rect.height })
-      }
-    }
-
-    window.addEventListener("resize", resizeCanvas)
-
-    return () => window.removeEventListener("resize", resizeCanvas)
-  }, [])
 
   const onDragEnded = () => {
     setDraggableNode(undefined)
+    setViewPortMove(false)
   }
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
+    if (isViewPortMove) {
+      const newPos = { x: e.clientX, y: e.clientY }
+      const offset = { x: newPos.x - lastPos.x, y: newPos.y - lastPos.y }
+
+      setTransformation({
+        ...transformation,
+        dx: transformation.dx + offset.x,
+        dy: transformation.dy + offset.y
+      })
+      setLastPos({ x: e.clientX, y: e.clientY })
+    }
     if (!draggableNodeId) return
 
     const newPos = { x: e.screenX - elementRef.offsetLeft, y: e.clientY }
@@ -42,7 +47,6 @@ const Canvas: React.FC = () => {
     setNodes((stateNodes) =>
       stateNodes.map((element) => (element.id === draggableNodeId ? { ...element, position: newPos } : element))
     )
-    console.log("44")
   }
 
   const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
@@ -51,24 +55,38 @@ const Canvas: React.FC = () => {
     }
   }
 
+  const onWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
+    const zoomFactor = Math.pow(ZOOM_STEP, Math.sign(event.deltaY))
+    const zoom = transformation.zoom * zoomFactor
+
+    setTransformation({ ...transformation, zoom })
+  }
+
+  const onMouseDown: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    if (e.button === BUTTON_LEFT) {
+      setViewPortMove(true)
+      setLastPos({ x: e.clientX, y: e.clientY })
+    }
+  }
+
   return (
     <div
-      ref={(element) => {
-        if (element) {
-          elementRef = element
-          const rect = element.getClientRects()[0]
-          setSize({ width: rect.width, height: rect.height })
-        }
-      }}
       onMouseUp={onDragEnded}
       onMouseMove={onDrag}
+      onWheel={onWheel}
       onKeyDown={onKeyDown}
+      onMouseDown={onMouseDown}
       tabIndex={0}
       className="react-flow-editor"
     >
-      <Grid />
-      <NodeContainer />
-      <ConnectionContainer />
+      <div
+        className="zoom-container"
+        style={{ transform: `translate(${transformation.dx}px, ${transformation.dy}px) scale(${transformation.zoom})` }}
+      >
+        <NodeContainer />
+        <ConnectionContainer />
+      </div>
+      <Background />
     </div>
   )
 }

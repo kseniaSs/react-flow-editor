@@ -9,49 +9,35 @@ body {
   margin: 0;
 }
 
-.react-flow-editor {
-  height: 500px; // Override this in our app
-  width: 800px; // Override this in our app
+.root {
+  display: grid;
+  grid-template-columns: 200px 1fr 200px;
+  grid-template-rows: 1fr 60px;
+  height: 100vh;
 }
 
 .log {
-  position: absolute;
-  bottom: 0px;
-  left: 0;
-  right: 0;
-  height: $log-height - 1px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   padding-left: 30px;
   background: $menu-background-color;
   border-top: 1px solid $border-color;
+  grid-column-start: 1;
+  grid-column-end: 4;
+
+  p {
+    margin: 0;
+  }
 }
 
 .flow-menu {
   background-color: $menu-background-color;
   border-right: 1px solid $border-color;
-  position: absolute;
-  top: 0;
-  bottom: $log-height;
-  left: 0;
-  padding: 20px 10px 10px;
-}
-
-.react-flow-editor {
-  left: $menu-width;
-  position: absolute;
-  right: 0px;
-  bottom: $log-height;
-  height: calc(100% - #{$log-height});
-  width: calc(100% - #{$menu-width});
+  padding: 0 10px;
 }
 
 .node-attributes {
   background-color: $menu-background-color;
   border-left: 1px solid $border-color;
-  position: absolute;
-  top: 0;
-  bottom: $log-height;
-  right: 0;
-  padding: 20px 10px 10px;
+  padding: 0 10px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }

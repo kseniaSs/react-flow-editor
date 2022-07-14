@@ -3,7 +3,14 @@ $collapse-animation-duration: 0.4s;
 .react-flow-editor {
   outline: none;
   position: relative;
-  overflow: auto;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.zoom-container {
+  width: 100%;
+  height: 100%;
 }
 
 .react-flow-creating-node,
