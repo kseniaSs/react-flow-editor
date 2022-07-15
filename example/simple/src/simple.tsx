@@ -78,7 +78,7 @@ const node3Factory = (): Omit<Node, "input" | "output"> => ({
   children: <div>Node 3</div>
 })
 
-const nodes: Node[] = [
+const initialNodes: Node[] = [
   {
     ...node1Factory(),
     input: [{ nodeId: "Node_2" }],
@@ -134,26 +134,28 @@ const config: Config = {
 }
 
 const App = () => {
+  const [nodes, setNodes] = React.useState(initialNodes)
+
   return (
     <div className="root">
       <div className="flow-menu">
         <div
           onClick={() => {
             const newNode = {
-              id: "Node_1",
+              id: "Node_" + Math.trunc(Math.random() * 1000),
               children: <div>Simple children</div>,
               position: {
-                x: 110,
-                y: 110
+                x: 140 + Math.random() * 100,
+                y: 140 + Math.random() * 100
               },
               input: [],
               output: []
             }
 
-            nodes.push(newNode)
+            setNodes((nodes) => [...nodes, newNode])
           }}
         >
-          Create new Node 1
+          Create new Node
         </div>
 
         {/*<div*/}

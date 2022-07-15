@@ -27,9 +27,10 @@ export type EditorProps = {
 //   setTransformation: (transformation: { dx: number; dy: number; zoom: number }) => void
 // }
 
-export const useEditor = (props: UseEditorInput) => {
-  // const [nodes, setNodes] = useState(props.initialNodes)
-  // return {
-  //   nodes,
-  // }
-}
+// export const useEditor = (props: UseEditorInput) => {
+//   const [nodes, setNodes] = useState(props.initialNodes)
+
+//   return {
+//     nodes,
+//   }
+// }
