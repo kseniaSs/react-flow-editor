@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import classNames from "classnames"
 import { useRecoilState, useSetRecoilState } from "recoil"
 
@@ -38,8 +38,17 @@ const Point: React.FC<PointProps> = ({ node }) => {
 const Node: React.FC<NodeProps> = ({ node }) => {
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
   const setDraggableNode = useSetRecoilState(draggableNodeState)
+  const setNodes = useSetRecoilState(nodesState)
 
   const nodeClassNames = classNames("node", node.classNames || [], { selected: selectedNode === node.id })
+
+  useEffect(() => {
+    const rectPosition = document.getElementById(node.id).getClientRects()[0]
+
+    setNodes((nodes) =>
+      nodes.map((currentNode) => (currentNode.id === node.id ? { ...currentNode, rectPosition } : currentNode))
+    )
+  }, [node.id])
 
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
     if (e.button === BUTTON_LEFT) {
@@ -52,7 +61,13 @@ const Node: React.FC<NodeProps> = ({ node }) => {
   }
 
   return (
-    <div onClick={onNodeClick} onMouseDown={onDragStarted} style={nodeStyle(node.position)} className={nodeClassNames}>
+    <div
+      id={node.id}
+      onClick={onNodeClick}
+      onMouseDown={onDragStarted}
+      style={nodeStyle(node.position)}
+      className={nodeClassNames}
+    >
       {node.children}
       <Point node={node} />
     </div>
