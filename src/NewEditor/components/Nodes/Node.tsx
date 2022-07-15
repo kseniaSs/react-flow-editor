@@ -6,11 +6,10 @@ import { resetEvent } from "../../helpers"
 import { Vector2d } from "../../../geometry"
 import { Node as NodeType } from "../../../types"
 import { BUTTON_LEFT } from "../../constants"
-import { selectedNodeState, dragItem, nodesState } from "../../ducks/store"
+import { selectedNodeState, dragItem, newConnectionState, draggableNodeState, nodesState } from "../../ducks/store"
 
 const nodeStyle = (pos: Vector2d) => ({
-  top: `${pos.y}px`,
-  left: `${pos.x}px`
+  transform: `translate(${pos.x}px, ${pos.y}px)`
 })
 
 type NodeProps = {
@@ -40,8 +39,9 @@ const Node: React.FC<NodeProps> = ({ node }) => {
   const [nodes, setNodes] = useRecoilState(nodesState)
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
   const setDragItem = useSetRecoilState(dragItem)
+  const setDraggableNode = useSetRecoilState(draggableNodeState)
 
-  const nodeClassNames = classNames("node", node.classNames || [])
+  const nodeClassNames = classNames("node", node.classNames || [], { selected: selectedNode === node.id })
 
   useEffect(() => {
     const rectPosition = document.getElementById(node.id).getClientRects()[0]
@@ -57,7 +57,12 @@ const Node: React.FC<NodeProps> = ({ node }) => {
     if (e.button === BUTTON_LEFT && selectedNode !== node.id) {
       setSelectedNode(node.id)
       setDragItem("node")
+       setDraggableNode(node.id)
     }
+  }
+
+  const onNodeClick: React.MouseEventHandler<HTMLDivElement> = () => {
+    setSelectedNode(selectedNode === node.id ? undefined : node.id)
   }
 
   return (

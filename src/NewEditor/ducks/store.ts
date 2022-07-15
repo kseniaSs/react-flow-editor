@@ -1,17 +1,18 @@
 import { atom } from "recoil"
+import { Node } from "../../types"
 
-export const gridState = atom({
-  key: "gridSizeAtom",
-  default: { width: 0, height: 0 }
-})
-
-export const nodesState = atom({
+export const nodesState = atom<Node[]>({
   key: "nodesStateAtom",
   default: []
 })
 
 export const selectedNodeState = atom({
   key: "selectedNodeAtom",
+  default: ""
+})
+
+export const draggableNodeState = atom({
+  key: "draggableNodeAtom",
   default: ""
 })
 
@@ -23,4 +24,9 @@ export const newConnectionState = atom({
 export const dragItem = atom({
   key: "setDragItemAtom",
   default: ""
+})
+
+export const zoomState = atom({
+  key: "zoomStateAtom",
+  default: { zoom: 1, dx: 0, dy: 0 }
 })

@@ -1,4 +1,3 @@
-import { NodeState } from "../adjust"
 import { IEndpoint } from "../Endpoint"
 import { Vector2d } from "../geometry"
 import { Size } from "../types"
@@ -17,7 +16,7 @@ export interface WorkItemConnection {
 export type WorkItem = WorkItemConnection
 
 export type EditorState = {
-  nodesState: Map<string, NodeState>
+  // nodesState: Map<string, NodeState>
   connectionState: Map<string, Vector2d>
   selection?: { type: ItemType; id: string }
   workingItem?: WorkItem

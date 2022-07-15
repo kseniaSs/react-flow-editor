@@ -154,7 +154,7 @@ const App = () => {
   // }
 
   return (
-    <div>
+    <div className="root">
       <div className="flow-menu">
         {/*<div*/}
         {/*  onClick={() =>*/}
@@ -189,15 +189,17 @@ const App = () => {
         {/*  Create new Node 3*/}
         {/*</div>*/}
       </div>
-      <Log subscribe={(update) => (log = update)} />
       <div
-      // onWheel={onWheel}
+        className="react-editor-container"
+        // onWheel={onWheel}
       >
         <Editor nodes={nodes} />
       </div>
       <div className="node-attributes">
         <NodeAttributes subscribe={(update) => (attributes = update)} />
       </div>
+
+      <Log subscribe={(update) => (log = update)} />
     </div>
   )
 }

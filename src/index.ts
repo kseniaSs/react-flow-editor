@@ -1,5 +1,5 @@
 export { Editor } from "./NewEditor"
-export { useEditor } from "./useEditor"
+// export { useEditor } from "./useEditor"
 export { Endpoint } from "./Endpoint"
 export { MenuItem } from "./menu"
 export type {
@@ -13,4 +13,4 @@ export type {
   NodeDeselected,
   ChangeAction
 } from "./change-api"
-export type { Node, Config, Connection, Port, Style, InputPort, OutputPort } from "./types"
+export type { Node, Config, Connection, Style, InputPort, OutputPort } from "./types"
