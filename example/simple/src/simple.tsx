@@ -1,7 +1,7 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 
-import { useEditor, Editor, Node, InputPort, OutputPort, Config, Connection } from "@kseniass/react-flow-editor"
+import { Editor, Node, InputPort, OutputPort, Config, Connection } from "@kseniass/react-flow-editor"
 import "./simple.scss"
 import { Vector2d } from "../../../src/geometry"
 
@@ -134,38 +134,27 @@ const config: Config = {
 }
 
 const App = () => {
-  // const { editorProps, createNewNode, setTransformation } = useEditor({ initialNodes: nodes, config })
-
-  // const onWheel = (e: React.WheelEvent<HTMLElement>) => {
-  //   if (e.ctrlKey) return
-  //   const pt = editorProps.state.transformation
-  //   const zoomFactor = Math.pow(1.25, Math.sign(e.deltaY))
-  //   const zoom = pt.zoom * zoomFactor
-  //
-  //   const cx = e.clientX
-  //   const cy = e.clientY
-  //   // See https://github.com/lochbrunner/meliodraw/blob/master/Melio.Draw/SharpDX/OrthogonalCamera.cs#L116
-  //   const dy = cy * (pt.zoom - zoom) + pt.dy
-  //   const dx = cx * (pt.zoom - zoom) + pt.dx
-  //
-  //   const transformation = { dx, dy, zoom }
-  //
-  //   setTransformation(transformation)
-  // }
-
   return (
     <div className="root">
       <div className="flow-menu">
-        {/*<div*/}
-        {/*  onClick={() =>*/}
-        {/*    createNewNode(node1Factory(), {*/}
-        {/*      x: editorProps.editorBoundingRect.width / 2,*/}
-        {/*      y: editorProps.editorBoundingRect.height / 2*/}
-        {/*    })*/}
-        {/*  }*/}
-        {/*>*/}
-        {/*  Create new Node 1*/}
-        {/*</div>*/}
+        <div
+          onClick={() => {
+            const newNode = {
+              id: "Node_1",
+              children: <div>Simple children</div>,
+              position: {
+                x: 110,
+                y: 110
+              },
+              input: [],
+              output: []
+            }
+
+            nodes.push(newNode)
+          }}
+        >
+          Create new Node 1
+        </div>
 
         {/*<div*/}
         {/*  onClick={() =>*/}

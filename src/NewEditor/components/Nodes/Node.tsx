@@ -5,7 +5,7 @@ import { useRecoilState, useSetRecoilState } from "recoil"
 import { Vector2d } from "../../../geometry"
 import { Node as NodeType } from "../../../types"
 import { BUTTON_LEFT } from "../../constants"
-import { selectedNodeState, newConnectionState, draggableNodeState, nodesState, dragItem } from "../../ducks/store"
+import { selectedNodeState, newConnectionState, draggableNodeState, nodesState, dragItemState } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 
 const nodeStyle = (pos: Vector2d) => ({
@@ -22,13 +22,13 @@ type PointProps = {
 
 const Point: React.FC<PointProps> = ({ node }) => {
   const setSelectedNode = useSetRecoilState(selectedNodeState)
-  const setTypeDragItem = useSetRecoilState(dragItem)
+  const setDragItem = useSetRecoilState(dragItemState)
 
   const setNode = (e: React.MouseEvent<HTMLElement>) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
       setSelectedNode(node.id)
-      setTypeDragItem("connection")
+      setDragItem("connection")
     }
   }
 
@@ -38,6 +38,7 @@ const Point: React.FC<PointProps> = ({ node }) => {
 const Node: React.FC<NodeProps> = ({ node }) => {
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
   const setDraggableNode = useSetRecoilState(draggableNodeState)
+  const setDragItem = useSetRecoilState(dragItemState)
   const setNodes = useSetRecoilState(nodesState)
 
   const nodeClassNames = classNames("node", node.classNames || [], { selected: selectedNode === node.id })
@@ -51,8 +52,10 @@ const Node: React.FC<NodeProps> = ({ node }) => {
   }, [node.id])
 
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    resetEvent(e)
     if (e.button === BUTTON_LEFT) {
       setDraggableNode(node.id)
+      setDragItem("node")
     }
   }
 

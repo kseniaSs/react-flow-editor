@@ -84,6 +84,7 @@ export interface Node {
   position: Vector2d
   classNames?: string[]
   children: JSX.Element
+  rectPosition?: DOMRect
 }
 
 /**

@@ -1,5 +1,12 @@
 import React, { useState } from "react"
-import { draggableNodeState, nodesState, selectedNodeState, zoomState } from "./ducks/store"
+import {
+  draggableNodeState,
+  dragItemState,
+  newConnectionState,
+  nodesState,
+  selectedNodeState,
+  zoomState
+} from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
 import { RecoilRoot, useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
@@ -7,6 +14,7 @@ import Background from "./components/Background"
 
 import { NodeContainer } from "./components/Nodes/NodesContainer"
 import { BUTTON_LEFT } from "./constants"
+import { inNode } from "./helpers"
 
 type EditorProps = { nodes: NodeType[] }
 
@@ -14,20 +22,29 @@ const ZOOM_STEP = 1.1
 
 const Canvas: React.FC = () => {
   const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
+  const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
+  const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
-  const setNodes = useSetRecoilState(nodesState)
+  const [stateNodes, setNodes] = useRecoilState(nodesState)
 
   const [transformation, setTransformation] = useRecoilState(zoomState)
-  const [isViewPortMove, setViewPortMove] = useState(false)
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 })
 
   const onDragEnded = () => {
+    if (currentDragItem === "connection") {
+      const outputNode = stateNodes.find((currentElement) => inNode(newConnection, currentElement.rectPosition))
+    }
+    setNewConnectionState(undefined)
+    setDragItem(undefined)
     setDraggableNode(undefined)
-    setViewPortMove(false)
   }
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
-    if (isViewPortMove && !draggableNodeId) {
+    if (currentDragItem === "connection") {
+      setNewConnectionState({ x: e.clientX, y: e.clientY })
+    }
+
+    if (currentDragItem === "viewPort") {
       const newPos = { x: e.clientX, y: e.clientY }
       const offset = { x: newPos.x - lastPos.x, y: newPos.y - lastPos.y }
 
@@ -36,21 +53,20 @@ const Canvas: React.FC = () => {
         dx: transformation.dx + offset.x,
         dy: transformation.dy + offset.y
       })
-      setLastPos({ x: e.clientX, y: e.clientY })
     }
 
-    if (!draggableNodeId) return
+    if (currentDragItem === "node") {
+      setNodes((stateNodes) =>
+        stateNodes.map((el) => {
+          const newPos = {
+            x: el.position.x + (e.clientX - lastPos.x),
+            y: el.position.y + (e.clientY - lastPos.y)
+          }
 
-    setNodes((stateNodes) =>
-      stateNodes.map((el) => {
-        const newPos = {
-          x: el.position.x + (e.clientX - lastPos.x),
-          y: el.position.y + (e.clientY - lastPos.y)
-        }
-
-        return el.id === draggableNodeId ? { ...el, position: newPos } : el
-      })
-    )
+          return el.id === draggableNodeId ? { ...el, position: newPos } : el
+        })
+      )
+    }
 
     setLastPos({ x: e.clientX, y: e.clientY })
   }
@@ -69,8 +85,8 @@ const Canvas: React.FC = () => {
   }
 
   const onMouseDown: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    if (e.button === BUTTON_LEFT) {
-      setViewPortMove(true)
+    if (e.button === BUTTON_LEFT && !currentDragItem) {
+      setDragItem("viewPort")
       setLastPos({ x: e.clientX, y: e.clientY })
     }
   }
