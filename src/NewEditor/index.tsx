@@ -1,12 +1,11 @@
-import React from "react"
-import { draggableNodeState, zoomState, newConnectionState, dragItem, nodesState, selectedNodeState } from "./ducks/store"
+import React, { useRef, useState } from "react"
+import { draggableNodeState, nodesState, selectedNodeState, zoomState } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
 import { RecoilRoot, useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import Background from "./components/Background"
 
 import { NodeContainer } from "./components/Nodes/NodesContainer"
-import { inNode } from "./helpers"
 import { BUTTON_LEFT } from "./constants"
 
 type EditorProps = { nodes: NodeType[] }
@@ -16,23 +15,13 @@ const ZOOM_STEP = 1.1
 const Canvas: React.FC = () => {
   const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
-  const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
-  const [currentDragItem, setDragItem] = useRecoilState(dragItem)
-  const [stateNodes, setNodes] = useRecoilState(nodesState)
-
-  let elementRef: HTMLDivElement | undefined = undefined
+  const setNodes = useSetRecoilState(nodesState)
 
   const [transformation, setTransformation] = useRecoilState(zoomState)
   const [isViewPortMove, setViewPortMove] = useState(false)
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 })
 
   const onDragEnded = () => {
-    console.log("on mouse DOWN", stateNodes)
-    if (currentDragItem === "connection") {
-      const outputNode = stateNodes.find((currentElement) => inNode(newConnection, currentElement.rectPosition))
-    }
-    setNewConnectionState(undefined)
-    setDragItem(undefined)
     setDraggableNode(undefined)
     setViewPortMove(false)
   }
@@ -83,13 +72,6 @@ const Canvas: React.FC = () => {
     if (e.button === BUTTON_LEFT) {
       setViewPortMove(true)
       setLastPos({ x: e.clientX, y: e.clientY })
-      if (currentDragItem === "connection") {
-        setNewConnectionState({ x: e.clientX, y: e.clientY })
-      } else if (currentDragItem === "node") {
-        setNodes(
-          stateNodes.map((element) => (element.id === selectedNodeId ? { ...element, position: { x: e.clientX, y: e.clientY } } : element))
-        )
-      }
     }
   }
 

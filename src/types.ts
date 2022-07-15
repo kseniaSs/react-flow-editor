@@ -82,7 +82,6 @@ export interface Node {
   input: InputPort
   output: OutputPort
   position: Vector2d
-  rectPosition?: DOMRect
   classNames?: string[]
   children: JSX.Element
 }
