@@ -1,11 +1,12 @@
 import React, { useEffect } from "react"
-import { gridState, nodesState, selectedNodeState } from "./ducks/store"
+import { gridState, newConnectionState, dragItem, nodesState, selectedNodeState } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
-import { RecoilRoot, useRecoilValue, useSetRecoilState } from "recoil"
+import { RecoilRoot, useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { Grid } from "./components/Grid"
 
 import { NodeContainer } from "./components/Nodes/NodesContainer"
+import { inNode } from "./helpers"
 
 type EditorProps = { nodes: NodeType[] }
 
@@ -13,13 +14,14 @@ const Canvas: React.FC = () => {
   const setSize = useSetRecoilState(gridState)
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
-  const setNodes = useSetRecoilState(nodesState)
-  const stateNodes = useRecoilValue(nodesState)
+  const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
+  const [currentDragItem, setDragItem] = useRecoilState(dragItem)
+  const [stateNodes, setNodes] = useRecoilState(nodesState)
+
   let elementRef: HTMLDivElement | undefined = undefined
 
   useEffect(() => {
     const resizeCanvas = () => {
-      console.log("resize Canvas")
       if (elementRef) {
         const rect = elementRef.getClientRects()[0]
         setSize({ width: rect.width, height: rect.height })
@@ -32,7 +34,13 @@ const Canvas: React.FC = () => {
   }, [])
 
   const onDragEnded = () => {
+    console.log("on mouse DOWN", stateNodes)
+    if (currentDragItem === "connection") {
+      const outputNode = stateNodes.find((currentElement) => inNode(newConnection, currentElement.rectPosition))
+    }
     setSelectedNode(undefined)
+    setNewConnectionState(undefined)
+    setDragItem(undefined)
   }
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
@@ -40,7 +48,14 @@ const Canvas: React.FC = () => {
 
     const newPos = { x: e.screenX - elementRef.offsetLeft, y: e.clientY }
 
-    setNodes(stateNodes.map((element) => (element.id === selectedNodeId ? { ...element, position: newPos } : element)))
+    if (currentDragItem === "connection") {
+      setNewConnectionState(newPos)
+    } else if (currentDragItem === "node") {
+      setNodes(
+        stateNodes.map((element) => (element.id === selectedNodeId ? { ...element, position: newPos } : element))
+      )
+    }
+
     console.log("44")
   }
 
