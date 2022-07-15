@@ -17,16 +17,16 @@ export const draggableNodeState = atom({
 })
 
 export const newConnectionState = atom({
-  key: "newConnectionAtom",
+  key: "newConnectionState",
   default: undefined
-})
-
-export const dragItem = atom({
-  key: "setDragItemAtom",
-  default: ""
 })
 
 export const zoomState = atom({
   key: "zoomStateAtom",
   default: { zoom: 1, dx: 0, dy: 0 }
+})
+
+export const dragItem = atom({
+  key: "setDragItemAtom",
+  default: ""
 })

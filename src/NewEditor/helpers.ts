@@ -1,4 +1,3 @@
-import React from "react"
 import { Vector2d } from "../geometry"
 
 export const resetEvent = (e: React.MouseEvent<HTMLElement>) => {
