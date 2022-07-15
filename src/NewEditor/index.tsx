@@ -45,22 +45,17 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
     setNodes([...stateNodes, ...newNodes])
   }, [nodes])
 
-  console.log(stateNodes)
-
   const onDragEnded = () => {
     if (currentDragItem === "connection") {
-      console.log(stateNodes, "State nodes")
-
-      const outputNode = stateNodes.find((currentElement) => {
-        console.log(currentElement)
-        return inNode(
+      const outputNode = stateNodes.find((currentElement) =>
+        inNode(
           {
             x: newConnection.x + elementRef.current.offsetLeft,
             y: newConnection.y + elementRef.current.offsetTop
           },
           currentElement.rectPosition
         )
-      })
+      )
       if (outputNode) {
         setNodes((nodesState) =>
           nodesState.map((el) =>
