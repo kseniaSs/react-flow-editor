@@ -32,23 +32,38 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
-    setNodes(nodes)
+    const existingIds = stateNodes.map(({ id }) => id)
+
+    if (!existingIds.length) {
+      setNodes(nodes)
+
+      return
+    }
+
+    const newNodes = nodes.filter(({ id }) => !existingIds.includes(id))
+
+    setNodes([...stateNodes, ...newNodes])
   }, [nodes])
+
+  console.log(stateNodes)
 
   const onDragEnded = () => {
     if (currentDragItem === "connection") {
-      const outputNode = stateNodes.find((currentElement) =>
-        inNode(
+      console.log(stateNodes, "State nodes")
+
+      const outputNode = stateNodes.find((currentElement) => {
+        console.log(currentElement)
+        return inNode(
           {
             x: newConnection.x + elementRef.current.offsetLeft,
             y: newConnection.y + elementRef.current.offsetTop
           },
           currentElement.rectPosition
         )
-      )
+      })
       if (outputNode) {
-        setNodes((stateNodes) =>
-          stateNodes.map((el) =>
+        setNodes((nodesState) =>
+          nodesState.map((el) =>
             el.id === selectedNodeId ? { ...el, input: [...el.input, { nodeId: outputNode.id }] } : el
           )
         )
