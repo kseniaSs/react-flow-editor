@@ -26,13 +26,29 @@ const Canvas: React.FC = () => {
   const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
   const [stateNodes, setNodes] = useRecoilState(nodesState)
+  const elementRef: React.RefObject<HTMLDivElement> = React.createRef()
 
   const [transformation, setTransformation] = useRecoilState(zoomState)
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 })
 
   const onDragEnded = () => {
     if (currentDragItem === "connection") {
-      const outputNode = stateNodes.find((currentElement) => inNode(newConnection, currentElement.rectPosition))
+      const outputNode = stateNodes.find((currentElement) =>
+        inNode(
+          {
+            x: newConnection.x + elementRef.current.offsetLeft,
+            y: newConnection.y + elementRef.current.offsetTop
+          },
+          currentElement.rectPosition
+        )
+      )
+      if (outputNode) {
+        setNodes((stateNodes) =>
+          stateNodes.map((el) =>
+            el.id === selectedNodeId ? { ...el, input: [...el.input, { nodeId: outputNode.id }] } : el
+          )
+        )
+      }
     }
     setNewConnectionState(undefined)
     setDragItem(undefined)
@@ -41,7 +57,10 @@ const Canvas: React.FC = () => {
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
     if (currentDragItem === "connection") {
-      setNewConnectionState({ x: e.clientX, y: e.clientY })
+      setNewConnectionState({
+        x: e.clientX - elementRef.current.offsetLeft,
+        y: e.clientY - elementRef.current.offsetTop
+      })
     }
 
     if (currentDragItem === "viewPort") {
@@ -99,6 +118,7 @@ const Canvas: React.FC = () => {
       onKeyDown={onKeyDown}
       onMouseDown={onMouseDown}
       tabIndex={0}
+      ref={elementRef}
       className="react-flow-editor"
     >
       <div
