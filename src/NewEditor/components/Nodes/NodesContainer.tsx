@@ -18,14 +18,8 @@ const useNodeHooks = () => {
 export const NodeContainer: React.FC = () => {
   const nodes = useRecoilValue(nodesState)
 
-  const { transformation, setTransformation } = useNodeHooks()
-
-  const nodesContainerStyle = {
-    transform: `matrix(${transformation.zoom},0,0,${transformation.zoom},${transformation.dx},${transformation.dy})`
-  }
-
   return (
-    <div style={nodesContainerStyle}>
+    <div>
       {nodes.map((node) => (
         <Node node={node} key={node.id} />
       ))}
