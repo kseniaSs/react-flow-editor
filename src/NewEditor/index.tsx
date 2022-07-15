@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   draggableNodeState,
   dragItemState,
@@ -20,7 +20,7 @@ type EditorProps = { nodes: NodeType[] }
 
 const ZOOM_STEP = 1.1
 
-const Canvas: React.FC = () => {
+const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
   const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
@@ -30,6 +30,10 @@ const Canvas: React.FC = () => {
 
   const [transformation, setTransformation] = useRecoilState(zoomState)
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 })
+
+  useEffect(() => {
+    setNodes(nodes)
+  }, [nodes])
 
   const onDragEnded = () => {
     if (currentDragItem === "connection") {
@@ -133,8 +137,10 @@ const Canvas: React.FC = () => {
   )
 }
 
-export const Editor: React.FC<EditorProps> = React.memo(({ nodes }) => (
-  <RecoilRoot initializeState={({ set }) => set(nodesState, nodes)}>
-    <Canvas />
-  </RecoilRoot>
-))
+export const Editor: React.FC<EditorProps> = React.memo(({ nodes }) => {
+  return (
+    <RecoilRoot>
+      <Canvas nodes={nodes} />
+    </RecoilRoot>
+  )
+})
