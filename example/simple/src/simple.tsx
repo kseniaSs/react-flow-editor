@@ -1,8 +1,9 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 
-import { useEditor, Editor, Node, Config, Connection } from "@kseniass/react-flow-editor"
+import { Editor, Node, InputPort, OutputPort, Config, Connection } from "@kseniass/react-flow-editor"
 import "./simple.scss"
+import { Vector2d } from "../../../src/geometry"
 
 type LogProps = { subscribe: (update: (log: string) => void) => void }
 type LogState = { content: string }
@@ -50,74 +51,45 @@ class NodeAttributes extends React.Component<NodeAttributesProps, NodeAttributes
   }
 }
 
-const node1Factory = (connections?: { input: (Connection | Connection[])[] }) => ({
-  name: "Node 1",
+const node1Factory = (): Node => ({
   id: "Node_1",
-  type: "node-type-1",
-  payload: { h1: "hello", data: { custom: "data 1" } },
   children: <div>Simple children</div>,
-  childrenCollapsed: <div>Header</div>,
-  inputs: [
-    {
-      connection: connections ? connections.input[0] : [],
-      name: "input 1"
-    },
-    {
-      connection: connections ? connections.input[0] : [],
-      name: "input 2"
-    }
-  ],
-  outputs: []
+  position: {
+    x: 110,
+    y: 110
+  },
+  input: ["Node_2"]
 })
 
-const node2Factory = (connections?: {
-  input: (Connection | Connection[])[]
-  output: (Connection | Connection[])[]
-}) => ({
-  name: "Node 2",
+const node2Factory = (): Node => ({
   id: "Node_2",
-  type: "node-type-2",
-  payload: { h1: "world", data: { custom: "data 2" } },
-  inputs: [
-    { connection: connections ? connections.input[0] : [], name: "input 1" },
-    { connection: connections ? connections.input[1] : [], name: "input 2" },
-    { connection: connections ? connections.input[2] : [], name: "input 3" }
-  ],
-  outputs: [
-    { connection: connections ? connections.output[0] : [], name: "output 1" },
-    { connection: connections ? connections.output[1] : [], name: "output 2" },
-    { connection: connections ? connections.output[2] : [], name: "output 3" }
-  ]
+  children: <div>Node 2</div>,
+  position: {
+    x: 310,
+    y: 110
+  },
+  input: ["Node_3"]
 })
 
-const node3Factory = (connections?: { output: (Connection | Connection[])[] }) => ({
-  name: "Node 3",
+const node3Factory = (): Node => ({
   id: "Node_3",
-  type: "node-type-3",
-  payload: { h1: "!", data: {} },
-  inputs: [],
-  outputs: [{ connection: connections ? connections.output[0] : [], name: "output 1" }]
+  position: {
+    x: 310,
+    y: 510
+  },
+  children: <div>Node 3</div>,
+  input: []
 })
 
-const nodes: Node[] = [
+const initialNodes: Node[] = [
   {
-    ...node1Factory({
-      input: [[{ nodeId: "Node_2", port: 0 }]]
-    }),
-    id: "Node_1"
+    ...node1Factory()
   },
   {
-    ...node2Factory({
-      input: [[{ nodeId: "Node_3", port: 0 }]],
-      output: [{ nodeId: "Node_1", port: 0 }]
-    }),
-    id: "Node_2"
+    ...node2Factory()
   },
   {
-    ...node3Factory({
-      output: [[{ nodeId: "Node_2", port: 0 }]]
-    }),
-    id: "Node_3"
+    ...node3Factory()
   }
 ]
 
@@ -159,68 +131,63 @@ const config: Config = {
 }
 
 const App = () => {
-  const { editorProps, createNewNode, setTransformation } = useEditor({ initialNodes: nodes, config })
-
-  const onWheel = (e: React.WheelEvent<HTMLElement>) => {
-    if (e.ctrlKey) return
-    const pt = editorProps.state.transformation
-    const zoomFactor = Math.pow(1.25, Math.sign(e.deltaY))
-    const zoom = pt.zoom * zoomFactor
-
-    const cx = e.clientX
-    const cy = e.clientY
-    // See https://github.com/lochbrunner/meliodraw/blob/master/Melio.Draw/SharpDX/OrthogonalCamera.cs#L116
-    const dy = cy * (pt.zoom - zoom) + pt.dy
-    const dx = cx * (pt.zoom - zoom) + pt.dx
-
-    const transformation = { dx, dy, zoom }
-
-    setTransformation(transformation)
-  }
+  const [nodes, setNodes] = React.useState(initialNodes)
 
   return (
-    <div>
+    <div className="root">
       <div className="flow-menu">
         <div
-          onClick={() =>
-            createNewNode(node1Factory(), {
-              x: editorProps.editorBoundingRect.width / 2,
-              y: editorProps.editorBoundingRect.height / 2
-            })
-          }
+          onClick={() => {
+            const newNode = {
+              id: "Node_" + Math.trunc(Math.random() * 1000),
+              children: <div>Simple children</div>,
+              position: {
+                x: 140 + Math.random() * 100,
+                y: 140 + Math.random() * 100
+              },
+              input: [],
+              output: []
+            }
+
+            setNodes((nodes) => [...nodes, newNode])
+          }}
         >
-          Create new Node 1
+          Create new Node
         </div>
 
-        <div
-          onClick={() =>
-            createNewNode(node2Factory(), {
-              x: editorProps.editorBoundingRect.width / 2,
-              y: editorProps.editorBoundingRect.height / 2
-            })
-          }
-        >
-          Create new Node 2
-        </div>
+        {/*<div*/}
+        {/*  onClick={() =>*/}
+        {/*    createNewNode(node2Factory(), {*/}
+        {/*      x: editorProps.editorBoundingRect.width / 2,*/}
+        {/*      y: editorProps.editorBoundingRect.height / 2*/}
+        {/*    })*/}
+        {/*  }*/}
+        {/*>*/}
+        {/*  Create new Node 2*/}
+        {/*</div>*/}
 
-        <div
-          onClick={() =>
-            createNewNode(node3Factory(), {
-              x: editorProps.editorBoundingRect.width / 2,
-              y: editorProps.editorBoundingRect.height / 2
-            })
-          }
-        >
-          Create new Node 3
-        </div>
+        {/*<div*/}
+        {/*  onClick={() =>*/}
+        {/*    createNewNode(node3Factory(), {*/}
+        {/*      x: editorProps.editorBoundingRect.width / 2,*/}
+        {/*      y: editorProps.editorBoundingRect.height / 2*/}
+        {/*    })*/}
+        {/*  }*/}
+        {/*>*/}
+        {/*  Create new Node 3*/}
+        {/*</div>*/}
       </div>
-      <Log subscribe={(update) => (log = update)} />
-      <div onWheel={onWheel}>
-        <Editor {...editorProps} />
+      <div
+        className="react-editor-container"
+        // onWheel={onWheel}
+      >
+        <Editor nodes={nodes} />
       </div>
       <div className="node-attributes">
         <NodeAttributes subscribe={(update) => (attributes = update)} />
       </div>
+
+      <Log subscribe={(update) => (log = update)} />
     </div>
   )
 }
