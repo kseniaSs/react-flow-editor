@@ -1,11 +1,4 @@
-[![npm version](https://badge.fury.io/js/react-flow-editor.svg)](https://badge.fury.io/js/react-flow-editor)
-[![Downloads](https://img.shields.io/npm/dt/react-flow-editor.svg)](https://www.npmjs.com/package/react-flow-editor)
-[![GitHub issues](https://img.shields.io/github/issues/lochbrunner/react-flow-editor.svg)](https://github.com/lochbrunner/react-flow-editor/issues)
-![David](https://img.shields.io/david/lochbrunner/react-flow-editor.svg)
-![David](https://img.shields.io/david/dev/lochbrunner/react-flow-editor.svg)
-![lib](https://github.com/lochbrunner/react-flow-editor/workflows/lib/badge.svg)
-![examples](https://github.com/lochbrunner/react-flow-editor/workflows/examples/badge.svg)
-
+[![npm version](https://badge.fury.io/js/@kseniass%2Freact-flow-editor.svg)](https://badge.fury.io/js/@kseniass%2Freact-flow-editor.svg)
 # Graph editor
 
 An ui library for creating flow based editors with react and typescript/javascript.
@@ -50,21 +43,21 @@ const config: Config = {
     demoMode: true,
 };
 
-ReactDOM.render(
-    <div>
-        <Editor config={config} nodes={nodes} />
-    </div>,
-    document.getElementById('root')
-);
+const App = () => {
+    const { editorProps } = useEditor({ initialNodes: nodes, config })
+
+    return (
+        <div>
+            <Editor {...editorProps} />
+        </div>
+    )
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
 
 ```
 
 See [example](./example/) for usage.
-
-## Side effects
-
-* Before creating new nodes, the node under the cursor is a direct child of `document.body`.
-* In order to decouple editor and menu components they use `window.onStartCreatingNewNode` to communicate.
 
 ## API
 
