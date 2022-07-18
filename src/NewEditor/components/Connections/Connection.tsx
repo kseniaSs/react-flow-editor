@@ -1,11 +1,12 @@
 import React from "react"
 import { useRecoilValue } from "recoil"
 import { InputConnection } from "./InputConnection"
-import { Node as NodeType } from "../../../types"
+import { Node as NodeType, Point } from "../../../types"
 import { nodesState } from "../../ducks/store"
 
 type ConnectionProps = {
   node: NodeType
+  pointPosition: Point
 }
 
 export const Connection: React.FC<ConnectionProps> = (props) => {
@@ -15,13 +16,14 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
   return (
     <>
       {node.input.map((inputConnection) => {
-        const outputNode = nodes.find((node) => node.id === inputConnection.nodeId)
+        const outputNode = nodes.find((node) => node.id === inputConnection)
 
         if (!outputNode) return null
 
         return (
           <InputConnection
-            key={`${node.id}_${inputConnection.nodeId}`}
+            pointPosition={props.pointPosition}
+            key={`${node.id}_${inputConnection}`}
             outputPosition={outputNode.position}
             inputPosition={node.position}
           />

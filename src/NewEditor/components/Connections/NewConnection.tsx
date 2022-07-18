@@ -2,10 +2,13 @@ import React from "react"
 import { useRecoilValue } from "recoil"
 import { newConnectionState, nodesState, selectedNodeState } from "../../ducks/store"
 import { InputConnection } from "./InputConnection"
+import { Point } from "../../types"
 
-type NewConnectionProps = {}
+type NewConnectionProps = {
+  pointPosition: Point
+}
 
-export const NewConnection: React.FC<NewConnectionProps> = () => {
+export const NewConnection: React.FC<NewConnectionProps> = ({ pointPosition }) => {
   const newConnectionPosition = useRecoilValue(newConnectionState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
   const nodes = useRecoilValue(nodesState)
@@ -17,8 +20,9 @@ export const NewConnection: React.FC<NewConnectionProps> = () => {
   return (
     <InputConnection
       key={`${selectedNodeId}_new`}
-      outputPosition={outputNode.position}
-      inputPosition={newConnectionPosition}
+      pointPosition={pointPosition}
+      outputPosition={newConnectionPosition}
+      inputPosition={outputNode.position}
     />
   )
 }

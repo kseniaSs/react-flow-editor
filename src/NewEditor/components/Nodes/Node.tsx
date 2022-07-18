@@ -4,6 +4,7 @@ import { useRecoilState, useSetRecoilState } from "recoil"
 
 import { Vector2d } from "../../../geometry"
 import { Node as NodeType } from "../../../types"
+import { Point as PointType } from "../../types"
 import { BUTTON_LEFT } from "../../constants"
 import { selectedNodeState, newConnectionState, draggableNodeState, nodesState, dragItemState } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
@@ -12,15 +13,23 @@ const nodeStyle = (pos: Vector2d) => ({
   transform: `translate(${pos.x}px, ${pos.y}px)`
 })
 
+const pointStyle = (position: Vector2d) => ({
+  top: `${position.x}px`,
+  left: `${position.y}px`,
+  position: "relative"
+})
+
 type NodeProps = {
   node: NodeType
+  position: PointType
 }
 
 type PointProps = {
   node: NodeType
+  position: PointType
 }
 
-const Point: React.FC<PointProps> = ({ node }) => {
+const Point: React.FC<PointProps> = ({ node, position }) => {
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   const setDragItem = useSetRecoilState(dragItemState)
 
@@ -32,10 +41,10 @@ const Point: React.FC<PointProps> = ({ node }) => {
     }
   }
 
-  return <div className="dot input right" onMouseDown={setNode} />
+  return <div className="dot input right" style={pointStyle(position)} onMouseDown={setNode} />
 }
 
-const Node: React.FC<NodeProps> = ({ node }) => {
+const Node: React.FC<NodeProps> = ({ node, position }) => {
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
   const setDraggableNode = useSetRecoilState(draggableNodeState)
   const setDragItem = useSetRecoilState(dragItemState)
@@ -72,7 +81,7 @@ const Node: React.FC<NodeProps> = ({ node }) => {
       className={nodeClassNames}
     >
       {node.children}
-      <Point node={node} />
+      <Point node={node} position={position} />
     </div>
   )
 }

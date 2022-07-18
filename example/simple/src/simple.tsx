@@ -51,48 +51,45 @@ class NodeAttributes extends React.Component<NodeAttributesProps, NodeAttributes
   }
 }
 
-const node1Factory = (): Omit<Node, "input" | "output"> => ({
+const node1Factory = (): Node => ({
   id: "Node_1",
   children: <div>Simple children</div>,
   position: {
     x: 110,
     y: 110
-  }
+  },
+  input: ["Node_2"]
 })
 
-const node2Factory = (): Omit<Node, "input" | "output"> => ({
+const node2Factory = (): Node => ({
   id: "Node_2",
   children: <div>Node 2</div>,
   position: {
     x: 310,
     y: 110
-  }
+  },
+  input: ["Node_3"]
 })
 
-const node3Factory = (): Omit<Node, "input" | "output"> => ({
+const node3Factory = (): Node => ({
   id: "Node_3",
   position: {
     x: 310,
     y: 510
   },
-  children: <div>Node 3</div>
+  children: <div>Node 3</div>,
+  input: []
 })
 
 const initialNodes: Node[] = [
   {
-    ...node1Factory(),
-    input: [{ nodeId: "Node_2" }],
-    output: []
+    ...node1Factory()
   },
   {
-    ...node2Factory(),
-    input: [{ nodeId: "Node_3" }],
-    output: [{ nodeId: "Node_1" }]
+    ...node2Factory()
   },
   {
-    ...node3Factory(),
-    input: [],
-    output: [{ nodeId: "Node_2" }]
+    ...node3Factory()
   }
 ]
 

@@ -1,4 +1,3 @@
-import { ChangeAction } from "./change-api"
 import { Vector2d } from "./geometry"
 
 export interface Size {
@@ -10,7 +9,6 @@ export interface Style {
   "react-flow-editor"?: string
   dot?: string
   input?: string
-  output?: string
   left?: string
   right?: string
   connections?: string
@@ -34,17 +32,12 @@ export interface Style {
 
 export interface Config {
   resolver: (node: Node) => JSX.Element
-  connectionValidator?: (output: { nodeId: string; port: number }, input: { nodeId: string; port: number }) => boolean
+  // connectionValidator?: (output: { nodeId: string; port: number }, input: { nodeId: string; port: number }) => boolean
   /*
     Set Drag's area
     @default header
    */
   dragHandler?: "body" | "header"
-  /**
-   * Callback when changes to the Graph are made by the user
-   * Call updateProps, if you want the editor managing the state change
-   */
-  onChanged?: (node: ChangeAction, updateProps: () => void) => void
 
   /**
    * If this is set, the editor will change the props.
@@ -80,7 +73,6 @@ export interface Node {
    */
   id: string
   input: InputPort
-  output: OutputPort
   position: Vector2d
   classNames?: string[]
   children: JSX.Element
@@ -93,17 +85,4 @@ export interface Node {
  * Which describes the Node+Port of the other endpoint of that connection
  */
 
-export interface Connection {
-  /**
-   * The other node id which to connect
-   */
-  nodeId: string
-  /**
-   * Example UC: mark invalid connections
-   */
-  classNames?: string[]
-}
-
-export type InputPort = Connection[]
-
-export type OutputPort = Connection[]
+export type InputPort = Array<string>

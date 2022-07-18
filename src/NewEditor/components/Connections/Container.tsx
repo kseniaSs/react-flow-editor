@@ -3,8 +3,11 @@ import { Connection } from "./Connection"
 import { useRecoilValue } from "recoil"
 import { nodesState } from "../../ducks/store"
 import { NewConnection } from "./NewConnection"
+import { Point } from "../../types"
 
-type ContainerProps = {}
+type ContainerProps = {
+  pointPosition: Point
+}
 
 // TODO: Change to props
 const Arrow: React.FC = () => (
@@ -24,7 +27,7 @@ const Arrow: React.FC = () => (
   </defs>
 )
 
-export const Container: React.FC<ContainerProps> = () => {
+export const Container: React.FC<ContainerProps> = ({ pointPosition }) => {
   const nodes = useRecoilValue(nodesState)
 
   const connectionContainerStyle: React.CSSProperties = {
@@ -35,9 +38,9 @@ export const Container: React.FC<ContainerProps> = () => {
     <svg className="connections" xmlns="http://www.w3.org/2000/svg" style={connectionContainerStyle}>
       <Arrow />
       {nodes.map((node) => (
-        <Connection key={`${node.id}-connection`} node={node} />
+        <Connection pointPosition={pointPosition} key={`${node.id}-connection`} node={node} />
       ))}
-      <NewConnection />
+      <NewConnection pointPosition={pointPosition} />
     </svg>
   )
 }

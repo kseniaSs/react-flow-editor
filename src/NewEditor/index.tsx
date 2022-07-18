@@ -9,12 +9,13 @@ import {
 } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
-import { RecoilRoot, useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
+import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
 import Background from "./components/Background"
 
 import { NodeContainer } from "./components/Nodes/NodesContainer"
 import { BUTTON_LEFT } from "./constants"
 import { inNode } from "./helpers"
+import Node from "./components/Nodes/Node"
 
 type EditorProps = { nodes: NodeType[] }
 
@@ -45,14 +46,9 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
     setNodes([...stateNodes, ...newNodes])
   }, [nodes])
 
-  console.log(stateNodes)
-
   const onDragEnded = () => {
     if (currentDragItem === "connection") {
-      console.log(stateNodes, "State nodes")
-
       const outputNode = stateNodes.find((currentElement) => {
-        console.log(currentElement)
         return inNode(
           {
             x: newConnection.x + elementRef.current.offsetLeft,
@@ -61,10 +57,13 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
           currentElement.rectPosition
         )
       })
+
       if (outputNode) {
         setNodes((nodesState) =>
           nodesState.map((el) =>
-            el.id === selectedNodeId ? { ...el, input: [...el.input, { nodeId: outputNode.id }] } : el
+            el.id === selectedNodeId && !el.input.includes(outputNode.id)
+              ? { ...el, input: [...el.input, outputNode.id] }
+              : el
           )
         )
       }
@@ -144,8 +143,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
         className="zoom-container"
         style={{ transform: `translate(${transformation.dx}px, ${transformation.dy}px) scale(${transformation.zoom})` }}
       >
-        <NodeContainer />
-        <ConnectionContainer />
+        <NodeContainer pointPosition={{ x: -10, y: -5 }} />
+        <ConnectionContainer pointPosition={{ x: -10, y: -5 }} />
       </div>
       <Background />
     </div>
