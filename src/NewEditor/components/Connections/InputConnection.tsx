@@ -1,4 +1,5 @@
 import React from "react"
+import _ from "lodash"
 import { Vector2d } from "../../../geometry"
 import { Point } from "../../types"
 
@@ -8,7 +9,7 @@ type InputConnectionProps = {
   pointPosition: Point
 }
 
-export const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition, pointPosition }) => {
+const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition }) => {
   const dx = Math.max(Math.abs(outputPosition.x - inputPosition.x) / 1.5, 100)
   const a1 = { x: outputPosition.x - dx, y: outputPosition.y }
   const a2 = { x: inputPosition.x + dx, y: inputPosition.y }
@@ -21,3 +22,5 @@ export const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition,
 
   return <path className="connection" d={cmd} markerStart="url(#triangle)" />
 }
+
+export default React.memo(InputConnection, _.isEqual)

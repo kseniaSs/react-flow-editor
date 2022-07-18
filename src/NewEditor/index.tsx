@@ -30,7 +30,6 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   const elementRef: React.RefObject<HTMLDivElement> = React.createRef()
 
   const [transformation, setTransformation] = useRecoilState(zoomState)
-  const [lastPos, setLastPos] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
     const existingIds = stateNodes.map(({ id }) => id)
@@ -47,7 +46,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   }, [nodes])
 
   const onDragEnded = () => {
-    if (currentDragItem === "connection") {
+    if (currentDragItem.type === "connection") {
       const outputNode = stateNodes.find((currentElement) => {
         return inNode(
           {
@@ -69,21 +68,21 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
       }
     }
     setNewConnectionState(undefined)
-    setDragItem(undefined)
+    setDragItem((dragItem) => ({ ...dragItem, type: undefined }))
     setDraggableNode(undefined)
   }
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
-    if (currentDragItem === "connection") {
+    if (currentDragItem.type === "connection") {
       setNewConnectionState({
         x: e.clientX - elementRef.current.offsetLeft,
         y: e.clientY - elementRef.current.offsetTop
       })
     }
 
-    if (currentDragItem === "viewPort") {
+    if (currentDragItem.type === "viewPort") {
       const newPos = { x: e.clientX, y: e.clientY }
-      const offset = { x: newPos.x - lastPos.x, y: newPos.y - lastPos.y }
+      const offset = { x: newPos.x - currentDragItem.x, y: newPos.y - currentDragItem.y }
 
       setTransformation({
         ...transformation,
@@ -92,12 +91,12 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
       })
     }
 
-    if (currentDragItem === "node") {
+    if (currentDragItem.type === "node") {
       setNodes((stateNodes) =>
         stateNodes.map((el) => {
           const newPos = {
-            x: el.position.x + (e.clientX - lastPos.x),
-            y: el.position.y + (e.clientY - lastPos.y)
+            x: el.position.x + (e.clientX - currentDragItem.x),
+            y: el.position.y + (e.clientY - currentDragItem.y)
           }
 
           return el.id === draggableNodeId ? { ...el, position: newPos } : el
@@ -105,7 +104,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
       )
     }
 
-    setLastPos({ x: e.clientX, y: e.clientY })
+    setDragItem((dragItem) => ({ ...dragItem, x: e.clientX, y: e.clientY }))
   }
 
   const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
@@ -122,16 +121,15 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   }
 
   const onMouseDown: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    if (e.button === BUTTON_LEFT && !currentDragItem) {
-      setDragItem("viewPort")
-      setLastPos({ x: e.clientX, y: e.clientY })
+    if (e.button === BUTTON_LEFT && !currentDragItem.type) {
+      setDragItem({ type: "viewPort", x: e.clientX, y: e.clientY })
     }
   }
 
   return (
     <div
       onMouseUp={onDragEnded}
-      onMouseMove={onDrag}
+      onMouseMove={currentDragItem.type ? onDrag : undefined}
       onWheel={onWheel}
       onKeyDown={onKeyDown}
       onMouseDown={onMouseDown}

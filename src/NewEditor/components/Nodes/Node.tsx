@@ -1,6 +1,7 @@
 import React, { useEffect } from "react"
 import classNames from "classnames"
 import { useRecoilState, useSetRecoilState } from "recoil"
+import _ from "lodash"
 
 import { Vector2d } from "../../../geometry"
 import { Node as NodeType } from "../../../types"
@@ -13,7 +14,7 @@ const nodeStyle = (pos: Vector2d) => ({
   transform: `translate(${pos.x}px, ${pos.y}px)`
 })
 
-const pointStyle = (position: PointType) => ({
+const pointStyle = (position: PointType): React.CSSProperties => ({
   top: `${position.x}px`,
   left: `${position.y}px`,
   position: "relative"
@@ -25,19 +26,19 @@ type NodeProps = {
 }
 
 type PointProps = {
-  node: NodeType
+  nodeId: string
   position: PointType
 }
 
-const Point: React.FC<PointProps> = ({ node, position }) => {
+const Point: React.FC<PointProps> = ({ nodeId, position }) => {
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   const setDragItem = useSetRecoilState(dragItemState)
 
   const setNode = (e: React.MouseEvent<HTMLElement>) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
-      setSelectedNode(node.id)
-      setDragItem("connection")
+      setSelectedNode(nodeId)
+      setDragItem({ type: "connection", x: e.clientX, y: e.clientY })
     }
   }
 
@@ -64,7 +65,7 @@ const Node: React.FC<NodeProps> = ({ node, position }) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
       setDraggableNode(node.id)
-      setDragItem("node")
+      setDragItem({ type: "node", x: e.clientX, y: e.clientY })
     }
   }
 
@@ -81,9 +82,9 @@ const Node: React.FC<NodeProps> = ({ node, position }) => {
       className={nodeClassNames}
     >
       {node.children}
-      <Point node={node} position={position} />
+      <Point nodeId={node.id} position={position} />
     </div>
   )
 }
 
-export default Node
+export default React.memo(Node, _.isEqual)
