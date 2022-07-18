@@ -15,8 +15,7 @@ const nodeStyle = (pos: Vector2d) => ({
 
 const pointStyle = (position: PointType) => ({
   top: `${position.x}px`,
-  left: `${position.y}px`,
-  position: "relative"
+  left: `${position.y}px`
 })
 
 type NodeProps = {
