@@ -6,14 +6,14 @@ import { Vector2d } from "../../../geometry"
 import { Node as NodeType } from "../../../types"
 import { Point as PointType } from "../../types"
 import { BUTTON_LEFT } from "../../constants"
-import { selectedNodeState, newConnectionState, draggableNodeState, nodesState, dragItemState } from "../../ducks/store"
+import { selectedNodeState, draggableNodeState, nodesState, dragItemState } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 
 const nodeStyle = (pos: Vector2d) => ({
   transform: `translate(${pos.x}px, ${pos.y}px)`
 })
 
-const pointStyle = (position: Vector2d) => ({
+const pointStyle = (position: PointType) => ({
   top: `${position.x}px`,
   left: `${position.y}px`,
   position: "relative"

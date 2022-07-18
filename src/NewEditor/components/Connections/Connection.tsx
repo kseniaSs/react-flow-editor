@@ -1,7 +1,8 @@
 import React from "react"
 import { useRecoilValue } from "recoil"
 import { InputConnection } from "./InputConnection"
-import { Node as NodeType, Point } from "../../../types"
+import { Node as NodeType } from "../../../types"
+import { Point } from "../../types"
 import { nodesState } from "../../ducks/store"
 
 type ConnectionProps = {
