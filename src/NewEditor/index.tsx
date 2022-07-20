@@ -32,7 +32,7 @@ type PublicApiInnerState = {
   callback: (state: PublicApiState) => void
 }
 
-const createPublicEditorApi = () => {
+const usePublicEditorApi = () => {
   const state: PublicApiInnerState = { apiState: null, callback: null }
 
   return {
@@ -49,7 +49,7 @@ const createPublicEditorApi = () => {
   }
 }
 
-export const EditorPublicApi = createPublicEditorApi()
+export const EditorPublicApi = usePublicEditorApi()
 
 const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
