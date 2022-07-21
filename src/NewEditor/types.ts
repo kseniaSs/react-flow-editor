@@ -19,10 +19,12 @@ export type Point = {
   y: number
 }
 
+export type Transformation = { dx: number; dy: number; zoom: number }
+
 export type EditorState = {
   connectionState: Map<string, Vector2d>
   selection?: { type: ItemType; id: string }
   workingItem?: WorkItem
-  transformation: { dx: number; dy: number; zoom: number }
+  transformation: Transformation
   componentSize: Size
 }

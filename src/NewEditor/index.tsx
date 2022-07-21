@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import {
   draggableNodeState,
   dragItemState,
@@ -15,11 +15,41 @@ import Background from "./components/Background"
 import { NodeContainer } from "./components/Nodes/NodesContainer"
 import { BUTTON_LEFT } from "./constants"
 import { inNode } from "./helpers"
-import Node from "./components/Nodes/Node"
+import { Transformation } from "./types"
 
 type EditorProps = { nodes: NodeType[] }
 
 const ZOOM_STEP = 1.1
+
+type PublicApiState = {
+  transformation: Transformation
+  setTransformation: (payload: Transformation) => void
+  stateNodes: NodeType[]
+}
+
+type PublicApiInnerState = {
+  apiState: PublicApiState
+  callback: (state: PublicApiState) => void
+}
+
+const usePublicEditorApi = () => {
+  const state: PublicApiInnerState = { apiState: null, callback: null }
+
+  return {
+    update: (payload: PublicApiState) => {
+      state.apiState = payload
+
+      if (state.callback) state.callback(state.apiState)
+    },
+    subscribe: (callback: (state: PublicApiState) => void) => {
+      state.callback = callback
+
+      if (state.apiState) state.callback(state.apiState)
+    }
+  }
+}
+
+export const EditorPublicApi = usePublicEditorApi()
 
 const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
@@ -30,6 +60,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   const elementRef: React.RefObject<HTMLDivElement> = React.createRef()
 
   const [transformation, setTransformation] = useRecoilState(zoomState)
+
+  EditorPublicApi.update({ transformation, setTransformation, stateNodes })
 
   useEffect(() => {
     const existingIds = stateNodes.map(({ id }) => id)
