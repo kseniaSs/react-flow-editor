@@ -1,4 +1,5 @@
 import React, { useEffect } from "react"
+import _ from "lodash"
 import {
   draggableNodeState,
   dragItemState,
@@ -64,17 +65,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   EditorPublicApi.update({ transformation, setTransformation, stateNodes })
 
   useEffect(() => {
-    const existingIds = stateNodes.map(({ id }) => id)
-
-    if (!existingIds.length) {
-      setNodes(nodes)
-
-      return
-    }
-
-    const newNodes = nodes.filter(({ id }) => !existingIds.includes(id))
-
-    setNodes([...stateNodes, ...newNodes])
+    if (!_.isEqual(nodes, stateNodes)) setNodes(nodes)
   }, [nodes])
 
   const onDragEnded = () => {
