@@ -1,6 +1,6 @@
 {
   "name": "@kseniass/react-flow-editor",
-  "version": "0.7.18",
+  "version": "0.7.26",
   "description": "React component which enables creating flow editors with ease",
   "author": {
     "name": "Matthias Lochbrunner",
@@ -14,7 +14,9 @@
   "module": "./dist/react-flow-editor.es.js",
   "types": "./dist/index.d.ts",
   "style": "./dist/_style.scss",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "import": "./dist/react-flow-editor.es.js",

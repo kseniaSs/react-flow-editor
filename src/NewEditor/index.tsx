@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from "react"
+import React, { useEffect, useCallback } from "react"
 import _ from "lodash"
 import {
   draggableNodeState,
@@ -7,7 +7,9 @@ import {
   nodesState,
   selectedNodeState,
   zoomState,
-  positionState
+  pointPositionState,
+  offsetState,
+  dotSizeState
 } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
@@ -27,8 +29,8 @@ type PublicApiState = {
   transformation: Transformation
   setTransformation: (payload: Transformation) => void
   stateNodes: NodeType[]
-  position: PointType
-  setPosition: (payload: PointType) => void
+  pointPosition: PointType
+  setPointPosition: (payload: PointType) => void
 }
 
 type PublicApiInnerState = {
@@ -56,17 +58,17 @@ const usePublicEditorApi = () => {
 export const EditorPublicApi = usePublicEditorApi()
 
 const Canvas: React.FC<EditorProps> = ({ nodes }) => {
-  const [offset, setOffset] = useState<Offset>({ offsetTop: 0, offsetLeft: 0 })
-
+  const [offset, setOffset] = useRecoilState(offsetState)
   const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
   const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
   const [stateNodes, setNodes] = useRecoilState(nodesState)
-  const [position, setPosition] = useRecoilState(positionState)
+  const [pointPosition, setPointPosition] = useRecoilState(pointPositionState)
   const [transformation, setTransformation] = useRecoilState(zoomState)
+  const [dotSize, setDotSize] = useRecoilState(dotSizeState)
 
-  EditorPublicApi.update({ transformation, position, setPosition, setTransformation, stateNodes })
+  EditorPublicApi.update({ transformation, pointPosition, setPointPosition, setTransformation, stateNodes })
 
   useEffect(() => {
     if (!_.isEqual(nodes, stateNodes)) setNodes(nodes)
@@ -158,12 +160,22 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
 
   const containerRef = useCallback((element) => {
     if (element !== null) {
+      const rect = element.getBoundingClientRect()
+
       setOffset({
-        offsetLeft: element.offsetLeft,
-        offsetTop: element.offsetTop
+        offsetLeft: rect?.left || 0,
+        offsetTop: rect?.top || 0
       })
     }
   }, [])
+
+  useEffect(() => {
+    if (!dotSize && stateNodes.length) {
+      const rect = document.querySelector(".dot.input")?.getBoundingClientRect()
+
+      rect && setDotSize(rect)
+    }
+  }, [dotSize, stateNodes])
 
   return (
     <div
@@ -180,8 +192,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
         className="zoom-container"
         style={{ transform: `translate(${transformation.dx}px, ${transformation.dy}px) scale(${transformation.zoom})` }}
       >
-        <NodeContainer pointPosition={position} />
-        <ConnectionContainer pointPosition={position} offset={offset} />
+        <NodeContainer />
+        <ConnectionContainer />
       </div>
       <Background />
     </div>

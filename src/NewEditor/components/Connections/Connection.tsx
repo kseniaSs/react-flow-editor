@@ -3,17 +3,17 @@ import { useRecoilValue } from "recoil"
 import InputConnection from "./InputConnection"
 import { Node as NodeType } from "../../../types"
 import { Point, Offset } from "../../types"
-import { nodesState } from "../../ducks/store"
+import { dotSizeState, nodesState, offsetState, pointPositionState } from "../../ducks/store"
 
 type ConnectionProps = {
   node: NodeType
-  pointPosition: Point
-  offset: Offset
 }
 
-export const Connection: React.FC<ConnectionProps> = (props) => {
+export const Connection: React.FC<ConnectionProps> = ({ node }) => {
   const nodes = useRecoilValue(nodesState)
-  const { node } = props
+  const pointPosition = useRecoilValue(pointPositionState)
+  const offset = useRecoilValue(offsetState)
+  const dotSize = useRecoilValue(dotSizeState)
 
   return (
     <>
@@ -24,19 +24,23 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
 
         const inputPosition = node.rectPosition
           ? {
-              x: node.rectPosition.right - props.offset.offsetLeft + props.pointPosition.x,
-              y: node.rectPosition.bottom - props.offset.offsetTop + props.pointPosition.y
+              x:
+                node.rectPosition.left -
+                offset.offsetLeft +
+                pointPosition.x -
+                (dotSize?.width || 0) / 2 +
+                (node.rectPosition?.width || 0),
+              y: node.rectPosition.bottom - offset.offsetTop + pointPosition.y - (dotSize?.height || 0) / 2
             }
           : node.position
 
         const outputPosition = {
-          x: outputNode.position.x,
-          y: outputNode.position.y + (node.rectPosition?.height || 0) / 2
+          x: outputNode.position.x + pointPosition.x,
+          y: outputNode.position.y + pointPosition.y - (dotSize?.height || 0) / 2 + (node.rectPosition?.height || 0)
         }
 
         return (
           <InputConnection
-            pointPosition={props.pointPosition}
             key={`${node.id}_${inputConnection}`}
             outputPosition={outputPosition}
             inputPosition={inputPosition}
