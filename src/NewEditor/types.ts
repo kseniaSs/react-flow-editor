@@ -19,6 +19,11 @@ export type Point = {
   y: number
 }
 
+export type Offset = {
+  offsetTop: number
+  offsetLeft: number
+}
+
 export type Transformation = { dx: number; dy: number; zoom: number }
 
 export type EditorState = {

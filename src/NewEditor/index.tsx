@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useCallback, useState } from "react"
 import _ from "lodash"
 import {
   draggableNodeState,
@@ -16,7 +16,7 @@ import Background from "./components/Background"
 import { NodeContainer } from "./components/Nodes/NodesContainer"
 import { BUTTON_LEFT } from "./constants"
 import { inNode } from "./helpers"
-import { Transformation } from "./types"
+import { Transformation, Point as PointType, Offset } from "./types"
 
 type EditorProps = { nodes: NodeType[] }
 
@@ -26,6 +26,7 @@ type PublicApiState = {
   transformation: Transformation
   setTransformation: (payload: Transformation) => void
   stateNodes: NodeType[]
+  setPosition: (payload: PointType) => void
 }
 
 type PublicApiInnerState = {
@@ -53,16 +54,17 @@ const usePublicEditorApi = () => {
 export const EditorPublicApi = usePublicEditorApi()
 
 const Canvas: React.FC<EditorProps> = ({ nodes }) => {
+  const [offset, setOffset] = useState<Offset>({ offsetTop: 0, offsetLeft: 0 })
+  const [position, setPosition] = useState<PointType>({ x: 0, y: 0 })
   const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
   const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
   const [stateNodes, setNodes] = useRecoilState(nodesState)
-  const elementRef: React.RefObject<HTMLDivElement> = React.createRef()
 
   const [transformation, setTransformation] = useRecoilState(zoomState)
 
-  EditorPublicApi.update({ transformation, setTransformation, stateNodes })
+  EditorPublicApi.update({ transformation, setPosition, setTransformation, stateNodes })
 
   useEffect(() => {
     if (!_.isEqual(nodes, stateNodes)) setNodes(nodes)
@@ -73,10 +75,11 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
       const outputNode = stateNodes.find((currentElement) => {
         return inNode(
           {
-            x: newConnection.x + elementRef.current.offsetLeft,
-            y: newConnection.y + elementRef.current.offsetTop
+            x: newConnection.x,
+            y: newConnection.y
           },
-          currentElement.rectPosition
+          currentElement.rectPosition,
+          currentElement.position
         )
       })
 
@@ -98,8 +101,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
     if (currentDragItem.type === "connection") {
       setNewConnectionState({
-        x: e.clientX - elementRef.current.offsetLeft,
-        y: e.clientY - elementRef.current.offsetTop
+        x: e.clientX - offset.offsetLeft,
+        y: e.clientY - offset.offsetTop
       })
     }
 
@@ -115,6 +118,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
     }
 
     if (currentDragItem.type === "node") {
+      const rectPosition = document.getElementById(draggableNodeId).getClientRects()[0]
+
       setNodes((stateNodes) =>
         stateNodes.map((el) => {
           const newPos = {
@@ -122,7 +127,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
             y: el.position.y + (e.clientY - currentDragItem.y)
           }
 
-          return el.id === draggableNodeId ? { ...el, position: newPos } : el
+          return el.id === draggableNodeId ? { ...el, position: newPos, rectPosition } : el
         })
       )
     }
@@ -149,6 +154,15 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
     }
   }
 
+  const containerRef = useCallback((element) => {
+    if (element !== null) {
+      setOffset({
+        offsetLeft: element.offsetLeft,
+        offsetTop: element.offsetTop
+      })
+    }
+  }, [])
+
   return (
     <div
       onMouseUp={onDragEnded}
@@ -157,15 +171,15 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
       onKeyDown={onKeyDown}
       onMouseDown={onMouseDown}
       tabIndex={0}
-      ref={elementRef}
+      ref={containerRef}
       className="react-flow-editor"
     >
       <div
         className="zoom-container"
         style={{ transform: `translate(${transformation.dx}px, ${transformation.dy}px) scale(${transformation.zoom})` }}
       >
-        <NodeContainer pointPosition={{ x: -10, y: -5 }} />
-        <ConnectionContainer pointPosition={{ x: -10, y: -5 }} />
+        <NodeContainer pointPosition={position} />
+        <ConnectionContainer pointPosition={position} offset={offset} />
       </div>
       <Background />
     </div>
