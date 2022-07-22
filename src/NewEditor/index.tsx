@@ -6,7 +6,8 @@ import {
   newConnectionState,
   nodesState,
   selectedNodeState,
-  zoomState
+  zoomState,
+  positionState
 } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
@@ -26,6 +27,7 @@ type PublicApiState = {
   transformation: Transformation
   setTransformation: (payload: Transformation) => void
   stateNodes: NodeType[]
+  position: PointType
   setPosition: (payload: PointType) => void
 }
 
@@ -55,16 +57,16 @@ export const EditorPublicApi = usePublicEditorApi()
 
 const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   const [offset, setOffset] = useState<Offset>({ offsetTop: 0, offsetLeft: 0 })
-  const [position, setPosition] = useState<PointType>({ x: 0, y: 0 })
+
   const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
   const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
   const [stateNodes, setNodes] = useRecoilState(nodesState)
-
+  const [position, setPosition] = useRecoilState(positionState)
   const [transformation, setTransformation] = useRecoilState(zoomState)
 
-  EditorPublicApi.update({ transformation, setPosition, setTransformation, stateNodes })
+  EditorPublicApi.update({ transformation, position, setPosition, setTransformation, stateNodes })
 
   useEffect(() => {
     if (!_.isEqual(nodes, stateNodes)) setNodes(nodes)

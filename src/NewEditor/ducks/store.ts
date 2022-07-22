@@ -26,6 +26,11 @@ export const zoomState = atom({
   default: { zoom: 1, dx: 0, dy: 0 }
 })
 
+export const positionState = atom({
+  key: "positionStateAtom",
+  default: { x: 0, y: 0 }
+})
+
 type DragItemState = { type: "node" | "connection" | "viewPort" | undefined; x: number; y: number }
 
 export const dragItemState = atom<DragItemState>({
