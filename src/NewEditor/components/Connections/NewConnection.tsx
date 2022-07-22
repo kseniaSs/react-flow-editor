@@ -7,7 +7,8 @@ import {
   nodesState,
   offsetState,
   pointPositionState,
-  selectedNodeState
+  selectedNodeState,
+  zoomState
 } from "../../ducks/store"
 
 export const NewConnection: React.FC = () => {
@@ -17,6 +18,7 @@ export const NewConnection: React.FC = () => {
   const pointPosition = useRecoilValue(pointPositionState)
   const offset = useRecoilValue(offsetState)
   const dotSize = useRecoilValue(dotSizeState)
+  const zoom = useRecoilValue(zoomState)
 
   if (!newConnectionPosition || !selectedNodeId) return null
 
@@ -24,8 +26,8 @@ export const NewConnection: React.FC = () => {
 
   const outputPosition = outputNode.rectPosition
     ? {
-        x: outputNode.rectPosition.right - offset.offsetLeft + pointPosition.x,
-        y: outputNode.rectPosition.bottom - offset.offsetTop + pointPosition.y - (dotSize?.width || 0) / 2
+        x: outputNode.rectPosition.right - offset.offsetLeft + pointPosition.x - zoom.dx,
+        y: outputNode.rectPosition.bottom - offset.offsetTop + pointPosition.y - (dotSize?.width || 0) / 2 - zoom.dy
       }
     : outputNode.position
 

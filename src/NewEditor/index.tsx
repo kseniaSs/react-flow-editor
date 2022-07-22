@@ -121,17 +121,21 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
       })
     }
 
-    if (currentDragItem.type === "node") {
-      const rectPosition = document.getElementById(draggableNodeId).getClientRects()[0]
-
+    if (["node", "viewPort"].includes(currentDragItem.type)) {
       setNodes((stateNodes) =>
         stateNodes.map((el) => {
+          const rectPosition = document
+            .getElementById(currentDragItem.type === "node" ? draggableNodeId : el.id)
+            .getClientRects()[0]
+
           const newPos = {
             x: el.position.x + (e.clientX - currentDragItem.x),
             y: el.position.y + (e.clientY - currentDragItem.y)
           }
 
-          return el.id === draggableNodeId ? { ...el, position: newPos, rectPosition } : el
+          return currentDragItem.type === "viewPort" || el.id === draggableNodeId
+            ? { ...el, position: newPos, rectPosition }
+            : el
         })
       )
     }

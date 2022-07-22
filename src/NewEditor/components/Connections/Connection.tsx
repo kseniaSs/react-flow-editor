@@ -2,8 +2,7 @@ import React from "react"
 import { useRecoilValue } from "recoil"
 import InputConnection from "./InputConnection"
 import { Node as NodeType } from "../../../types"
-import { Point, Offset } from "../../types"
-import { dotSizeState, nodesState, offsetState, pointPositionState } from "../../ducks/store"
+import { dotSizeState, nodesState, offsetState, pointPositionState, zoomState } from "../../ducks/store"
 
 type ConnectionProps = {
   node: NodeType
@@ -14,6 +13,7 @@ export const Connection: React.FC<ConnectionProps> = ({ node }) => {
   const pointPosition = useRecoilValue(pointPositionState)
   const offset = useRecoilValue(offsetState)
   const dotSize = useRecoilValue(dotSizeState)
+  const zoom = useRecoilValue(zoomState)
 
   return (
     <>
@@ -29,8 +29,9 @@ export const Connection: React.FC<ConnectionProps> = ({ node }) => {
                 offset.offsetLeft +
                 pointPosition.x -
                 (dotSize?.width || 0) / 2 +
-                (node.rectPosition?.width || 0),
-              y: node.rectPosition.bottom - offset.offsetTop + pointPosition.y - (dotSize?.height || 0) / 2
+                (node.rectPosition?.width || 0) -
+                zoom.dx,
+              y: node.rectPosition.bottom - offset.offsetTop + pointPosition.y - (dotSize?.height || 0) / 2 - zoom.dy
             }
           : node.position
 
