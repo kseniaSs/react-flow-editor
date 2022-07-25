@@ -1,18 +1,23 @@
 import React from "react"
 import { useRecoilValue } from "recoil"
 import InputConnection from "./InputConnection"
-import { newConnectionState, nodesState, selectedNodeState } from "../../ducks/store"
-import { Offset, Point } from "../../types"
+import {
+  dotSizeState,
+  newConnectionState,
+  nodesState,
+  offsetState,
+  pointPositionState,
+  selectedNodeState,
+  zoomState
+} from "../../ducks/store"
 
-type NewConnectionProps = {
-  pointPosition: Point
-  offset: Offset
-}
-
-export const NewConnection: React.FC<NewConnectionProps> = ({ pointPosition, offset }) => {
+export const NewConnection: React.FC = () => {
   const newConnectionPosition = useRecoilValue(newConnectionState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
   const nodes = useRecoilValue(nodesState)
+  const pointPosition = useRecoilValue(pointPositionState)
+  const dotSize = useRecoilValue(dotSizeState)
+  const zoom = useRecoilValue(zoomState)
 
   if (!newConnectionPosition || !selectedNodeId) return null
 
@@ -20,15 +25,18 @@ export const NewConnection: React.FC<NewConnectionProps> = ({ pointPosition, off
 
   const outputPosition = outputNode.rectPosition
     ? {
-        x: outputNode.rectPosition.right - offset.offsetLeft + pointPosition.x,
-        y: outputNode.rectPosition.bottom - offset.offsetTop + pointPosition.y
+        x: outputNode.position.x + (outputNode.rectPosition?.width || 0) / zoom.zoom + pointPosition.x,
+        y:
+          outputNode.position.y +
+          (outputNode.rectPosition?.height || 0) / zoom.zoom +
+          pointPosition.y -
+          (dotSize?.width || 0) / 2
       }
     : outputNode.position
 
   return (
     <InputConnection
       key={`${selectedNodeId}_new`}
-      pointPosition={pointPosition}
       outputPosition={newConnectionPosition}
       inputPosition={outputPosition}
     />

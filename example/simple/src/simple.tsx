@@ -1,9 +1,8 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 
-import { Editor, Node, InputPort, OutputPort, Config, Connection } from "@kseniass/react-flow-editor"
+import { Editor, Node, Config } from "@kseniass/react-flow-editor"
 import "./simple.scss"
-import { Vector2d } from "../../../src/geometry"
 
 type LogProps = { subscribe: (update: (log: string) => void) => void }
 type LogState = { content: string }
@@ -134,61 +133,64 @@ const App = () => {
   const [nodes, setNodes] = React.useState(initialNodes)
 
   return (
-    <div className="root">
-      <div className="flow-menu">
-        <div
-          onClick={() => {
-            const newNode = {
-              id: "Node_" + Math.trunc(Math.random() * 1000),
-              children: <div>Simple children</div>,
-              position: {
-                x: 140 + Math.random() * 100,
-                y: 140 + Math.random() * 100
-              },
-              input: [],
-              output: []
-            }
+    <>
+      <div style={{ height: "50px" }}>header</div>
+      <div className="root">
+        <div className="flow-menu">
+          <div
+            onClick={() => {
+              const newNode = {
+                id: "Node_" + Math.trunc(Math.random() * 1000),
+                children: <div>Simple children</div>,
+                position: {
+                  x: 140 + Math.random() * 100,
+                  y: 140 + Math.random() * 100
+                },
+                input: [],
+                output: []
+              }
 
-            setNodes((nodes) => [...nodes, newNode])
-          }}
+              setNodes((nodes) => [...nodes, newNode])
+            }}
+          >
+            Create new Node
+          </div>
+
+          {/*<div*/}
+          {/*  onClick={() =>*/}
+          {/*    createNewNode(node2Factory(), {*/}
+          {/*      x: editorProps.editorBoundingRect.width / 2,*/}
+          {/*      y: editorProps.editorBoundingRect.height / 2*/}
+          {/*    })*/}
+          {/*  }*/}
+          {/*>*/}
+          {/*  Create new Node 2*/}
+          {/*</div>*/}
+
+          {/*<div*/}
+          {/*  onClick={() =>*/}
+          {/*    createNewNode(node3Factory(), {*/}
+          {/*      x: editorProps.editorBoundingRect.width / 2,*/}
+          {/*      y: editorProps.editorBoundingRect.height / 2*/}
+          {/*    })*/}
+          {/*  }*/}
+          {/*>*/}
+          {/*  Create new Node 3*/}
+          {/*</div>*/}
+        </div>
+        <div
+          className="react-editor-container"
+          // onWheel={onWheel}
         >
-          Create new Node
+          <Editor nodes={nodes} />
+        </div>
+        <div className="node-attributes">
+          <NodeAttributes subscribe={(update) => (attributes = update)} />
         </div>
 
-        {/*<div*/}
-        {/*  onClick={() =>*/}
-        {/*    createNewNode(node2Factory(), {*/}
-        {/*      x: editorProps.editorBoundingRect.width / 2,*/}
-        {/*      y: editorProps.editorBoundingRect.height / 2*/}
-        {/*    })*/}
-        {/*  }*/}
-        {/*>*/}
-        {/*  Create new Node 2*/}
-        {/*</div>*/}
-
-        {/*<div*/}
-        {/*  onClick={() =>*/}
-        {/*    createNewNode(node3Factory(), {*/}
-        {/*      x: editorProps.editorBoundingRect.width / 2,*/}
-        {/*      y: editorProps.editorBoundingRect.height / 2*/}
-        {/*    })*/}
-        {/*  }*/}
-        {/*>*/}
-        {/*  Create new Node 3*/}
-        {/*</div>*/}
+        <Log subscribe={(update) => (log = update)} />
       </div>
-      <div
-        className="react-editor-container"
-        // onWheel={onWheel}
-      >
-        <Editor nodes={nodes} />
-      </div>
-      <div className="node-attributes">
-        <NodeAttributes subscribe={(update) => (attributes = update)} />
-      </div>
-
-      <Log subscribe={(update) => (log = update)} />
-    </div>
+    </>
   )
 }
 

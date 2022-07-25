@@ -1,13 +1,13 @@
 import React, { useEffect } from "react"
 import classNames from "classnames"
-import { useRecoilState, useSetRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import _ from "lodash"
 
 import { Vector2d } from "../../../geometry"
 import { Node as NodeType } from "../../../types"
 import { Point as PointType } from "../../types"
 import { BUTTON_LEFT } from "../../constants"
-import { selectedNodeState, draggableNodeState, nodesState, dragItemState } from "../../ducks/store"
+import { selectedNodeState, draggableNodeState, nodesState, dragItemState, pointPositionState } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 
 const nodeStyle = (pos: Vector2d) => ({
@@ -15,23 +15,22 @@ const nodeStyle = (pos: Vector2d) => ({
 })
 
 const pointStyle = (position: PointType): React.CSSProperties => ({
-  top: `${position.x}px`,
-  left: `${position.y}px`
+  bottom: `${position.y}px`,
+  right: `${position.x}px`
 })
 
 type NodeProps = {
   node: NodeType
-  position: PointType
 }
 
 type PointProps = {
   nodeId: string
-  position: PointType
 }
 
-const Point: React.FC<PointProps> = ({ nodeId, position }) => {
+const Point: React.FC<PointProps> = ({ nodeId }) => {
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   const setDragItem = useSetRecoilState(dragItemState)
+  const pointPosition = useRecoilValue(pointPositionState)
 
   const setNode = (e: React.MouseEvent<HTMLElement>) => {
     resetEvent(e)
@@ -41,10 +40,10 @@ const Point: React.FC<PointProps> = ({ nodeId, position }) => {
     }
   }
 
-  return <div className="dot input right" style={pointStyle(position)} onMouseDown={setNode} />
+  return <div id={`dot-${nodeId}`} className="dot input" style={pointStyle(pointPosition)} onMouseDown={setNode} />
 }
 
-const Node: React.FC<NodeProps> = ({ node, position }) => {
+const Node: React.FC<NodeProps> = ({ node }) => {
   const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
   const setDraggableNode = useSetRecoilState(draggableNodeState)
   const setDragItem = useSetRecoilState(dragItemState)
@@ -80,8 +79,8 @@ const Node: React.FC<NodeProps> = ({ node, position }) => {
       style={nodeStyle(node.position)}
       className={nodeClassNames}
     >
+      <Point nodeId={node.id} />
       {node.children}
-      <Point nodeId={node.id} position={position} />
     </div>
   )
 }

@@ -26,7 +26,17 @@ export const zoomState = atom({
   default: { zoom: 1, dx: 0, dy: 0 }
 })
 
-export const positionState = atom({
+export const offsetState = atom({
+  key: "offsetState",
+  default: { offsetTop: 0, offsetLeft: 0 }
+})
+
+export const dotSizeState = atom({
+  key: "dotSizeState",
+  default: { width: 0, height: 0 }
+})
+
+export const pointPositionState = atom({
   key: "positionStateAtom",
   default: { x: 0, y: 0 }
 })
