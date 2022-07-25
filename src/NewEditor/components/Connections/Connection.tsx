@@ -2,7 +2,7 @@ import React from "react"
 import { useRecoilValue } from "recoil"
 import InputConnection from "./InputConnection"
 import { Node as NodeType } from "../../../types"
-import { dotSizeState, nodesState, offsetState, pointPositionState, zoomState } from "../../ducks/store"
+import { dotSizeState, nodesState, pointPositionState, zoomState } from "../../ducks/store"
 
 type ConnectionProps = {
   node: NodeType
@@ -11,7 +11,6 @@ type ConnectionProps = {
 export const Connection: React.FC<ConnectionProps> = ({ node }) => {
   const nodes = useRecoilValue(nodesState)
   const pointPosition = useRecoilValue(pointPositionState)
-  const offset = useRecoilValue(offsetState)
   const dotSize = useRecoilValue(dotSizeState)
   const zoom = useRecoilValue(zoomState)
 
@@ -25,19 +24,25 @@ export const Connection: React.FC<ConnectionProps> = ({ node }) => {
         const inputPosition = node.rectPosition
           ? {
               x:
-                node.rectPosition.left -
-                offset.offsetLeft +
+                node.position.x +
                 pointPosition.x -
                 (dotSize?.width || 0) / 2 +
-                (node.rectPosition?.width || 0) -
-                zoom.dx,
-              y: node.rectPosition.bottom - offset.offsetTop + pointPosition.y - (dotSize?.height || 0) / 2 - zoom.dy
+                (node.rectPosition?.width || 0) / zoom.zoom,
+              y:
+                node.position.y +
+                pointPosition.y -
+                (dotSize?.height || 0) / 2 +
+                (node.rectPosition?.height || 0) / zoom.zoom
             }
           : node.position
 
         const outputPosition = {
           x: outputNode.position.x + pointPosition.x,
-          y: outputNode.position.y + pointPosition.y - (dotSize?.height || 0) / 2 + (node.rectPosition?.height || 0)
+          y:
+            outputNode.position.y +
+            pointPosition.y -
+            (dotSize?.height || 0) / 2 +
+            (outputNode.rectPosition?.height || 0) / zoom.zoom
         }
 
         return (

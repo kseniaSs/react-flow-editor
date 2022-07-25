@@ -105,8 +105,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
     if (currentDragItem.type === "connection") {
       setNewConnectionState({
-        x: e.clientX - offset.offsetLeft,
-        y: e.clientY - offset.offsetTop
+        x: e.clientX - transformation.dx - offset.offsetLeft,
+        y: e.clientY - offset.offsetTop - transformation.dy
       })
     }
 
@@ -119,23 +119,27 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
         dx: transformation.dx + offset.x,
         dy: transformation.dy + offset.y
       })
-    }
 
-    if (["node", "viewPort"].includes(currentDragItem.type)) {
       setNodes((stateNodes) =>
         stateNodes.map((el) => {
-          const rectPosition = document
-            .getElementById(currentDragItem.type === "node" ? draggableNodeId : el.id)
-            .getClientRects()[0]
+          const rectPosition = document.getElementById(el.id).getClientRects()[0]
+
+          return { ...el, rectPosition }
+        })
+      )
+    }
+
+    if (currentDragItem.type === "node") {
+      setNodes((stateNodes) =>
+        stateNodes.map((el) => {
+          const rectPosition = document.getElementById(draggableNodeId).getClientRects()[0]
 
           const newPos = {
-            x: el.position.x + (e.clientX - currentDragItem.x),
-            y: el.position.y + (e.clientY - currentDragItem.y)
+            x: el.position.x + (e.clientX - currentDragItem.x) / transformation.zoom,
+            y: el.position.y + (e.clientY - currentDragItem.y) / transformation.zoom
           }
 
-          return currentDragItem.type === "viewPort" || el.id === draggableNodeId
-            ? { ...el, position: newPos, rectPosition }
-            : el
+          return el.id === draggableNodeId ? { ...el, position: newPos, rectPosition } : el
         })
       )
     }
@@ -154,6 +158,14 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
     const zoom = transformation.zoom * zoomFactor
 
     setTransformation({ ...transformation, zoom })
+
+    setNodes((stateNodes) =>
+      stateNodes.map((el) => {
+        const rectPosition = document.getElementById(el.id).getClientRects()[0]
+
+        return { ...el, rectPosition }
+      })
+    )
   }
 
   const onMouseDown: React.MouseEventHandler<HTMLDivElement> = (e) => {

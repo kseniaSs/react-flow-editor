@@ -16,7 +16,6 @@ export const NewConnection: React.FC = () => {
   const selectedNodeId = useRecoilValue(selectedNodeState)
   const nodes = useRecoilValue(nodesState)
   const pointPosition = useRecoilValue(pointPositionState)
-  const offset = useRecoilValue(offsetState)
   const dotSize = useRecoilValue(dotSizeState)
   const zoom = useRecoilValue(zoomState)
 
@@ -26,8 +25,12 @@ export const NewConnection: React.FC = () => {
 
   const outputPosition = outputNode.rectPosition
     ? {
-        x: outputNode.rectPosition.right - offset.offsetLeft + pointPosition.x - zoom.dx,
-        y: outputNode.rectPosition.bottom - offset.offsetTop + pointPosition.y - (dotSize?.width || 0) / 2 - zoom.dy
+        x: outputNode.position.x + (outputNode.rectPosition?.width || 0) / zoom.zoom + pointPosition.x,
+        y:
+          outputNode.position.y +
+          (outputNode.rectPosition?.height || 0) / zoom.zoom +
+          pointPosition.y -
+          (dotSize?.width || 0) / 2
       }
     : outputNode.position
 
