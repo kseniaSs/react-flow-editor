@@ -186,8 +186,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   }, [])
 
   useEffect(() => {
-    if (!dotSize && stateNodes.length) {
-      const rect = document.querySelector(".dot.input")?.getBoundingClientRect()
+    if (!dotSize.height && !dotSize.width && stateNodes.length) {
+      const rect = document.getElementById(`dot-${_.first(stateNodes).id}`)?.getBoundingClientRect()
 
       rect && setDotSize(rect)
     }

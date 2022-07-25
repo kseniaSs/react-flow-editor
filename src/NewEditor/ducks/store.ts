@@ -33,7 +33,7 @@ export const offsetState = atom({
 
 export const dotSizeState = atom({
   key: "dotSizeState",
-  default: null
+  default: { width: 0, height: 0 }
 })
 
 export const pointPositionState = atom({

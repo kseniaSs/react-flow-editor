@@ -16,8 +16,7 @@ const nodeStyle = (pos: Vector2d) => ({
 
 const pointStyle = (position: PointType): React.CSSProperties => ({
   bottom: `${position.y}px`,
-  right: `${position.x}px`,
-  position: "absolute"
+  right: `${position.x}px`
 })
 
 type NodeProps = {
@@ -41,7 +40,7 @@ const Point: React.FC<PointProps> = ({ nodeId }) => {
     }
   }
 
-  return <div className="dot input" style={pointStyle(pointPosition)} onMouseDown={setNode} />
+  return <div id={`dot-${nodeId}`} className="dot input" style={pointStyle(pointPosition)} onMouseDown={setNode} />
 }
 
 const Node: React.FC<NodeProps> = ({ node }) => {
