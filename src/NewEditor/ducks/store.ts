@@ -1,5 +1,6 @@
 import { atom } from "recoil"
 import { Node } from "../../types"
+import { ItemType } from "../types"
 
 export const nodesState = atom<Node[]>({
   key: "nodesStateAtom",
@@ -26,9 +27,14 @@ export const zoomState = atom({
   default: { zoom: 1, dx: 0, dy: 0 }
 })
 
+export const autoScrollState = atom({
+  key: "autoScrollState",
+  default: { speed: 0, direction: null }
+})
+
 export const offsetState = atom({
   key: "offsetState",
-  default: { offsetTop: 0, offsetLeft: 0 }
+  default: { offsetTop: 0, offsetLeft: 0, maxRight: 0, maxBottom: 0 }
 })
 
 export const dotSizeState = atom({
@@ -41,7 +47,7 @@ export const pointPositionState = atom({
   default: { x: 0, y: 0 }
 })
 
-type DragItemState = { type: "node" | "connection" | "viewPort" | undefined; x: number; y: number }
+type DragItemState = { type?: ItemType; x: number; y: number }
 
 export const dragItemState = atom<DragItemState>({
   key: "setDragItemAtom",
