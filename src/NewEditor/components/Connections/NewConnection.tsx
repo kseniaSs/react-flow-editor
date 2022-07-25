@@ -5,13 +5,13 @@ import {
   dotSizeState,
   newConnectionState,
   nodesState,
-  offsetState,
   pointPositionState,
   selectedNodeState,
   zoomState
 } from "../../ducks/store"
+import { Point } from "../../types"
 
-export const NewConnection: React.FC = () => {
+export const NewConnection: React.FC<{ svgOffset: Point }> = ({ svgOffset }) => {
   const newConnectionPosition = useRecoilValue(newConnectionState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
   const nodes = useRecoilValue(nodesState)
@@ -25,8 +25,9 @@ export const NewConnection: React.FC = () => {
 
   const outputPosition = outputNode.rectPosition
     ? {
-        x: outputNode.position.x + (outputNode.rectPosition?.width || 0) / zoom.zoom + pointPosition.x,
+        x: -svgOffset.x + outputNode.position.x + (outputNode.rectPosition?.width || 0) / zoom.zoom + pointPosition.x,
         y:
+          -svgOffset.y +
           outputNode.position.y +
           (outputNode.rectPosition?.height || 0) / zoom.zoom +
           pointPosition.y -
@@ -37,7 +38,7 @@ export const NewConnection: React.FC = () => {
   return (
     <InputConnection
       key={`${selectedNodeId}_new`}
-      outputPosition={newConnectionPosition}
+      outputPosition={{ x: -svgOffset.x + newConnectionPosition.x, y: -svgOffset.y + newConnectionPosition.y }}
       inputPosition={outputPosition}
     />
   )

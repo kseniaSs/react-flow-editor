@@ -32,17 +32,27 @@ const Arrow: React.FC = () => (
 export const Container: React.FC = () => {
   const nodes = useRecoilValue(nodesState)
 
+  const leftPoint = Math.min(...nodes.map((node) => node.position.x)) - window.innerWidth
+  const rightPoint = Math.max(...nodes.map((node) => node.position.x)) + window.innerWidth
+  const topPoint = Math.min(...nodes.map((node) => node.position.y)) - window.innerWidth
+  const bottomPoint = Math.max(...nodes.map((node) => node.position.y)) + window.innerWidth
+  const realHeight = bottomPoint - topPoint
+  const realWidth = rightPoint - leftPoint
+
   const connectionContainerStyle: React.CSSProperties = {
-    pointerEvents: "none"
+    pointerEvents: "none",
+    minWidth: realWidth,
+    minHeight: realHeight,
+    transform: `translate(${leftPoint}px, ${topPoint}px)`
   }
 
   return (
     <svg className="connections" xmlns="http://www.w3.org/2000/svg" style={connectionContainerStyle}>
       <Arrow />
       {nodes.map((node) => (
-        <Connection key={`${node.id}-connection`} node={node} />
+        <Connection key={`${node.id}-connection`} node={node} svgOffset={{ x: leftPoint, y: topPoint }} />
       ))}
-      <NewConnection />
+      <NewConnection svgOffset={{ x: leftPoint, y: topPoint }} />
     </svg>
   )
 }

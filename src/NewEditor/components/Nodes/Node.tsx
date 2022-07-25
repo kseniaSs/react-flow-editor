@@ -7,7 +7,16 @@ import { Vector2d } from "../../../geometry"
 import { Node as NodeType } from "../../../types"
 import { Point as PointType } from "../../types"
 import { BUTTON_LEFT } from "../../constants"
-import { selectedNodeState, draggableNodeState, nodesState, dragItemState, pointPositionState } from "../../ducks/store"
+import {
+  selectedNodeState,
+  draggableNodeState,
+  nodesState,
+  dragItemState,
+  pointPositionState,
+  newConnectionState,
+  zoomState,
+  offsetState
+} from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 
 const nodeStyle = (pos: Vector2d) => ({
@@ -31,12 +40,28 @@ const Point: React.FC<PointProps> = ({ nodeId }) => {
   const setSelectedNode = useSetRecoilState(selectedNodeState)
   const setDragItem = useSetRecoilState(dragItemState)
   const pointPosition = useRecoilValue(pointPositionState)
+  const stateNodes = useRecoilValue(nodesState)
+  const setNewConnectionState = useSetRecoilState(newConnectionState)
+  const transformation = useRecoilValue(zoomState)
 
   const setNode = (e: React.MouseEvent<HTMLElement>) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
+      const selectedNode = stateNodes.find((node) => node.id === nodeId)
       setSelectedNode(nodeId)
-      setDragItem({ type: "connection", x: e.clientX, y: e.clientY })
+
+      const pos = {
+        x: selectedNode.position.x + (pointPosition.x + selectedNode.rectPosition.width) / transformation.zoom,
+        y: selectedNode.position.y + (pointPosition.y + selectedNode.rectPosition.height) / transformation.zoom
+      }
+
+      setNewConnectionState(pos)
+
+      setDragItem({
+        type: "connection",
+        x: e.clientX,
+        y: e.clientY
+      })
     }
   }
 

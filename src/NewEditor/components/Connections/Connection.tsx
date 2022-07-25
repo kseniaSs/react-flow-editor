@@ -3,12 +3,14 @@ import { useRecoilValue } from "recoil"
 import InputConnection from "./InputConnection"
 import { Node as NodeType } from "../../../types"
 import { dotSizeState, nodesState, pointPositionState, zoomState } from "../../ducks/store"
+import { Point } from "../../types"
 
 type ConnectionProps = {
   node: NodeType
+  svgOffset: Point
 }
 
-export const Connection: React.FC<ConnectionProps> = ({ node }) => {
+export const Connection: React.FC<ConnectionProps> = ({ node, svgOffset }) => {
   const nodes = useRecoilValue(nodesState)
   const pointPosition = useRecoilValue(pointPositionState)
   const dotSize = useRecoilValue(dotSizeState)
@@ -24,11 +26,13 @@ export const Connection: React.FC<ConnectionProps> = ({ node }) => {
         const inputPosition = node.rectPosition
           ? {
               x:
+                -svgOffset.x +
                 node.position.x +
                 pointPosition.x -
                 (dotSize?.width || 0) / 2 +
                 (node.rectPosition?.width || 0) / zoom.zoom,
               y:
+                -svgOffset.y +
                 node.position.y +
                 pointPosition.y -
                 (dotSize?.height || 0) / 2 +
@@ -37,8 +41,9 @@ export const Connection: React.FC<ConnectionProps> = ({ node }) => {
           : node.position
 
         const outputPosition = {
-          x: outputNode.position.x + pointPosition.x,
+          x: -svgOffset.x + outputNode.position.x + pointPosition.x,
           y:
+            -svgOffset.y +
             outputNode.position.y +
             pointPosition.y -
             (dotSize?.height || 0) / 2 +

@@ -13,7 +13,7 @@ import {
 } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
-import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
+import { RecoilRoot, useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import Background from "./components/Background"
 
 import { NodeContainer } from "./components/Nodes/NodesContainer"
@@ -58,7 +58,7 @@ const usePublicEditorApi = () => {
 export const EditorPublicApi = usePublicEditorApi()
 
 const Canvas: React.FC<EditorProps> = ({ nodes }) => {
-  const [offset, setOffset] = useRecoilState(offsetState)
+  const setOffset = useSetRecoilState(offsetState)
   const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
   const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
@@ -104,10 +104,12 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
     if (currentDragItem.type === "connection") {
-      setNewConnectionState({
-        x: e.clientX - transformation.dx - offset.offsetLeft,
-        y: e.clientY - offset.offsetTop - transformation.dy
-      })
+      const newPos = {
+        x: newConnection.x + (e.clientX - currentDragItem.x) / transformation.zoom,
+        y: newConnection.y + (e.clientY - currentDragItem.y) / transformation.zoom
+      }
+
+      setNewConnectionState(newPos)
     }
 
     if (currentDragItem.type === "viewPort") {
@@ -130,17 +132,17 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
     }
 
     if (currentDragItem.type === "node") {
+      const draggingNode = stateNodes.find((node) => node.id === draggableNodeId)
+
+      const rectPosition = document.getElementById(draggableNodeId).getClientRects()[0]
+
+      const newPos = {
+        x: draggingNode.position.x + (e.clientX - currentDragItem.x) / transformation.zoom,
+        y: draggingNode.position.y + (e.clientY - currentDragItem.y) / transformation.zoom
+      }
+
       setNodes((stateNodes) =>
-        stateNodes.map((el) => {
-          const rectPosition = document.getElementById(draggableNodeId).getClientRects()[0]
-
-          const newPos = {
-            x: el.position.x + (e.clientX - currentDragItem.x) / transformation.zoom,
-            y: el.position.y + (e.clientY - currentDragItem.y) / transformation.zoom
-          }
-
-          return el.id === draggableNodeId ? { ...el, position: newPos, rectPosition } : el
-        })
+        stateNodes.map((el) => (el.id === draggableNodeId ? { ...el, position: newPos, rectPosition } : el))
       )
     }
 
@@ -154,6 +156,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   }
 
   const onWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
+    if (currentDragItem.type) return
+
     const zoomFactor = Math.pow(ZOOM_STEP, Math.sign(event.deltaY))
     const zoom = transformation.zoom * zoomFactor
 
