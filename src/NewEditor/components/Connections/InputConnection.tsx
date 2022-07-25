@@ -1,15 +1,13 @@
 import React from "react"
 import _ from "lodash"
 import { Vector2d } from "../../../geometry"
-import { Point } from "../../types"
 
 type InputConnectionProps = {
   inputPosition: Vector2d
   outputPosition: Vector2d
-  pointPosition: Point
 }
 
-const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition, pointPosition }) => {
+const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition }) => {
   const dx = Math.max(Math.abs(outputPosition.x - inputPosition.x) / 1.5, 100)
   const a1 = { x: outputPosition.x - dx, y: outputPosition.y }
   const a2 = { x: inputPosition.x + dx, y: inputPosition.y }
