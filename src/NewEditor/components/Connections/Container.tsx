@@ -1,9 +1,9 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Connection } from "./Connection"
 import { NewConnection } from "./NewConnection"
 import { useNodeGroupsRect } from "../../helpers"
-import { nodesState } from "../../ducks/store"
-import { useRecoilValue } from "recoil"
+import { nodesState, svgOffsetState } from "../../ducks/store"
+import { useRecoilValue, useSetRecoilState } from "recoil"
 
 // TODO: Change to props
 const Arrow: React.FC = () => (
@@ -31,7 +31,13 @@ const Arrow: React.FC = () => (
 
 export const Container: React.FC = () => {
   const nodes = useRecoilValue(nodesState)
+  const setSvgOffsetState = useSetRecoilState(svgOffsetState)
+
   const { leftPoint, topPoint, realHeight, realWidth } = useNodeGroupsRect()
+
+  useEffect(() => {
+    setSvgOffsetState({ x: leftPoint, y: topPoint, width: realWidth, height: realHeight })
+  }, [leftPoint, topPoint, realHeight, realWidth])
 
   const connectionContainerStyle: React.CSSProperties = {
     pointerEvents: "none",
@@ -44,9 +50,9 @@ export const Container: React.FC = () => {
     <svg className="connections" xmlns="http://www.w3.org/2000/svg" style={connectionContainerStyle}>
       <Arrow />
       {nodes.map((node) => (
-        <Connection key={`${node.id}-connection`} node={node} svgOffset={{ x: leftPoint, y: topPoint }} />
+        <Connection key={`${node.id}-connection`} node={node} />
       ))}
-      <NewConnection svgOffset={{ x: leftPoint, y: topPoint, width: realWidth, height: realHeight }} />
+      <NewConnection />
     </svg>
   )
 }

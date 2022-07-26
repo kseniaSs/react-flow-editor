@@ -47,6 +47,21 @@ export const pointPositionState = atom({
   default: { x: 0, y: 0 }
 })
 
+export const inputPositionState = atom({
+  key: "inputPositionState",
+  default: { x: 0, y: 0 }
+})
+
+export const svgOffsetState = atom({
+  key: "svgOffsetState",
+  default: { x: 0, y: 0, width: 0, height: 0 }
+})
+
+export const hoveredNodeIdState = atom({
+  key: "hoveredNodeId",
+  default: null
+})
+
 type DragItemState = { type?: ItemType; x: number; y: number }
 
 export const dragItemState = atom<DragItemState>({
