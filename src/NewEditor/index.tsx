@@ -93,7 +93,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   })
 
   useEffect(() => {
-    if (!_.isEqual(nodes, stateNodes)) setNodes(nodes)
+    if (!_.isEqual(_.omit(nodes, ["children"]), _.omit(stateNodes, ["children"]))) setNodes(nodes)
   }, [nodes])
 
   const onDragEnded = () => {
