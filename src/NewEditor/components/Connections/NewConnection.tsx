@@ -27,17 +27,20 @@ export const NewConnection: React.FC<{ svgOffset: Point & { width: number; heigh
 
   const outputPosition = outputNode.rectPosition
     ? {
-        x: -svgOffset.x + outputNode.position.x + (outputNode.rectPosition?.width || 0) / zoom.zoom + pointPosition.x,
+        x: -svgOffset.x + outputNode.position.x + (outputNode.rectPosition?.width || 0) / zoom.zoom - pointPosition.x,
         y:
           -svgOffset.y +
           outputNode.position.y +
-          (outputNode.rectPosition?.height || 0) / zoom.zoom +
+          (outputNode.rectPosition?.height || 0) / zoom.zoom -
           pointPosition.y -
           (dotSize?.width || 0) / 2
       }
     : outputNode.position
 
-  const draggingConnection = { x: -svgOffset.x + newConnectionPosition.x, y: -svgOffset.y + newConnectionPosition.y }
+  const draggingConnection = {
+    x: -svgOffset.x + newConnectionPosition.x,
+    y: -svgOffset.y + newConnectionPosition.y
+  }
 
   draggingConnection.x =
     draggingConnection.x < BORDER_CONNECTION_LEFT_OFFSET ? BORDER_CONNECTION_LEFT_OFFSET : draggingConnection.x

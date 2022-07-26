@@ -50,8 +50,8 @@ const Point: React.FC<PointProps> = ({ nodeId }) => {
       setSelectedNode(nodeId)
 
       const pos = {
-        x: selectedNode.position.x + (pointPosition.x + selectedNode.rectPosition.width) / transformation.zoom,
-        y: selectedNode.position.y + (pointPosition.y + selectedNode.rectPosition.height) / transformation.zoom
+        x: selectedNode.position.x - pointPosition.x + selectedNode.rectPosition.width / transformation.zoom,
+        y: selectedNode.position.y - pointPosition.y + selectedNode.rectPosition.height / transformation.zoom
       }
 
       setNewConnectionState(pos)

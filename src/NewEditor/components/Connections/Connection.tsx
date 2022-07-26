@@ -27,13 +27,13 @@ export const Connection: React.FC<ConnectionProps> = ({ node, svgOffset }) => {
           ? {
               x:
                 -svgOffset.x +
-                node.position.x +
+                node.position.x -
                 pointPosition.x -
                 (dotSize?.width || 0) / 2 +
                 (node.rectPosition?.width || 0) / zoom.zoom,
               y:
                 -svgOffset.y +
-                node.position.y +
+                node.position.y -
                 pointPosition.y -
                 (dotSize?.height || 0) / 2 +
                 (node.rectPosition?.height || 0) / zoom.zoom
@@ -41,11 +41,10 @@ export const Connection: React.FC<ConnectionProps> = ({ node, svgOffset }) => {
           : node.position
 
         const outputPosition = {
-          x: -svgOffset.x + outputNode.position.x + pointPosition.x,
+          x: -svgOffset.x + outputNode.position.x,
           y:
             -svgOffset.y +
-            outputNode.position.y +
-            pointPosition.y -
+            outputNode.position.y -
             (dotSize?.height || 0) / 2 +
             (outputNode.rectPosition?.height || 0) / zoom.zoom
         }
