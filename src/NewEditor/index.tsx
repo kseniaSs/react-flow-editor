@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react"
+import React, { useEffect, useCallback, useState } from "react"
 import _ from "lodash"
 import {
   draggableNodeState,
@@ -34,6 +34,7 @@ type PublicApiState = {
   stateNodes: NodeType[]
   pointPosition: PointType
   setPointPosition: (payload: PointType) => void
+  recalculateRects: () => void
 }
 
 type PublicApiInnerState = {
@@ -72,7 +73,24 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   const [dotSize, setDotSize] = useRecoilState(dotSizeState)
   const [autoScroll, setAutoScroll] = useRecoilState(autoScrollState)
 
-  EditorPublicApi.update({ transformation, pointPosition, setPointPosition, setTransformation, stateNodes })
+  const recalculateRects = useCallback(() => {
+    setNodes((stateNodes) =>
+      stateNodes.map((el) => {
+        const rectPosition = document.getElementById(el.id).getClientRects()[0]
+
+        return { ...el, rectPosition }
+      })
+    )
+  }, [setNodes])
+
+  EditorPublicApi.update({
+    transformation,
+    pointPosition,
+    setPointPosition,
+    recalculateRects,
+    setTransformation,
+    stateNodes
+  })
 
   useEffect(() => {
     if (!_.isEqual(nodes, stateNodes)) setNodes(nodes)
@@ -185,13 +203,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
         dy: transformation.dy + offset.y
       })
 
-      setNodes((stateNodes) =>
-        stateNodes.map((el) => {
-          const rectPosition = document.getElementById(el.id).getClientRects()[0]
-
-          return { ...el, rectPosition }
-        })
-      )
+      recalculateRects()
     }
 
     if (currentDragItem.type === ItemType.node && !autoScroll.direction) {
@@ -248,13 +260,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
   useEffect(() => {
     if (!stateNodes.length) return
 
-    setNodes((stateNodes) =>
-      stateNodes.map((el) => {
-        const rectPosition = document.getElementById(el.id).getClientRects()[0]
-
-        return { ...el, rectPosition }
-      })
-    )
+    recalculateRects()
   }, [transformation.zoom])
 
   const onWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
