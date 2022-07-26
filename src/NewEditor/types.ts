@@ -3,7 +3,8 @@ import { Size } from "../types"
 
 export enum ItemType {
   node = "node",
-  connection = "connection"
+  connection = "connection",
+  viewPort = "viewPort"
 }
 
 export interface WorkItemConnection {
@@ -32,4 +33,16 @@ export type EditorState = {
   workingItem?: WorkItem
   transformation: Transformation
   componentSize: Size
+}
+
+export enum AutoScrollDirection {
+  right = "right",
+  left = "left",
+  top = "top",
+  bottom = "bottom"
+}
+
+export enum Axis {
+  x = "x",
+  y = "y"
 }

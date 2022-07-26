@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react"
+import React, { useEffect, useCallback, useState } from "react"
 import _ from "lodash"
 import {
   draggableNodeState,
@@ -9,26 +9,30 @@ import {
   zoomState,
   pointPositionState,
   offsetState,
-  dotSizeState
+  dotSizeState,
+  autoScrollState
 } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
 import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
 import Background from "./components/Background"
-
 import { NodeContainer } from "./components/Nodes/NodesContainer"
 import { BUTTON_LEFT } from "./constants"
 import { inNode } from "./helpers"
-import { Transformation, Point as PointType, Offset } from "./types"
+import { Transformation, Point as PointType, Offset, AutoScrollDirection, Axis, ItemType } from "./types"
 
-type EditorProps = { nodes: NodeType[], pointPosition?: PointType }
+type EditorProps = { nodes: NodeType[]; pointPosition?: PointType }
 
 const ZOOM_STEP = 1.1
+const DRAG_OFFSET_TRANSFORM = 80
+const DRAG_AUTO_SCROLL_DIST = 30
+const DRAG_AUTO_SCROLL_TIME = 10
 
 type PublicApiState = {
   transformation: Transformation
   setTransformation: (payload: Transformation) => void
   stateNodes: NodeType[]
+  recalculateRects: () => void
 }
 
 type PublicApiInnerState = {
@@ -65,16 +69,33 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition }) => {
   const [pointStatePosition, setPointStatePosition] = useRecoilState(pointPositionState)
   const [transformation, setTransformation] = useRecoilState(zoomState)
   const [dotSize, setDotSize] = useRecoilState(dotSizeState)
+  const [autoScroll, setAutoScroll] = useRecoilState(autoScrollState)
 
-  EditorPublicApi.update({ transformation, setTransformation, stateNodes })
+  const recalculateRects = useCallback(() => {
+    setNodes((stateNodes) =>
+      stateNodes.map((el) => {
+        const rectPosition = document.getElementById(el.id).getClientRects()[0]
+
+        return { ...el, rectPosition }
+      })
+    )
+  }, [setNodes])
+
+  EditorPublicApi.update({
+    transformation,
+    recalculateRects,
+    setTransformation,
+    stateNodes
+  })
 
   useEffect(() => {
-    if (!_.isEqual(nodes, stateNodes)) setNodes(nodes)
+    if (!_.isEqual(_.omit(nodes, ["children"]), _.omit(stateNodes, ["children"]))) setNodes(nodes)
     if (!_.isEqual(pointPosition, pointStatePosition)) setPointStatePosition(pointPosition)
-  }, [nodes])
+  }, [nodes, pointPosition])
 
   const onDragEnded = () => {
-    if (currentDragItem.type === "connection") {
+    setAutoScroll({ speed: 0, direction: null })
+    if (currentDragItem.type === ItemType.connection) {
       const outputNode = stateNodes.find((currentElement) => {
         return inNode(
           {
@@ -101,15 +122,75 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition }) => {
     setDraggableNode(undefined)
   }
 
-  const onDrag = (e: React.MouseEvent<HTMLElement>) => {
-    if (currentDragItem.type === "connection") {
-      setNewConnectionState({
-        x: e.clientX - transformation.dx - offset.offsetLeft,
-        y: e.clientY - offset.offsetTop - transformation.dy
-      })
+  useEffect(() => {
+    if (!autoScroll.direction) return
+
+    const getSign = (axis: Axis) => {
+      if (axis === Axis.x && autoScroll.direction === AutoScrollDirection.left) return -1
+      if (axis === Axis.x && autoScroll.direction === AutoScrollDirection.right) return 1
+
+      if (axis === Axis.y && autoScroll.direction === AutoScrollDirection.top) return -1
+      if (axis === Axis.y && autoScroll.direction === AutoScrollDirection.bottom) return 1
+
+      return 0
     }
 
-    if (currentDragItem.type === "viewPort") {
+    const delta = DRAG_AUTO_SCROLL_DIST * autoScroll.speed
+
+    const scroll = () => {
+      if ([ItemType.node, ItemType.connection].includes(currentDragItem.type)) {
+        const dx = transformation.dx - getSign(Axis.x) * delta * transformation.zoom
+        const dy = transformation.dy - getSign(Axis.y) * delta * transformation.zoom
+
+        setTransformation({
+          ...transformation,
+          dx,
+          dy
+        })
+      }
+
+      if (currentDragItem.type === ItemType.connection) {
+        setNewConnectionState({
+          x: newConnection.x + getSign(Axis.x) * delta,
+          y: newConnection.y + getSign(Axis.y) * delta
+        })
+      }
+
+      if (currentDragItem.type === ItemType.node) {
+        const draggingNode = stateNodes.find((node) => node.id === draggableNodeId)
+
+        setNodes((stateNodes) =>
+          stateNodes.map((el) =>
+            el.id === draggableNodeId
+              ? {
+                  ...el,
+                  position: {
+                    x: draggingNode.position.x + getSign(Axis.x) * delta,
+                    y: draggingNode.position.y + getSign(Axis.y) * delta
+                  }
+                }
+              : el
+          )
+        )
+      }
+    }
+
+    const scrollInterval = setInterval(scroll, DRAG_AUTO_SCROLL_TIME)
+
+    return () => clearInterval(scrollInterval)
+  }, [autoScroll, currentDragItem, newConnection, stateNodes, transformation])
+
+  const onDrag = (e: React.MouseEvent<HTMLElement>) => {
+    if (currentDragItem.type === ItemType.connection && !autoScroll.direction) {
+      const newPos = {
+        x: newConnection.x + (e.clientX - currentDragItem.x) / transformation.zoom,
+        y: newConnection.y + (e.clientY - currentDragItem.y) / transformation.zoom
+      }
+
+      setNewConnectionState(newPos)
+    }
+
+    if (currentDragItem.type === ItemType.viewPort) {
       const newPos = { x: e.clientX, y: e.clientY }
       const offset = { x: newPos.x - currentDragItem.x, y: newPos.y - currentDragItem.y }
 
@@ -119,28 +200,49 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition }) => {
         dy: transformation.dy + offset.y
       })
 
-      setNodes((stateNodes) =>
-        stateNodes.map((el) => {
-          const rectPosition = document.getElementById(el.id).getClientRects()[0]
+      recalculateRects()
+    }
 
-          return { ...el, rectPosition }
-        })
+    if (currentDragItem.type === ItemType.node && !autoScroll.direction) {
+      const draggingNode = stateNodes.find((node) => node.id === draggableNodeId)
+
+      const rectPosition = document.getElementById(draggableNodeId).getClientRects()[0]
+
+      const newPos = {
+        x: draggingNode.position.x + (e.clientX - currentDragItem.x) / transformation.zoom,
+        y: draggingNode.position.y + (e.clientY - currentDragItem.y) / transformation.zoom
+      }
+
+      setNodes((stateNodes) =>
+        stateNodes.map((el) => (el.id === draggableNodeId ? { ...el, position: newPos, rectPosition } : el))
       )
     }
 
-    if (currentDragItem.type === "node") {
-      setNodes((stateNodes) =>
-        stateNodes.map((el) => {
-          const rectPosition = document.getElementById(draggableNodeId).getClientRects()[0]
+    if ([ItemType.node, ItemType.connection].includes(currentDragItem.type)) {
+      const leftOverflow = offset.offsetLeft + DRAG_OFFSET_TRANSFORM - e.clientX
+      const rightOverflow = e.clientX - (offset.maxRight - DRAG_OFFSET_TRANSFORM)
+      const topOverflow = offset.offsetTop + DRAG_OFFSET_TRANSFORM - e.clientY
+      const bottomOverflow = e.clientY - (offset.maxBottom - DRAG_OFFSET_TRANSFORM)
 
-          const newPos = {
-            x: el.position.x + (e.clientX - currentDragItem.x) / transformation.zoom,
-            y: el.position.y + (e.clientY - currentDragItem.y) / transformation.zoom
-          }
+      if (leftOverflow > 0) {
+        setAutoScroll({ speed: leftOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.left })
+      }
 
-          return el.id === draggableNodeId ? { ...el, position: newPos, rectPosition } : el
-        })
-      )
+      if (rightOverflow > 0) {
+        setAutoScroll({ speed: rightOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.right })
+      }
+
+      if (topOverflow > 0) {
+        setAutoScroll({ speed: topOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.top })
+      }
+
+      if (bottomOverflow > 0) {
+        setAutoScroll({ speed: bottomOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.bottom })
+      }
+
+      if (autoScroll.direction && Math.max(leftOverflow, rightOverflow, topOverflow, bottomOverflow) <= 0) {
+        setAutoScroll({ speed: 0, direction: null })
+      }
     }
 
     setDragItem((dragItem) => ({ ...dragItem, x: e.clientX, y: e.clientY }))
@@ -152,24 +254,24 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition }) => {
     }
   }
 
+  useEffect(() => {
+    if (!stateNodes.length) return
+
+    recalculateRects()
+  }, [transformation.zoom])
+
   const onWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
+    if (currentDragItem.type) return
+
     const zoomFactor = Math.pow(ZOOM_STEP, Math.sign(event.deltaY))
     const zoom = transformation.zoom * zoomFactor
 
     setTransformation({ ...transformation, zoom })
-
-    setNodes((stateNodes) =>
-      stateNodes.map((el) => {
-        const rectPosition = document.getElementById(el.id).getClientRects()[0]
-
-        return { ...el, rectPosition }
-      })
-    )
   }
 
   const onMouseDown: React.MouseEventHandler<HTMLDivElement> = (e) => {
     if (e.button === BUTTON_LEFT && !currentDragItem.type) {
-      setDragItem({ type: "viewPort", x: e.clientX, y: e.clientY })
+      setDragItem({ type: ItemType.viewPort, x: e.clientX, y: e.clientY })
     }
   }
 
@@ -179,7 +281,9 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition }) => {
 
       setOffset({
         offsetLeft: rect?.left || 0,
-        offsetTop: rect?.top || 0
+        offsetTop: rect?.top || 0,
+        maxRight: rect?.right || 0,
+        maxBottom: rect?.bottom || 0
       })
     }
   }, [])

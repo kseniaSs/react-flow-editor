@@ -7,10 +7,10 @@ export const NodeContainer: React.FC = () => {
   const nodes = useRecoilValue(nodesState)
 
   return (
-    <div>
+    <>
       {nodes.map((node) => (
         <Node node={node} key={node.id} />
       ))}
-    </div>
+    </>
   )
 }
