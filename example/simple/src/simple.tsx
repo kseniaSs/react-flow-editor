@@ -201,7 +201,7 @@ const App = () => {
           className="react-editor-container"
           // onWheel={onWheel}
         >
-          <Editor nodes={nodes} pointPosition={{ x: 30, y: -10 }} />
+          <Editor nodes={nodes} pointPosition={{ x: 30, y: -10 }} inputPosition={{ x: 0, y: -10 }} />
         </div>
         <div className="node-attributes">
           <NodeAttributes subscribe={(update) => (attributes = update)} />

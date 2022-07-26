@@ -11,7 +11,8 @@ import {
   offsetState,
   dotSizeState,
   autoScrollState,
-  hoveredNodeIdState
+  hoveredNodeIdState,
+  inputPositionState
 } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
@@ -19,9 +20,9 @@ import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
 import Background from "./components/Background"
 import { NodeContainer } from "./components/Nodes/NodesContainer"
 import { BUTTON_LEFT } from "./constants"
-import { Transformation, Point as PointType, Offset, AutoScrollDirection, Axis, ItemType } from "./types"
+import { Transformation, Point as PointType, AutoScrollDirection, Axis, ItemType } from "./types"
 
-type EditorProps = { nodes: NodeType[]; pointPosition?: PointType }
+type EditorProps = { nodes: NodeType[]; pointPosition?: PointType; inputPosition?: PointType }
 
 const ZOOM_STEP = 1.1
 const DRAG_OFFSET_TRANSFORM = 80
@@ -59,7 +60,7 @@ const usePublicEditorApi = () => {
 
 export const EditorPublicApi = usePublicEditorApi()
 
-const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition }) => {
+const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) => {
   const [offset, setOffset] = useRecoilState(offsetState)
   const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
@@ -67,6 +68,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition }) => {
   const selectedNodeId = useRecoilValue(selectedNodeState)
   const [stateNodes, setNodes] = useRecoilState(nodesState)
   const [pointStatePosition, setPointStatePosition] = useRecoilState(pointPositionState)
+  const [inputStatePosition, setInputStatePosition] = useRecoilState(inputPositionState)
   const [transformation, setTransformation] = useRecoilState(zoomState)
   const [dotSize, setDotSize] = useRecoilState(dotSizeState)
   const [autoScroll, setAutoScroll] = useRecoilState(autoScrollState)
@@ -90,9 +92,11 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition }) => {
   })
 
   useEffect(() => {
+    console.log(inputPosition)
     if (!_.isEqual(_.omit(nodes, ["children"]), _.omit(stateNodes, ["children"]))) setNodes(nodes)
     if (!_.isEqual(pointPosition, pointStatePosition)) setPointStatePosition(pointPosition)
-  }, [nodes, pointPosition])
+    if (!_.isEqual(inputPosition, inputStatePosition)) setInputStatePosition(inputPosition)
+  }, [nodes, pointPosition, inputPosition])
 
   const onDragEnded = () => {
     setAutoScroll({ speed: 0, direction: null })
@@ -311,10 +315,10 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition }) => {
   )
 }
 
-export const Editor: React.FC<EditorProps> = React.memo(({ nodes, pointPosition }) => {
+export const Editor: React.FC<EditorProps> = React.memo(({ nodes, pointPosition, inputPosition }) => {
   return (
     <RecoilRoot>
-      <Canvas nodes={nodes} pointPosition={pointPosition} />
+      <Canvas nodes={nodes} pointPosition={pointPosition} inputPosition={inputPosition} />
     </RecoilRoot>
   )
 })
