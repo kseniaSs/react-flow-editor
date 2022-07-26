@@ -11,7 +11,9 @@ import {
 } from "../../ducks/store"
 import { Point } from "../../types"
 
-export const NewConnection: React.FC<{ svgOffset: Point }> = ({ svgOffset }) => {
+const BORDER_CONNECTION_LEFT_OFFSET = 120
+
+export const NewConnection: React.FC<{ svgOffset: Point & { width: number; height: number } }> = ({ svgOffset }) => {
   const newConnectionPosition = useRecoilValue(newConnectionState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
   const nodes = useRecoilValue(nodesState)
@@ -35,11 +37,15 @@ export const NewConnection: React.FC<{ svgOffset: Point }> = ({ svgOffset }) => 
       }
     : outputNode.position
 
+  const draggingConnection = { x: -svgOffset.x + newConnectionPosition.x, y: -svgOffset.y + newConnectionPosition.y }
+
+  draggingConnection.x =
+    draggingConnection.x < BORDER_CONNECTION_LEFT_OFFSET ? BORDER_CONNECTION_LEFT_OFFSET : draggingConnection.x
+  draggingConnection.y = draggingConnection.y < 0 ? 0 : draggingConnection.y
+  draggingConnection.x = draggingConnection.x > svgOffset.width ? svgOffset.width : draggingConnection.x
+  draggingConnection.y = draggingConnection.y > svgOffset.height ? svgOffset.height : draggingConnection.y
+
   return (
-    <InputConnection
-      key={`${selectedNodeId}_new`}
-      outputPosition={{ x: -svgOffset.x + newConnectionPosition.x, y: -svgOffset.y + newConnectionPosition.y }}
-      inputPosition={outputPosition}
-    />
+    <InputConnection key={`${selectedNodeId}_new`} outputPosition={draggingConnection} inputPosition={outputPosition} />
   )
 }

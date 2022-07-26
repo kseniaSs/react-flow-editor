@@ -16,7 +16,6 @@ import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
 import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
 import Background from "./components/Background"
-
 import { NodeContainer } from "./components/Nodes/NodesContainer"
 import { BUTTON_LEFT } from "./constants"
 import { inNode } from "./helpers"
@@ -124,6 +123,17 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
     const delta = DRAG_AUTO_SCROLL_DIST * autoScroll.speed
 
     const scroll = () => {
+      if ([ItemType.node, ItemType.connection].includes(currentDragItem.type)) {
+        const dx = transformation.dx - getSign(Axis.x) * delta * transformation.zoom
+        const dy = transformation.dy - getSign(Axis.y) * delta * transformation.zoom
+
+        setTransformation({
+          ...transformation,
+          dx,
+          dy
+        })
+      }
+
       if (currentDragItem.type === ItemType.connection) {
         setNewConnectionState({
           x: newConnection.x + getSign(Axis.x) * delta,
@@ -147,14 +157,6 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
               : el
           )
         )
-      }
-
-      if ([ItemType.node, ItemType.connection].includes(currentDragItem.type)) {
-        setTransformation({
-          ...transformation,
-          dx: transformation.dx - getSign(Axis.x) * delta * transformation.zoom,
-          dy: transformation.dy - getSign(Axis.y) * delta * transformation.zoom
-        })
       }
     }
 

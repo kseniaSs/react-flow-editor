@@ -5,7 +5,7 @@ import _ from "lodash"
 
 import { Vector2d } from "../../../geometry"
 import { Node as NodeType } from "../../../types"
-import { Point as PointType } from "../../types"
+import { ItemType, Point as PointType } from "../../types"
 import { BUTTON_LEFT } from "../../constants"
 import {
   selectedNodeState,
@@ -14,8 +14,7 @@ import {
   dragItemState,
   pointPositionState,
   newConnectionState,
-  zoomState,
-  offsetState
+  zoomState
 } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 
@@ -58,7 +57,7 @@ const Point: React.FC<PointProps> = ({ nodeId }) => {
       setNewConnectionState(pos)
 
       setDragItem({
-        type: "connection",
+        type: ItemType.connection,
         x: e.clientX,
         y: e.clientY
       })
@@ -88,7 +87,7 @@ const Node: React.FC<NodeProps> = ({ node }) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
       setDraggableNode(node.id)
-      setDragItem({ type: "node", x: e.clientX, y: e.clientY })
+      setDragItem({ type: ItemType.node, x: e.clientX, y: e.clientY })
     }
   }
 
