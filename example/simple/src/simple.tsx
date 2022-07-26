@@ -63,7 +63,7 @@ const NodeExpanded: React.FC = () => {
   }, [height])
 
   return (
-    <div onClick={() => setHeight(height === 50 ? 150 : 50)} style={{ height: height + "px" }}>
+    <div onClick={() => setHeight(height === 50 ? 150 : 50)} style={{ height: `${height}px` }}>
       Node
     </div>
   )
