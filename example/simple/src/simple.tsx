@@ -1,7 +1,7 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 
-import { Editor, Node, Config } from "@kseniass/react-flow-editor"
+import { Editor, Node, Config, EditorPublicApi } from "@kseniass/react-flow-editor"
 import "./simple.scss"
 
 type LogProps = { subscribe: (update: (log: string) => void) => void }
@@ -50,6 +50,25 @@ class NodeAttributes extends React.Component<NodeAttributesProps, NodeAttributes
   }
 }
 
+const NodeExpanded: React.FC = () => {
+  const [height, setHeight] = React.useState(50)
+  const [publicApi, setPublicApi] = React.useState(null)
+
+  React.useEffect(() => {
+    EditorPublicApi.subscribe((val) => setPublicApi(val))
+  }, [])
+
+  React.useEffect(() => {
+    publicApi?.recalculateRects && publicApi.recalculateRects()
+  }, [height])
+
+  return (
+    <div onClick={() => setHeight(height === 50 ? 150 : 50)} style={{ height: height + "px" }}>
+      Node
+    </div>
+  )
+}
+
 const node1Factory = (): Node => ({
   id: "Node_1",
   children: <div>Simple children</div>,
@@ -62,7 +81,7 @@ const node1Factory = (): Node => ({
 
 const node2Factory = (): Node => ({
   id: "Node_2",
-  children: <div>Node 2</div>,
+  children: <NodeExpanded />,
   position: {
     x: 310,
     y: 110
@@ -76,7 +95,7 @@ const node3Factory = (): Node => ({
     x: 310,
     y: 510
   },
-  children: <div>Node 3</div>,
+  children: <NodeExpanded />,
   input: []
 })
 

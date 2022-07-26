@@ -14,7 +14,9 @@ import {
   dragItemState,
   pointPositionState,
   newConnectionState,
-  zoomState
+  zoomState,
+  svgOffsetState,
+  hoveredNodeIdState
 } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 
@@ -42,6 +44,7 @@ const Point: React.FC<PointProps> = ({ nodeId }) => {
   const stateNodes = useRecoilValue(nodesState)
   const setNewConnectionState = useSetRecoilState(newConnectionState)
   const transformation = useRecoilValue(zoomState)
+  const svgOffset = useRecoilValue(svgOffsetState)
 
   const setNode = (e: React.MouseEvent<HTMLElement>) => {
     resetEvent(e)
@@ -50,8 +53,16 @@ const Point: React.FC<PointProps> = ({ nodeId }) => {
       setSelectedNode(nodeId)
 
       const pos = {
-        x: selectedNode.position.x - pointPosition.x + selectedNode.rectPosition.width / transformation.zoom,
-        y: selectedNode.position.y - pointPosition.y + selectedNode.rectPosition.height / transformation.zoom
+        x:
+          -svgOffset.x +
+          selectedNode.position.x -
+          pointPosition.x +
+          selectedNode.rectPosition.width / transformation.zoom,
+        y:
+          -svgOffset.y +
+          selectedNode.position.y -
+          pointPosition.y +
+          selectedNode.rectPosition.height / transformation.zoom
       }
 
       setNewConnectionState(pos)
@@ -72,6 +83,7 @@ const Node: React.FC<NodeProps> = ({ node }) => {
   const setDraggableNode = useSetRecoilState(draggableNodeState)
   const setDragItem = useSetRecoilState(dragItemState)
   const setNodes = useSetRecoilState(nodesState)
+  const setHoveredNodeId = useSetRecoilState(hoveredNodeIdState)
 
   const nodeClassNames = classNames("node", node.classNames || [], { selected: selectedNode === node.id })
 
@@ -102,6 +114,8 @@ const Node: React.FC<NodeProps> = ({ node }) => {
       onMouseDown={onDragStarted}
       style={nodeStyle(node.position)}
       className={nodeClassNames}
+      onMouseEnter={() => setHoveredNodeId(node.id)}
+      onMouseLeave={() => setHoveredNodeId(null)}
     >
       <Point nodeId={node.id} />
       {node.children}

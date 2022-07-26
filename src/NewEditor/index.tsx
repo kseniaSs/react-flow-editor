@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from "react"
+import React, { useEffect, useCallback } from "react"
 import _ from "lodash"
 import {
   draggableNodeState,
@@ -10,7 +10,8 @@ import {
   pointPositionState,
   offsetState,
   dotSizeState,
-  autoScrollState
+  autoScrollState,
+  hoveredNodeIdState
 } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
@@ -18,7 +19,6 @@ import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
 import Background from "./components/Background"
 import { NodeContainer } from "./components/Nodes/NodesContainer"
 import { BUTTON_LEFT } from "./constants"
-import { inNode } from "./helpers"
 import { Transformation, Point as PointType, Offset, AutoScrollDirection, Axis, ItemType } from "./types"
 
 type EditorProps = { nodes: NodeType[]; pointPosition?: PointType }
@@ -70,6 +70,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition }) => {
   const [transformation, setTransformation] = useRecoilState(zoomState)
   const [dotSize, setDotSize] = useRecoilState(dotSizeState)
   const [autoScroll, setAutoScroll] = useRecoilState(autoScrollState)
+  const hoveredNodeId = useRecoilValue(hoveredNodeIdState)
 
   const recalculateRects = useCallback(() => {
     setNodes((stateNodes) =>
@@ -96,16 +97,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition }) => {
   const onDragEnded = () => {
     setAutoScroll({ speed: 0, direction: null })
     if (currentDragItem.type === ItemType.connection) {
-      const outputNode = stateNodes.find((currentElement) => {
-        return inNode(
-          {
-            x: newConnection.x,
-            y: newConnection.y
-          },
-          currentElement.rectPosition,
-          currentElement.position
-        )
-      })
+      const outputNode = stateNodes.find((currentElement) => hoveredNodeId === currentElement.id)
 
       if (outputNode) {
         setNodes((nodesState) =>

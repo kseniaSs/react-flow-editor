@@ -7,19 +7,20 @@ import {
   nodesState,
   pointPositionState,
   selectedNodeState,
+  svgOffsetState,
   zoomState
 } from "../../ducks/store"
-import { Point } from "../../types"
 
 const BORDER_CONNECTION_LEFT_OFFSET = 120
 
-export const NewConnection: React.FC<{ svgOffset: Point & { width: number; height: number } }> = ({ svgOffset }) => {
+export const NewConnection: React.FC = () => {
   const newConnectionPosition = useRecoilValue(newConnectionState)
   const selectedNodeId = useRecoilValue(selectedNodeState)
   const nodes = useRecoilValue(nodesState)
   const pointPosition = useRecoilValue(pointPositionState)
   const dotSize = useRecoilValue(dotSizeState)
   const zoom = useRecoilValue(zoomState)
+  const svgOffset = useRecoilValue(svgOffsetState)
 
   if (!newConnectionPosition || !selectedNodeId) return null
 
@@ -38,8 +39,7 @@ export const NewConnection: React.FC<{ svgOffset: Point & { width: number; heigh
     : outputNode.position
 
   const draggingConnection = {
-    x: -svgOffset.x + newConnectionPosition.x,
-    y: -svgOffset.y + newConnectionPosition.y
+    ...newConnectionPosition
   }
 
   draggingConnection.x =

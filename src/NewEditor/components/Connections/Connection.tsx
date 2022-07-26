@@ -2,19 +2,19 @@ import React from "react"
 import { useRecoilValue } from "recoil"
 import InputConnection from "./InputConnection"
 import { Node as NodeType } from "../../../types"
-import { dotSizeState, nodesState, pointPositionState, zoomState } from "../../ducks/store"
+import { dotSizeState, nodesState, pointPositionState, svgOffsetState, zoomState } from "../../ducks/store"
 import { Point } from "../../types"
 
 type ConnectionProps = {
   node: NodeType
-  svgOffset: Point
 }
 
-export const Connection: React.FC<ConnectionProps> = ({ node, svgOffset }) => {
+export const Connection: React.FC<ConnectionProps> = ({ node }) => {
   const nodes = useRecoilValue(nodesState)
   const pointPosition = useRecoilValue(pointPositionState)
   const dotSize = useRecoilValue(dotSizeState)
   const zoom = useRecoilValue(zoomState)
+  const svgOffset = useRecoilValue(svgOffsetState)
 
   return (
     <>
