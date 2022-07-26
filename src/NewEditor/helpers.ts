@@ -17,14 +17,23 @@ export const inNode = (inputPosition: Vector2d, nodePosition: DOMRect, position:
 export const useNodeGroupsRect = () => {
   const nodes = useRecoilValue(nodesState)
 
+  if (!nodes.length) {
+    return {
+      leftPoint: 0,
+      rightPoint: 0,
+      topPoint: 0,
+      bottomPoint: 0,
+      realHeight: 0,
+      realWidth: 0
+    }
+  }
+
   const leftPoint = Math.min(...nodes.map((node) => node.position.x)) - window.innerWidth
   const rightPoint = Math.max(...nodes.map((node) => node.position.x)) + window.innerWidth
   const topPoint = Math.min(...nodes.map((node) => node.position.y)) - window.innerHeight
   const bottomPoint = Math.max(...nodes.map((node) => node.position.y)) + window.innerHeight
   const realHeight = bottomPoint - topPoint
   const realWidth = rightPoint - leftPoint
-
-  console.log("useNodeGroupsRect", topPoint)
 
   return {
     leftPoint,

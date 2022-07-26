@@ -245,13 +245,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
     }
   }
 
-  const onWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
-    if (currentDragItem.type) return
-
-    const zoomFactor = Math.pow(ZOOM_STEP, Math.sign(event.deltaY))
-    const zoom = transformation.zoom * zoomFactor
-
-    setTransformation({ ...transformation, zoom })
+  useEffect(() => {
+    if (!stateNodes.length) return
 
     setNodes((stateNodes) =>
       stateNodes.map((el) => {
@@ -260,6 +255,15 @@ const Canvas: React.FC<EditorProps> = ({ nodes }) => {
         return { ...el, rectPosition }
       })
     )
+  }, [transformation.zoom])
+
+  const onWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
+    if (currentDragItem.type) return
+
+    const zoomFactor = Math.pow(ZOOM_STEP, Math.sign(event.deltaY))
+    const zoom = transformation.zoom * zoomFactor
+
+    setTransformation({ ...transformation, zoom })
   }
 
   const onMouseDown: React.MouseEventHandler<HTMLDivElement> = (e) => {
