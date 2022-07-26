@@ -92,10 +92,9 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) 
   })
 
   useEffect(() => {
-    console.log(inputPosition)
     if (!_.isEqual(_.omit(nodes, ["children"]), _.omit(stateNodes, ["children"]))) setNodes(nodes)
-    if (!_.isEqual(pointPosition, pointStatePosition)) setPointStatePosition(pointPosition)
-    if (!_.isEqual(inputPosition, inputStatePosition)) setInputStatePosition(inputPosition)
+    if (pointPosition && !_.isEqual(pointPosition, pointStatePosition)) setPointStatePosition(pointPosition)
+    if (inputPosition && !_.isEqual(inputPosition, inputStatePosition)) setInputStatePosition(inputPosition)
   }, [nodes, pointPosition, inputPosition])
 
   const onDragEnded = () => {
