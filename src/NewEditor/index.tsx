@@ -91,7 +91,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition }) => {
   useEffect(() => {
     if (!_.isEqual(_.omit(nodes, ["children"]), _.omit(stateNodes, ["children"]))) setNodes(nodes)
     if (!_.isEqual(pointPosition, pointStatePosition)) setPointStatePosition(pointPosition)
-  }, [nodes])
+  }, [nodes, pointPosition])
 
   const onDragEnded = () => {
     setAutoScroll({ speed: 0, direction: null })
