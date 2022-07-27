@@ -105,7 +105,7 @@ const Node: React.FC<NodeProps> = ({ node }) => {
       nodes.map((nodeItem) =>
         nodeItem.id === node.id
           ? { ...nodeItem, isSelected: true }
-          : { ...nodeItem, isSelected: e.ctrlKey || e.metaKey ? nodeItem.isSelected : false }
+          : { ...nodeItem, isSelected: e.shiftKey ? nodeItem.isSelected : false }
       )
     )
   }
