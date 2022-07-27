@@ -52,3 +52,5 @@ export type SelectionZone = {
   cornerStart: Point
   cornerEnd: Point
 }
+
+export type RectZone = { left: number; right: number; top: number; bottom: number }

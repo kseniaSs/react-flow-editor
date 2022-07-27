@@ -19,15 +19,15 @@ import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
 import Background from "./components/Background"
 import { NodeContainer } from "./components/Nodes/NodesContainer"
 import { BUTTON_LEFT } from "./constants"
-import { Transformation, Point as PointType, AutoScrollDirection, Axis, ItemType, SelectionZone } from "./types"
-import { isNodeInSelectionZone } from "./helpers"
+import { Transformation, Point as PointType, AutoScrollDirection, Axis, ItemType, RectZone } from "./types"
+import { cornersToRect, isNodeInSelectionZone } from "./helpers"
 
 type EditorProps = {
   nodes: NodeType[]
   pointPosition?: PointType
   inputPosition?: PointType
   isSingleOutputConnection?: boolean
-  onSelectionZoneChanged: (value: SelectionZone) => void
+  onSelectionZoneChanged: (value: RectZone) => void
 }
 
 const ZOOM_STEP = 1.1
@@ -89,7 +89,7 @@ const Canvas: React.FC<EditorProps> = ({
   const hoveredNodeId = useRecoilValue(hoveredNodeIdState)
 
   useEffect(() => {
-    onSelectionZoneChanged(selectionZone)
+    onSelectionZoneChanged(cornersToRect(selectionZone))
   }, [selectionZone])
 
   const recalculateRects = useCallback(() => {

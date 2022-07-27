@@ -162,16 +162,11 @@ const App = () => {
   const onSelectionZoneChanged = React.useCallback((val) => setSelectionZone(val), [])
 
   const selectionZonePosition = React.useMemo(() => {
-    const realLeft = Math.min(selectionZone?.cornerStart.x, selectionZone?.cornerEnd.x)
-    const realRight = Math.max(selectionZone?.cornerStart.x, selectionZone?.cornerEnd.x)
-    const realTop = Math.min(selectionZone?.cornerStart.y, selectionZone?.cornerEnd.y)
-    const realBottom = Math.max(selectionZone?.cornerStart.y, selectionZone?.cornerEnd.y)
-
     const zoomContainerRect = editorApi.current?.zoomContainerRef?.current?.getBoundingClientRect()
-    const left = zoomContainerRect?.left + realLeft * editorApi.current?.transformation.zoom || 0
-    const top = zoomContainerRect?.top + realTop * editorApi.current?.transformation.zoom || 0
-    const right = zoomContainerRect?.left + realRight * editorApi.current?.transformation.zoom || 0
-    const bottom = zoomContainerRect?.top + realBottom * editorApi.current?.transformation.zoom || 0
+    const left = zoomContainerRect?.left + selectionZone?.left * editorApi.current?.transformation.zoom || 0
+    const top = zoomContainerRect?.top + selectionZone?.top * editorApi.current?.transformation.zoom || 0
+    const right = zoomContainerRect?.left + selectionZone?.right * editorApi.current?.transformation.zoom || 0
+    const bottom = zoomContainerRect?.top + selectionZone?.bottom * editorApi.current?.transformation.zoom || 0
 
     return {
       left,

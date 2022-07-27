@@ -1,7 +1,7 @@
 import { useRecoilValue } from "recoil"
 import { Node } from "../types"
 import { nodesState } from "./ducks/store"
-import { SelectionZone, Transformation } from "./types"
+import { RectZone, SelectionZone, Transformation } from "./types"
 
 export const resetEvent = (e: React.MouseEvent<HTMLElement>) => {
   e.stopPropagation()
@@ -39,16 +39,28 @@ export const useNodeGroupsRect = () => {
   }
 }
 
-export const isNodeInSelectionZone = (node: Node, zone: SelectionZone, transform: Transformation): boolean => {
-  const realLeft = Math.min(zone.cornerStart.x, zone.cornerEnd.x)
-  const realRight = Math.max(zone.cornerStart.x, zone.cornerEnd.x)
-  const realTop = Math.min(zone.cornerStart.y, zone.cornerEnd.y)
-  const realBottom = Math.max(zone.cornerStart.y, zone.cornerEnd.y)
+export const cornersToRect = (zone: SelectionZone): RectZone =>
+  zone
+    ? {
+        left: Math.min(zone.cornerStart.x, zone.cornerEnd.x),
+        right: Math.max(zone.cornerStart.x, zone.cornerEnd.x),
+        top: Math.min(zone.cornerStart.y, zone.cornerEnd.y),
+        bottom: Math.max(zone.cornerStart.y, zone.cornerEnd.y)
+      }
+    : {
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0
+      }
 
-  const isLeftOver = realLeft < node.position.x + node.rectPosition.width / transform.zoom
-  const isRightOver = realRight > node.position.x
-  const isTopOver = realTop < node.position.y + node.rectPosition.height / transform.zoom
-  const isBottomOver = realBottom > node.position.y
+export const isNodeInSelectionZone = (node: Node, zone: SelectionZone, transform: Transformation): boolean => {
+  const { left, top, right, bottom } = cornersToRect(zone)
+
+  const isLeftOver = left < node.position.x + node.rectPosition.width / transform.zoom
+  const isRightOver = right > node.position.x
+  const isTopOver = top < node.position.y + node.rectPosition.height / transform.zoom
+  const isBottomOver = bottom > node.position.y
 
   return isLeftOver && isRightOver && isTopOver && isBottomOver
 }
