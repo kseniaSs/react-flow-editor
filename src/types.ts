@@ -77,6 +77,7 @@ export interface Node {
   classNames?: string[]
   children: JSX.Element
   rectPosition?: DOMRect
+  isSelected?: boolean
 }
 
 /**

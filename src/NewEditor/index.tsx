@@ -1,11 +1,9 @@
 import React, { useEffect, useCallback } from "react"
 import _ from "lodash"
 import {
-  draggableNodeState,
   dragItemState,
   newConnectionState,
   nodesState,
-  selectedNodeState,
   zoomState,
   pointPositionState,
   offsetState,
@@ -62,10 +60,8 @@ export const EditorPublicApi = usePublicEditorApi()
 
 const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) => {
   const [offset, setOffset] = useRecoilState(offsetState)
-  const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
   const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
-  const selectedNodeId = useRecoilValue(selectedNodeState)
   const [stateNodes, setNodes] = useRecoilState(nodesState)
   const [pointStatePosition, setPointStatePosition] = useRecoilState(pointPositionState)
   const [inputStatePosition, setInputStatePosition] = useRecoilState(inputPositionState)
@@ -100,12 +96,14 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) 
   const onDragEnded = () => {
     setAutoScroll({ speed: 0, direction: null })
     if (currentDragItem.type === ItemType.connection) {
-      const outputNode = stateNodes.find((currentElement) => hoveredNodeId === currentElement.id)
+      const inputNode = stateNodes.find((currentElement) => hoveredNodeId === currentElement.id)
+      const selectedNode = stateNodes.filter((node) => node.isSelected)
+      const outputNode = selectedNode.length === 1 ? selectedNode[0] : null
 
-      if (outputNode) {
+      if (inputNode && outputNode) {
         setNodes((nodesState) =>
           nodesState.map((el) =>
-            el.id === selectedNodeId && !el.input.includes(outputNode.id)
+            el.id === inputNode.id && !el.input.includes(outputNode.id)
               ? { ...el, input: [...el.input, outputNode.id] }
               : el
           )
@@ -114,7 +112,6 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) 
     }
     setNewConnectionState(undefined)
     setDragItem((dragItem) => ({ ...dragItem, type: undefined }))
-    setDraggableNode(undefined)
   }
 
   useEffect(() => {
@@ -152,16 +149,16 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) 
       }
 
       if (currentDragItem.type === ItemType.node) {
-        const draggingNode = stateNodes.find((node) => node.id === draggableNodeId)
+        const draggingNodesIds = stateNodes.filter((node) => node.isSelected).map((node) => node.id)
 
         setNodes((stateNodes) =>
           stateNodes.map((el) =>
-            el.id === draggableNodeId
+            draggingNodesIds.includes(el.id)
               ? {
                   ...el,
                   position: {
-                    x: draggingNode.position.x + getSign(Axis.x) * delta,
-                    y: draggingNode.position.y + getSign(Axis.y) * delta
+                    x: el.position.x + getSign(Axis.x) * delta,
+                    y: el.position.y + getSign(Axis.y) * delta
                   }
                 }
               : el
@@ -199,17 +196,21 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) 
     }
 
     if (currentDragItem.type === ItemType.node && !autoScroll.direction) {
-      const draggingNode = stateNodes.find((node) => node.id === draggableNodeId)
-
-      const rectPosition = document.getElementById(draggableNodeId).getClientRects()[0]
-
-      const newPos = {
-        x: draggingNode.position.x + (e.clientX - currentDragItem.x) / transformation.zoom,
-        y: draggingNode.position.y + (e.clientY - currentDragItem.y) / transformation.zoom
-      }
+      const draggingNodesIds = stateNodes.filter((node) => node.isSelected).map((node) => node.id)
 
       setNodes((stateNodes) =>
-        stateNodes.map((el) => (el.id === draggableNodeId ? { ...el, position: newPos, rectPosition } : el))
+        stateNodes.map((el) =>
+          draggingNodesIds.includes(el.id)
+            ? {
+                ...el,
+                position: {
+                  x: el.position.x + (e.clientX - currentDragItem.x) / transformation.zoom,
+                  y: el.position.y + (e.clientY - currentDragItem.y) / transformation.zoom
+                },
+                rectPosition: document.getElementById(el.id).getClientRects()[0]
+              }
+            : el
+        )
       )
     }
 
@@ -244,8 +245,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) 
   }
 
   const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
-    if (e.key === "Delete" && selectedNodeId) {
-      setNodes((stateNodes) => stateNodes.filter(({ id }) => selectedNodeId !== id))
+    if (["Delete", "Backspace"].includes(e.key)) {
+      setNodes((stateNodes) => stateNodes.filter((node) => !node.isSelected))
     }
   }
 
@@ -267,6 +268,10 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) 
   const onMouseDown: React.MouseEventHandler<HTMLDivElement> = (e) => {
     if (e.button === BUTTON_LEFT && !currentDragItem.type) {
       setDragItem({ type: ItemType.viewPort, x: e.clientX, y: e.clientY })
+    }
+
+    if (!currentDragItem.type) {
+      setNodes((nodes) => nodes.map((node) => ({ ...node, isSelected: false })))
     }
   }
 
