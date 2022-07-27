@@ -108,8 +108,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, is
       if (inputNode && outputNode) {
         setNodes((nodesState) =>
           nodesState.map((el) =>
-            el.id === inputNode.id && !el.input.includes(outputNode.id)
-              ? { ...el, input: isSingleOutputConnection ? [outputNode.id] : [...el.input, outputNode.id] }
+            el.id === outputNode.id && !el.input.includes(inputNode.id)
+              ? { ...el, input: isSingleOutputConnection ? [inputNode.id] : [...el.input, inputNode.id] }
               : el
           )
         )
