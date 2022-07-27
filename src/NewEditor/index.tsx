@@ -22,7 +22,12 @@ import { NodeContainer } from "./components/Nodes/NodesContainer"
 import { BUTTON_LEFT } from "./constants"
 import { Transformation, Point as PointType, AutoScrollDirection, Axis, ItemType } from "./types"
 
-type EditorProps = { nodes: NodeType[]; pointPosition?: PointType; inputPosition?: PointType }
+type EditorProps = {
+  nodes: NodeType[]
+  pointPosition?: PointType
+  inputPosition?: PointType
+  isSingleOutputConnection?: boolean
+}
 
 const ZOOM_STEP = 1.1
 const DRAG_OFFSET_TRANSFORM = 80
@@ -60,7 +65,7 @@ const usePublicEditorApi = () => {
 
 export const EditorPublicApi = usePublicEditorApi()
 
-const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) => {
+const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, isSingleOutputConnection }) => {
   const [offset, setOffset] = useRecoilState(offsetState)
   const [draggableNodeId, setDraggableNode] = useRecoilState(draggableNodeState)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
@@ -92,7 +97,6 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) 
   })
 
   useEffect(() => {
-    console.log(inputPosition)
     if (!_.isEqual(_.omit(nodes, ["children"]), _.omit(stateNodes, ["children"]))) setNodes(nodes)
     if (!_.isEqual(pointPosition, pointStatePosition)) setPointStatePosition(pointPosition)
     if (!_.isEqual(inputPosition, inputStatePosition)) setInputStatePosition(inputPosition)
@@ -105,11 +109,10 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) 
 
       if (outputNode) {
         setNodes((nodesState) =>
-          nodesState.map((el) =>
-            el.id === selectedNodeId && !el.input.includes(outputNode.id)
-              ? { ...el, input: [...el.input, outputNode.id] }
-              : el
-          )
+          nodesState.map((el) => {
+            const input = isSingleOutputConnection ? [outputNode.id] : [...el.input, outputNode.id]
+            return el.id === selectedNodeId && !el.input.includes(outputNode.id) ? { ...el, input } : el
+          })
         )
       }
     }
@@ -315,10 +318,17 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition }) 
   )
 }
 
-export const Editor: React.FC<EditorProps> = React.memo(({ nodes, pointPosition, inputPosition }) => {
-  return (
-    <RecoilRoot>
-      <Canvas nodes={nodes} pointPosition={pointPosition} inputPosition={inputPosition} />
-    </RecoilRoot>
-  )
-})
+export const Editor: React.FC<EditorProps> = React.memo(
+  ({ nodes, pointPosition, inputPosition, isSingleOutputConnection }) => {
+    return (
+      <RecoilRoot>
+        <Canvas
+          nodes={nodes}
+          pointPosition={pointPosition}
+          inputPosition={inputPosition}
+          isSingleOutputConnection={isSingleOutputConnection}
+        />
+      </RecoilRoot>
+    )
+  }
+)
