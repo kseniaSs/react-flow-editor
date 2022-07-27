@@ -7,16 +7,6 @@ export const nodesState = atom<Node[]>({
   default: []
 })
 
-export const selectedNodeState = atom({
-  key: "selectedNodeAtom",
-  default: ""
-})
-
-export const draggableNodeState = atom({
-  key: "draggableNodeAtom",
-  default: ""
-})
-
 export const newConnectionState = atom({
   key: "newConnectionState",
   default: { x: 0, y: 0 }
