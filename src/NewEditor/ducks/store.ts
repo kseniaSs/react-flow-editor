@@ -1,20 +1,10 @@
 import { atom } from "recoil"
 import { Node } from "../../types"
-import { ItemType } from "../types"
+import { ItemType, SelectionZone } from "../types"
 
 export const nodesState = atom<Node[]>({
   key: "nodesStateAtom",
   default: []
-})
-
-export const selectedNodeState = atom({
-  key: "selectedNodeAtom",
-  default: ""
-})
-
-export const draggableNodeState = atom({
-  key: "draggableNodeAtom",
-  default: ""
 })
 
 export const newConnectionState = atom({
@@ -35,6 +25,11 @@ export const autoScrollState = atom({
 export const offsetState = atom({
   key: "offsetState",
   default: { offsetTop: 0, offsetLeft: 0, maxRight: 0, maxBottom: 0 }
+})
+
+export const selectionZoneState = atom<SelectionZone | null>({
+  key: "selectionZoneState",
+  default: null
 })
 
 export const dotSizeState = atom({

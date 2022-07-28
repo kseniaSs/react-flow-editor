@@ -8,8 +8,6 @@ import { Node as NodeType } from "../../../types"
 import { ItemType, Point as PointType } from "../../types"
 import { BUTTON_LEFT } from "../../../constants"
 import {
-  selectedNodeState,
-  draggableNodeState,
   nodesState,
   dragItemState,
   pointPositionState,
@@ -38,10 +36,9 @@ type PointProps = {
 }
 
 const Point: React.FC<PointProps> = ({ nodeId }) => {
-  const setSelectedNode = useSetRecoilState(selectedNodeState)
   const setDragItem = useSetRecoilState(dragItemState)
   const pointPosition = useRecoilValue(pointPositionState)
-  const stateNodes = useRecoilValue(nodesState)
+  const [stateNodes, setStateNodes] = useRecoilState(nodesState)
   const setNewConnectionState = useSetRecoilState(newConnectionState)
   const transformation = useRecoilValue(zoomState)
   const svgOffset = useRecoilValue(svgOffsetState)
@@ -49,20 +46,25 @@ const Point: React.FC<PointProps> = ({ nodeId }) => {
   const setNode = (e: React.MouseEvent<HTMLElement>) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
-      const selectedNode = stateNodes.find((node) => node.id === nodeId)
-      setSelectedNode(nodeId)
+      const currentNode = stateNodes.find((node) => node.id === nodeId)
+
+      setStateNodes((nodes) =>
+        nodes.map((node) =>
+          node.id === currentNode.id ? { ...node, isSelected: true } : { ...node, isSelected: false }
+        )
+      )
 
       const pos = {
         x:
           -svgOffset.x +
-          selectedNode.position.x -
+          currentNode.position.x -
           pointPosition.x +
-          selectedNode.rectPosition.width / transformation.zoom,
+          currentNode.rectPosition.width / transformation.zoom,
         y:
           -svgOffset.y +
-          selectedNode.position.y -
+          currentNode.position.y -
           pointPosition.y +
-          selectedNode.rectPosition.height / transformation.zoom
+          currentNode.rectPosition.height / transformation.zoom
       }
 
       setNewConnectionState(pos)
@@ -79,18 +81,16 @@ const Point: React.FC<PointProps> = ({ nodeId }) => {
 }
 
 const Node: React.FC<NodeProps> = ({ node }) => {
-  const [selectedNode, setSelectedNode] = useRecoilState(selectedNodeState)
-  const setDraggableNode = useSetRecoilState(draggableNodeState)
   const setDragItem = useSetRecoilState(dragItemState)
-  const setNodes = useSetRecoilState(nodesState)
+  const setStateNodes = useSetRecoilState(nodesState)
   const setHoveredNodeId = useSetRecoilState(hoveredNodeIdState)
 
-  const nodeClassNames = classNames("node", node.classNames || [], { selected: selectedNode === node.id })
+  const nodeClassNames = classNames("node", node.classNames || [], { selected: node.isSelected })
 
   useEffect(() => {
     const rectPosition = document.getElementById(node.id).getClientRects()[0]
 
-    setNodes((nodes) =>
+    setStateNodes((nodes) =>
       nodes.map((currentNode) => (currentNode.id === node.id ? { ...currentNode, rectPosition } : currentNode))
     )
   }, [node.id])
@@ -98,19 +98,21 @@ const Node: React.FC<NodeProps> = ({ node }) => {
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
-      setDraggableNode(node.id)
       setDragItem({ type: ItemType.node, x: e.clientX, y: e.clientY })
     }
-  }
 
-  const onNodeClick: React.MouseEventHandler<HTMLDivElement> = () => {
-    setSelectedNode(selectedNode === node.id ? undefined : node.id)
+    setStateNodes((nodes) =>
+      nodes.map((nodeItem) =>
+        nodeItem.id === node.id
+          ? { ...nodeItem, isSelected: true }
+          : { ...nodeItem, isSelected: e.shiftKey ? nodeItem.isSelected : false }
+      )
+    )
   }
 
   return (
     <div
       id={node.id}
-      onClick={onNodeClick}
       onMouseDown={onDragStarted}
       style={nodeStyle(node.position)}
       className={nodeClassNames}

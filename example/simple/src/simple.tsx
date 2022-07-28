@@ -27,16 +27,11 @@ class NodeAttributes extends React.Component<NodeAttributesProps, NodeAttributes
   }
 }
 
-const NodeExpanded: React.FC = () => {
+const NodeExpanded: React.FC<{ recalculateRects?: () => void }> = ({ recalculateRects }) => {
   const [height, setHeight] = React.useState(50)
-  const [publicApi, setPublicApi] = React.useState(null)
 
   React.useEffect(() => {
-    EditorPublicApi.subscribe((val) => setPublicApi(val))
-  }, [])
-
-  React.useEffect(() => {
-    publicApi?.recalculateRects && publicApi.recalculateRects()
+    recalculateRects && recalculateRects()
   }, [height])
 
   return (
@@ -58,7 +53,7 @@ const node1Factory = (): Node => ({
 
 const node2Factory = (): Node => ({
   id: "Node_2",
-  children: <NodeExpanded />,
+  children: <div>Node 2</div>,
   position: {
     x: 310,
     y: 110
@@ -72,7 +67,7 @@ const node3Factory = (): Node => ({
     x: 310,
     y: 510
   },
-  children: <NodeExpanded />,
+  children: <div>Node 3</div>,
   input: []
 })
 
@@ -90,13 +85,44 @@ const initialNodes: Node[] = [
 
 let attributes: (node: Node | null) => void = undefined
 
+const pointPosition = { x: 30, y: -10 }
+const inputPosition = { x: 0, y: -10 }
+
 const App = () => {
   const [nodes, setNodes] = React.useState(initialNodes)
+  const [selectionZone, setSelectionZone] = React.useState(null)
+  const editorApi = React.useRef(null)
+
+  React.useEffect(() => {
+    EditorPublicApi.subscribe((val) => {
+      console.log(val)
+
+      editorApi.current = val
+    })
+  }, [])
+
+  const onSelectionZoneChanged = React.useCallback((val) => setSelectionZone(val), [])
+
+  const selectionZonePosition = React.useMemo(() => {
+    const zoomContainerRect = editorApi.current?.zoomContainerRef?.current?.getBoundingClientRect()
+    const left = zoomContainerRect?.left + selectionZone?.left * editorApi.current?.transformation.zoom || 0
+    const top = zoomContainerRect?.top + selectionZone?.top * editorApi.current?.transformation.zoom || 0
+    const right = zoomContainerRect?.left + selectionZone?.right * editorApi.current?.transformation.zoom || 0
+    const bottom = zoomContainerRect?.top + selectionZone?.bottom * editorApi.current?.transformation.zoom || 0
+
+    return {
+      left,
+      top,
+      width: right - left,
+      height: bottom - top
+    }
+  }, [selectionZone])
 
   return (
     <>
       <div style={{ height: "50px" }}>header</div>
       <div className="root">
+        <div className="selection-zone" style={selectionZonePosition} />
         <div className="flow-menu">
           <div
             onClick={() => {
@@ -119,10 +145,11 @@ const App = () => {
         </div>
         <div className="react-editor-container">
           <Editor
-            nodes={nodes}
-            pointPosition={{ x: 30, y: -10 }}
+           nodes={nodes}
+            pointPosition={pointPosition}
             isSingleOutputConnection
-            inputPosition={{ x: 0, y: -10 }}
+            inputPosition={inputPosition}
+            onSelectionZoneChanged={onSelectionZoneChanged}
           />
         </div>
         <div className="node-attributes">

@@ -1,10 +1,11 @@
 import { Vector2d } from "../geometry"
-import { Size } from "../types"
+import {Node as NodeType, Size} from "../types";
 
 export enum ItemType {
   node = "node",
   connection = "connection",
-  viewPort = "viewPort"
+  viewPort = "viewPort",
+  selectionZone = "selectionZone"
 }
 
 export interface WorkItemConnection {
@@ -46,3 +47,18 @@ export enum Axis {
   x = "x",
   y = "y"
 }
+
+export type SelectionZone = {
+  cornerStart: Point
+  cornerEnd: Point
+}
+
+export type EditorProps = {
+  nodes: NodeType[]
+  pointPosition?: Point
+  inputPosition?: Point
+  isSingleOutputConnection?: boolean
+  onSelectionZoneChanged: (value: RectZone) => void
+}
+
+export type RectZone = { left: number; right: number; top: number; bottom: number }

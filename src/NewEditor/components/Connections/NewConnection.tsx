@@ -1,30 +1,33 @@
 import React from "react"
 import { useRecoilValue } from "recoil"
+import _ from "lodash"
 import InputConnection from "./InputConnection"
 import {
   dotSizeState,
+  dragItemState,
   newConnectionState,
   nodesState,
   pointPositionState,
-  selectedNodeState,
   svgOffsetState,
   zoomState
 } from "../../ducks/store"
+import { ItemType } from "../../types"
 
 const BORDER_CONNECTION_LEFT_OFFSET = 120
 
 export const NewConnection: React.FC = () => {
   const newConnectionPosition = useRecoilValue(newConnectionState)
-  const selectedNodeId = useRecoilValue(selectedNodeState)
   const nodes = useRecoilValue(nodesState)
   const pointPosition = useRecoilValue(pointPositionState)
   const dotSize = useRecoilValue(dotSizeState)
   const zoom = useRecoilValue(zoomState)
   const svgOffset = useRecoilValue(svgOffsetState)
+  const dragItem = useRecoilValue(dragItemState)
 
-  if (!newConnectionPosition || !selectedNodeId) return null
+  const selectedNodes = nodes.filter((node) => node.isSelected)
+  const outputNode = selectedNodes.length === 1 ? _.first(selectedNodes) : null
 
-  const outputNode = nodes.find((node) => node.id === selectedNodeId)
+  if (!newConnectionPosition || !outputNode || dragItem.type !== ItemType.connection) return null
 
   const outputPosition = outputNode.rectPosition
     ? {
@@ -49,6 +52,6 @@ export const NewConnection: React.FC = () => {
   draggingConnection.y = draggingConnection.y > svgOffset.height ? svgOffset.height : draggingConnection.y
 
   return (
-    <InputConnection key={`${selectedNodeId}_new`} outputPosition={draggingConnection} inputPosition={outputPosition} />
+    <InputConnection key={`${outputNode.id}_new`} outputPosition={draggingConnection} inputPosition={outputPosition} />
   )
 }
