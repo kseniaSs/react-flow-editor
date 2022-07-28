@@ -20,6 +20,7 @@ export const useNodeGroupsRect = () => {
     }
   }
 
+  // todo один проход
   const leftPoint = Math.min(...nodes.map((node) => node.position.x)) - window.innerWidth
   const rightPoint = Math.max(...nodes.map((node) => node.position.x)) + window.innerWidth
   const topPoint = Math.min(...nodes.map((node) => node.position.y)) - window.innerHeight

@@ -6,7 +6,7 @@ import _ from "lodash"
 import { Vector2d } from "../../../geometry"
 import { Node as NodeType } from "../../../types"
 import { ItemType, Point as PointType } from "../../types"
-import { BUTTON_LEFT } from "../../constants"
+import { BUTTON_LEFT } from "../../../constants"
 import {
   selectedNodeState,
   draggableNodeState,
