@@ -14,7 +14,7 @@
     "removeComments": true,
     "strictNullChecks": false,
     "outDir": "build",
-    "lib": ["es6", "es7", "dom"]
+    "lib": ["es6", "es7", "dom", "es2021"]
   },
   "exclude": ["dist", "build", "node_modules"]
 }
