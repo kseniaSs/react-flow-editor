@@ -4,7 +4,8 @@ import { Size } from "../types"
 export enum ItemType {
   node = "node",
   connection = "connection",
-  viewPort = "viewPort"
+  viewPort = "viewPort",
+  selectionZone = "selectionZone"
 }
 
 export interface WorkItemConnection {
@@ -46,3 +47,10 @@ export enum Axis {
   x = "x",
   y = "y"
 }
+
+export type SelectionZone = {
+  cornerStart: Point
+  cornerEnd: Point
+}
+
+export type RectZone = { left: number; right: number; top: number; bottom: number }

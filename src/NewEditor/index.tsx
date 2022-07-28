@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react"
+import React, { useEffect, useCallback, useRef, MutableRefObject } from "react"
 import _ from "lodash"
 import {
   dragItemState,
@@ -10,7 +10,8 @@ import {
   dotSizeState,
   autoScrollState,
   hoveredNodeIdState,
-  inputPositionState
+  inputPositionState,
+  selectionZoneState
 } from "./ducks/store"
 import { Node as NodeType } from "../types"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
@@ -18,13 +19,15 @@ import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil"
 import Background from "./components/Background"
 import { NodeContainer } from "./components/Nodes/NodesContainer"
 import { BUTTON_LEFT } from "./constants"
-import { Transformation, Point as PointType, AutoScrollDirection, Axis, ItemType } from "./types"
+import { Transformation, Point as PointType, AutoScrollDirection, Axis, ItemType, RectZone } from "./types"
+import { cornersToRect, isNodeInSelectionZone } from "./helpers"
 
 type EditorProps = {
   nodes: NodeType[]
   pointPosition?: PointType
   inputPosition?: PointType
   isSingleOutputConnection?: boolean
+  onSelectionZoneChanged: (value: RectZone) => void
 }
 
 const ZOOM_STEP = 1.1
@@ -37,6 +40,7 @@ type PublicApiState = {
   setTransformation: (payload: Transformation) => void
   stateNodes: NodeType[]
   recalculateRects: () => void
+  zoomContainerRef: MutableRefObject<HTMLDivElement>
 }
 
 type PublicApiInnerState = {
@@ -63,7 +67,13 @@ const usePublicEditorApi = () => {
 
 export const EditorPublicApi = usePublicEditorApi()
 
-const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, isSingleOutputConnection }) => {
+const Canvas: React.FC<EditorProps> = ({
+  nodes,
+  pointPosition,
+  inputPosition,
+  isSingleOutputConnection,
+  onSelectionZoneChanged
+}) => {
   const [offset, setOffset] = useRecoilState(offsetState)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
   const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
@@ -72,8 +82,15 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, is
   const [inputStatePosition, setInputStatePosition] = useRecoilState(inputPositionState)
   const [transformation, setTransformation] = useRecoilState(zoomState)
   const [dotSize, setDotSize] = useRecoilState(dotSizeState)
+  const [selectionZone, setSelectionZone] = useRecoilState(selectionZoneState)
   const [autoScroll, setAutoScroll] = useRecoilState(autoScrollState)
+  const zoomContainerRef = useRef<HTMLDivElement | null>(null)
+
   const hoveredNodeId = useRecoilValue(hoveredNodeIdState)
+
+  useEffect(() => {
+    onSelectionZoneChanged(cornersToRect(selectionZone))
+  }, [selectionZone])
 
   const recalculateRects = useCallback(() => {
     setNodes((stateNodes) =>
@@ -89,7 +106,8 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, is
     transformation,
     recalculateRects,
     setTransformation,
-    stateNodes
+    stateNodes,
+    zoomContainerRef
   })
 
   useEffect(() => {
@@ -117,6 +135,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, is
     }
     setNewConnectionState(undefined)
     setDragItem((dragItem) => ({ ...dragItem, type: undefined }))
+    setSelectionZone(null)
   }
 
   useEffect(() => {
@@ -135,7 +154,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, is
     const delta = DRAG_AUTO_SCROLL_DIST * autoScroll.speed
 
     const scroll = () => {
-      if ([ItemType.node, ItemType.connection].includes(currentDragItem.type)) {
+      if ([ItemType.node, ItemType.connection, ItemType.selectionZone].includes(currentDragItem.type)) {
         const dx = transformation.dx - getSign(Axis.x) * delta * transformation.zoom
         const dy = transformation.dy - getSign(Axis.y) * delta * transformation.zoom
 
@@ -151,6 +170,20 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, is
           x: newConnection.x + getSign(Axis.x) * delta,
           y: newConnection.y + getSign(Axis.y) * delta
         })
+      }
+
+      if (currentDragItem.type === ItemType.selectionZone) {
+        setSelectionZone((zone) => ({
+          ...zone,
+          cornerEnd: {
+            x: zone.cornerEnd.x + getSign(Axis.x) * delta,
+            y: zone.cornerEnd.y + getSign(Axis.y) * delta
+          }
+        }))
+
+        setNodes((stateNodes) =>
+          stateNodes.map((el) => ({ ...el, isSelected: isNodeInSelectionZone(el, selectionZone, transformation) }))
+        )
       }
 
       if (currentDragItem.type === ItemType.node) {
@@ -175,7 +208,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, is
     const scrollInterval = setInterval(scroll, DRAG_AUTO_SCROLL_TIME)
 
     return () => clearInterval(scrollInterval)
-  }, [autoScroll, currentDragItem, newConnection, stateNodes, transformation])
+  }, [autoScroll, currentDragItem, newConnection, stateNodes, transformation, selectionZone])
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
     if (currentDragItem.type === ItemType.connection && !autoScroll.direction) {
@@ -219,7 +252,26 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, is
       )
     }
 
-    if ([ItemType.node, ItemType.connection].includes(currentDragItem.type)) {
+    if (currentDragItem.type === ItemType.selectionZone && !autoScroll.direction) {
+      setSelectionZone((zone) => {
+        const deltaX = (e.clientX - currentDragItem.x) / transformation.zoom
+        const deltaY = (e.clientY - currentDragItem.y) / transformation.zoom
+
+        return {
+          ...zone,
+          cornerEnd: {
+            x: zone.cornerEnd.x + deltaX,
+            y: zone.cornerEnd.y + deltaY
+          }
+        }
+      })
+
+      setNodes((stateNodes) =>
+        stateNodes.map((el) => ({ ...el, isSelected: isNodeInSelectionZone(el, selectionZone, transformation) }))
+      )
+    }
+
+    if ([ItemType.node, ItemType.connection, ItemType.selectionZone].includes(currentDragItem.type)) {
       const leftOverflow = offset.offsetLeft + DRAG_OFFSET_TRANSFORM - e.clientX
       const rightOverflow = e.clientX - (offset.maxRight - DRAG_OFFSET_TRANSFORM)
       const topOverflow = offset.offsetTop + DRAG_OFFSET_TRANSFORM - e.clientY
@@ -272,7 +324,16 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, is
 
   const onMouseDown: React.MouseEventHandler<HTMLDivElement> = (e) => {
     if (e.button === BUTTON_LEFT && !currentDragItem.type) {
-      setDragItem({ type: ItemType.viewPort, x: e.clientX, y: e.clientY })
+      setDragItem({ type: e.shiftKey ? ItemType.selectionZone : ItemType.viewPort, x: e.clientX, y: e.clientY })
+
+      if (e.shiftKey && zoomContainerRef.current) {
+        const zoomContainerRect = zoomContainerRef.current.getBoundingClientRect()
+        const left = (e.clientX - zoomContainerRect.left) / transformation.zoom
+        const top = (e.clientY - zoomContainerRect.top) / transformation.zoom
+        const point = { x: left, y: top }
+
+        setSelectionZone({ cornerStart: point, cornerEnd: point })
+      }
     }
 
     if (!currentDragItem.type) {
@@ -313,6 +374,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, is
       className="react-flow-editor"
     >
       <div
+        ref={zoomContainerRef}
         className="zoom-container"
         style={{ transform: `translate(${transformation.dx}px, ${transformation.dy}px) scale(${transformation.zoom})` }}
       >
@@ -325,7 +387,7 @@ const Canvas: React.FC<EditorProps> = ({ nodes, pointPosition, inputPosition, is
 }
 
 export const Editor: React.FC<EditorProps> = React.memo(
-  ({ nodes, pointPosition, inputPosition, isSingleOutputConnection }) => {
+  ({ nodes, pointPosition, inputPosition, isSingleOutputConnection, onSelectionZoneChanged }) => {
     return (
       <RecoilRoot>
         <Canvas
@@ -333,6 +395,7 @@ export const Editor: React.FC<EditorProps> = React.memo(
           pointPosition={pointPosition}
           inputPosition={inputPosition}
           isSingleOutputConnection={isSingleOutputConnection}
+          onSelectionZoneChanged={onSelectionZoneChanged}
         />
       </RecoilRoot>
     )
