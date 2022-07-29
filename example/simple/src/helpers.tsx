@@ -1,3 +1,4 @@
+import React from "react"
 import { Node } from "@kseniass/react-flow-editor"
 import { PublicApiState, SelectionZone } from "./types"
 import _ from "lodash"

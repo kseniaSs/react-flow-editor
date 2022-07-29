@@ -1,3 +1,2 @@
-export { Editor, EditorPublicApi } from "./NewEditor"
-export { MenuItem } from "./menu"
-export type { Node, Config, Style, InputPort } from "./types"
+export { Editor, EditorPublicApi } from "./Editor"
+export type { Node, InputPort } from "./types"

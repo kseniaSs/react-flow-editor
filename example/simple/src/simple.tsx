@@ -1,7 +1,6 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { Editor, Node, EditorPublicApi } from "@kseniass/react-flow-editor"
-import _ from "lodash"
 import "./simple.scss"
 import { PublicApiState, SelectionZone } from "./types"
 import { initialNodes, inputPosition, pointPosition, TIPS } from "./constants"
