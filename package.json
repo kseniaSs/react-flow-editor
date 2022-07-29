@@ -25,7 +25,8 @@
   },
   "scripts": {
     "build": "vite build",
-    "lint": "tslint ./{src}/**/*.{ts,tsx}",
+    "lint:error": "eslint . --ext .ts,.tsx --quiet",
+    "lint:fix": "eslint --fix",
     "prettier": "./node_modules/.bin/prettier . --write",
     "refresh-all": "npm run refresh-redux && npm run refresh-simple",
     "refresh-simple": " rm -rf ./example/simple/node_modules/@kseniass/react-flow-editor/dist && cp -r ./dist ./example/simple/node_modules/@kseniass/react-flow-editor/dist"
@@ -44,11 +45,16 @@
   "devDependencies": {
     "@types/classnames": "^2.2.10",
     "@types/react": "17.0.30",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
     "@vitejs/plugin-react": "^1.3.2",
     "copyfiles": "^2.3.0",
+    "eslint": "^8.20.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.30.1",
     "prettier": "^2.7.1",
     "sass": "^1.53.0",
-    "tslint": "^6.1.3",
     "typescript": "^4.0.2",
     "vite": "^2.9.13",
     "vite-plugin-dts": "^1.2.1",

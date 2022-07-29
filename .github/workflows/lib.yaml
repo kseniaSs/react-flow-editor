@@ -46,3 +46,5 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Run prettier
         run: yarn prettier
+      - name: Run linter
+        run: yarn lint:error
