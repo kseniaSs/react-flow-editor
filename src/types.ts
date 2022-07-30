@@ -1,27 +1,57 @@
-import { Vector2d } from "./geometry"
+import { MutableRefObject, SetStateAction } from "react"
 
-export interface Size {
+export type Size = {
   width: number
   height: number
 }
 
-export interface Node {
-  /**
-   * Uniqle id
-   */
-  id: string
-  input: InputPort
-  position: Vector2d
-  classNames?: string[]
-  children: JSX.Element
-  rectPosition?: DOMRect
-  isSelected?: boolean
+export type Point = {
+  x: number
+  y: number
 }
 
-/**
- * Connection endpoint
- * Each connection is defined by a Port and a Connection
- * Which describes the Node+Port of the other endpoint of that connection
- */
+export type RectZone = {
+  left: number
+  right: number
+  top: number
+  bottom: number
+}
 
-export type InputPort = Array<string>
+export type Transformation = {
+  dx: number
+  dy: number
+  zoom: number
+}
+
+export type SelectionZone = {
+  cornerStart: Point
+  cornerEnd: Point
+}
+
+export type ChildrenProps = Omit<Node, "children"> & { onSizeChanged: () => void }
+
+export type Node = {
+  id: string
+  next: string[]
+  position: Point
+  children: React.FC<ChildrenProps>
+  rectPosition?: DOMRect
+  isSelected?: boolean
+  outputPosition?: Point
+  inputPosition?: Point
+}
+
+export type onEditorRectsMountedProps = {
+  zoomContainerRef: MutableRefObject<HTMLDivElement>
+  editorContainerRef: MutableRefObject<HTMLDivElement>
+}
+
+export type EditorProps = {
+  nodes: Node[]
+  setNodes: (action: SetStateAction<Node[]>) => void
+  transformation: Transformation
+  setTransformation: (transformation: Transformation) => void
+  isSingleOutputConnection?: boolean
+  onSelectionZoneChanged?: (value: RectZone) => void
+  onEditorRectsMounted?: (value: onEditorRectsMountedProps) => void
+}

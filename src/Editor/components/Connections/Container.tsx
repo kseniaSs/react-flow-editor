@@ -1,9 +1,9 @@
 import React, { useEffect } from "react"
 import { Connection } from "./Connection"
 import { NewConnection } from "./NewConnection"
-import { useNodeGroupsRect } from "../../helpers"
 import { nodesState, svgOffsetState } from "../../ducks/store"
 import { useRecoilValue, useSetRecoilState } from "recoil"
+import { computeNodeGroupsRect } from "./helpers"
 
 // TODO: Change to props
 const Arrow: React.FC = () => (
@@ -33,10 +33,10 @@ export const Container: React.FC = () => {
   const nodes = useRecoilValue(nodesState)
   const setSvgOffsetState = useSetRecoilState(svgOffsetState)
 
-  const { leftPoint, topPoint, realHeight, realWidth } = useNodeGroupsRect()
+  const { leftPoint, topPoint, realHeight, realWidth } = computeNodeGroupsRect(nodes)
 
   useEffect(() => {
-    setSvgOffsetState({ x: leftPoint, y: topPoint, width: realWidth, height: realHeight })
+    setSvgOffsetState({ x: leftPoint + , y: topPoint, width: realWidth, height: realHeight })
   }, [leftPoint, topPoint, realHeight, realWidth])
 
   const connectionContainerStyle: React.CSSProperties = {

@@ -1,12 +1,11 @@
 import React, { useEffect } from "react"
-import classNames from "classnames"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import _ from "lodash"
 
 import { Vector2d } from "../../../geometry"
 import { Node as NodeType } from "../../../types"
 import { ItemType, Point as PointType } from "../../types"
-import { BUTTON_LEFT } from "../../../constants"
+import { BUTTON_LEFT } from "../../constants"
 import {
   nodesState,
   dragItemState,
@@ -85,8 +84,6 @@ const Node: React.FC<NodeProps> = ({ node }) => {
   const setStateNodes = useSetRecoilState(nodesState)
   const setHoveredNodeId = useSetRecoilState(hoveredNodeIdState)
 
-  const nodeClassNames = classNames("node", node.classNames || [], { selected: node.isSelected })
-
   useEffect(() => {
     const rectPosition = document.getElementById(node.id).getClientRects()[0]
 
@@ -115,7 +112,7 @@ const Node: React.FC<NodeProps> = ({ node }) => {
       id={node.id}
       onMouseDown={onDragStarted}
       style={nodeStyle(node.position)}
-      className={nodeClassNames}
+      className={`node ${node.isSelected ? "selected" : ""}`}
       onMouseEnter={() => setHoveredNodeId(node.id)}
       onMouseLeave={() => setHoveredNodeId(null)}
     >

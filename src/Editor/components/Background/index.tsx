@@ -1,5 +1,4 @@
 import React, { memo, FC, useEffect, useState, useRef } from "react"
-import cn from "classnames"
 import { useRecoilValue } from "recoil"
 import { zoomState } from "../../ducks/store"
 import { BackgroundProps, BackgroundVariant } from "./types"
@@ -11,14 +10,7 @@ const defaultColors = {
   [BackgroundVariant.Lines]: "#eee"
 }
 
-const Background: FC<BackgroundProps> = ({
-  variant = BackgroundVariant.Dots,
-  gap = 15,
-  size = 0.4,
-  color,
-  style,
-  className
-}) => {
+const Background: FC<BackgroundProps> = ({ variant = BackgroundVariant.Dots, gap = 15, size = 0.4, color, style }) => {
   const ref = useRef<SVGSVGElement>(null)
   const [patternId, setPatternId] = useState<string | null>(null)
   const { dx, dy, zoom } = useRecoilValue(zoomState)
@@ -40,7 +32,7 @@ const Background: FC<BackgroundProps> = ({
 
   return (
     <svg
-      className={cn(["react-flow__background", "react-flow__container", className])}
+      className="react-flow__background react-flow__container"
       style={{
         ...style,
         width: "100%",

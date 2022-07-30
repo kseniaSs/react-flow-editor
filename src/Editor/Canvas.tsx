@@ -1,77 +1,59 @@
-import React, { useEffect, useCallback, useRef } from "react"
+import React, { useEffect, useCallback, useContext } from "react"
 import _ from "lodash"
 import {
   dragItemState,
   newConnectionState,
-  nodesState,
-  zoomState,
-  offsetState,
   dotSizeState,
   autoScrollState,
   hoveredNodeIdState,
   selectionZoneState
 } from "./ducks/store"
-import { EditorPublicApi } from "./useHooks"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
 import { useRecoilState, useRecoilValue } from "recoil"
 import Background from "./components/Background"
 import { NodeContainer } from "./components/Nodes/NodesContainer"
-import { BUTTON_LEFT, ZOOM_STEP, DRAG_AUTO_SCROLL_TIME, DRAG_AUTO_SCROLL_DIST } from "../constants"
-import { Axis, ItemType, RectZone } from "./types"
-import { cornersToRect, isNodeInSelectionZone, getSign, setOnDrag } from "./helpers"
+import { BUTTON_LEFT, ZOOM_STEP, CLASSES } from "./constants"
+import { EditorContext } from "./Editor"
+import { ItemType } from "./types"
+import { useAutoScroll } from "./helpers/autoScroll"
+import { cornersToRect, isNodeInSelectionZone } from "./helpers/selectionZone"
+import { useEditorMount } from "./helpers"
 
-type CanvasProps = {
-  isSingleOutputConnection?: boolean
-  onSelectionZoneChanged: (value: RectZone) => void
-}
+export const Canvas: React.FC = () => {
+  const { nodes, transformation, onSelectionZoneChanged, setNodes, setTransformation, isSingleOutputConnection } =
+    useContext(EditorContext)
 
-const Canvas: React.FC<CanvasProps> = ({ isSingleOutputConnection, onSelectionZoneChanged }) => {
-  const [offset, setOffset] = useRecoilState(offsetState)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
   const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
-  const [stateNodes, setNodes] = useRecoilState(nodesState)
-  const [transformation, setTransformation] = useRecoilState(zoomState)
   const [dotSize, setDotSize] = useRecoilState(dotSizeState)
   const [selectionZone, setSelectionZone] = useRecoilState(selectionZoneState)
   const [autoScroll, setAutoScroll] = useRecoilState(autoScrollState)
-  const zoomContainerRef = useRef<HTMLDivElement | null>(null)
-
   const hoveredNodeId = useRecoilValue(hoveredNodeIdState)
+
+  const { zoomContainerRef, editorContainerRef } = useEditorMount()
 
   useEffect(() => {
     onSelectionZoneChanged(cornersToRect(selectionZone))
   }, [selectionZone])
 
   const recalculateRects = useCallback(() => {
-    setNodes((stateNodes) =>
-      stateNodes.map((el) => {
-        const rectPosition = document.getElementById(el.id).getClientRects()[0]
-
-        return { ...el, rectPosition }
-      })
+    setNodes((nodes) =>
+      nodes.map((el) => ({ ...el, rectPosition: document.getElementById(el.id).getBoundingClientRect() }))
     )
   }, [setNodes])
-
-  EditorPublicApi.update({
-    transformation,
-    recalculateRects,
-    setTransformation,
-    stateNodes,
-    zoomContainerRef
-  })
 
   const onDragEnded = () => {
     setAutoScroll({ speed: 0, direction: null })
     if (currentDragItem.type === ItemType.connection) {
-      const inputNode = stateNodes.find((currentElement) => hoveredNodeId === currentElement.id)
-      const selectedNode = stateNodes.filter((node) => node.isSelected)
+      const inputNode = nodes.find((currentElement) => hoveredNodeId === currentElement.id)
+      const selectedNode = nodes.filter((node) => node.isSelected)
       const outputNode = selectedNode.length === 1 ? selectedNode[0] : null
 
       if (inputNode && outputNode) {
         setNodes((nodesState) =>
           nodesState.map((el) =>
-            el.id === outputNode.id && !el.input.includes(inputNode.id)
-              ? { ...el, input: isSingleOutputConnection ? [inputNode.id] : [...el.input, inputNode.id] }
+            el.id === outputNode.id && !el.next.includes(inputNode.id)
+              ? { ...el, input: isSingleOutputConnection ? [inputNode.id] : [...el.next, inputNode.id] }
               : el
           )
         )
@@ -82,67 +64,7 @@ const Canvas: React.FC<CanvasProps> = ({ isSingleOutputConnection, onSelectionZo
     setSelectionZone(null)
   }
 
-  useEffect(() => {
-    if (!autoScroll.direction) return
-
-    const delta = DRAG_AUTO_SCROLL_DIST * autoScroll.speed
-
-    const scroll = () => {
-      if ([ItemType.node, ItemType.connection, ItemType.selectionZone].includes(currentDragItem.type)) {
-        const dx = transformation.dx - getSign(Axis.x, autoScroll) * delta * transformation.zoom
-        const dy = transformation.dy - getSign(Axis.y, autoScroll) * delta * transformation.zoom
-
-        setTransformation({
-          ...transformation,
-          dx,
-          dy
-        })
-      }
-
-      if (currentDragItem.type === ItemType.connection) {
-        setNewConnectionState({
-          x: newConnection.x + getSign(Axis.x, autoScroll) * delta,
-          y: newConnection.y + getSign(Axis.y, autoScroll) * delta
-        })
-      }
-
-      if (currentDragItem.type === ItemType.selectionZone) {
-        setSelectionZone((zone) => ({
-          ...zone,
-          cornerEnd: {
-            x: zone.cornerEnd.x + getSign(Axis.x, autoScroll) * delta,
-            y: zone.cornerEnd.y + getSign(Axis.y, autoScroll) * delta
-          }
-        }))
-
-        setNodes((stateNodes) =>
-          stateNodes.map((el) => ({ ...el, isSelected: isNodeInSelectionZone(el, selectionZone, transformation) }))
-        )
-      }
-
-      if (currentDragItem.type === ItemType.node) {
-        const draggingNodesIds = stateNodes.filter((node) => node.isSelected).map((node) => node.id)
-
-        setNodes((stateNodes) =>
-          stateNodes.map((el) =>
-            draggingNodesIds.includes(el.id)
-              ? {
-                  ...el,
-                  position: {
-                    x: el.position.x + getSign(Axis.x, autoScroll) * delta,
-                    y: el.position.y + getSign(Axis.y, autoScroll) * delta
-                  }
-                }
-              : el
-          )
-        )
-      }
-    }
-
-    const scrollInterval = setInterval(scroll, DRAG_AUTO_SCROLL_TIME)
-
-    return () => clearInterval(scrollInterval)
-  }, [autoScroll, currentDragItem, newConnection, stateNodes, transformation, selectionZone])
+  const checkAutoScrollEnable = useAutoScroll(editorContainerRef)
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
     if (currentDragItem.type === ItemType.connection && !autoScroll.direction) {
@@ -168,10 +90,10 @@ const Canvas: React.FC<CanvasProps> = ({ isSingleOutputConnection, onSelectionZo
     }
 
     if (currentDragItem.type === ItemType.node && !autoScroll.direction) {
-      const draggingNodesIds = stateNodes.filter((node) => node.isSelected).map((node) => node.id)
+      const draggingNodesIds = nodes.filter((node) => node.isSelected).map((node) => node.id)
 
-      setNodes((stateNodes) =>
-        stateNodes.map((el) =>
+      setNodes((nodes) =>
+        nodes.map((el) =>
           draggingNodesIds.includes(el.id)
             ? {
                 ...el,
@@ -200,13 +122,13 @@ const Canvas: React.FC<CanvasProps> = ({ isSingleOutputConnection, onSelectionZo
         }
       })
 
-      setNodes((stateNodes) =>
-        stateNodes.map((el) => ({ ...el, isSelected: isNodeInSelectionZone(el, selectionZone, transformation) }))
+      setNodes((nodes) =>
+        nodes.map((el) => ({ ...el, isSelected: isNodeInSelectionZone(el, selectionZone, transformation) }))
       )
     }
 
     if ([ItemType.node, ItemType.connection, ItemType.selectionZone].includes(currentDragItem.type)) {
-      setOnDrag(offset, setAutoScroll, e, autoScroll)
+      checkAutoScrollEnable(e)
     }
 
     setDragItem((dragItem) => ({ ...dragItem, x: e.clientX, y: e.clientY }))
@@ -214,12 +136,12 @@ const Canvas: React.FC<CanvasProps> = ({ isSingleOutputConnection, onSelectionZo
 
   const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
     if (["Delete", "Backspace"].includes(e.key)) {
-      setNodes((stateNodes) => stateNodes.filter((node) => !node.isSelected))
+      setNodes((nodes) => nodes.filter((node) => !node.isSelected))
     }
   }
 
   useEffect(() => {
-    if (!stateNodes.length) return
+    if (!nodes.length) return
 
     recalculateRects()
   }, [transformation.zoom])
@@ -252,26 +174,13 @@ const Canvas: React.FC<CanvasProps> = ({ isSingleOutputConnection, onSelectionZo
     }
   }
 
-  const containerRef = useCallback((element) => {
-    if (element !== null) {
-      const rect = element.getBoundingClientRect()
-
-      setOffset({
-        offsetLeft: rect?.left || 0,
-        offsetTop: rect?.top || 0,
-        maxRight: rect?.right || 0,
-        maxBottom: rect?.bottom || 0
-      })
-    }
-  }, [])
-
   useEffect(() => {
-    if (!dotSize.height && !dotSize.width && stateNodes.length) {
-      const rect = document.getElementById(`dot-${_.first(stateNodes).id}`)?.getBoundingClientRect()
+    if (!dotSize.height && !dotSize.width && nodes.length) {
+      const rect = document.getElementById(`dot-${_.first(nodes).id}`)?.getBoundingClientRect()
 
       rect && setDotSize(rect)
     }
-  }, [dotSize, stateNodes])
+  }, [dotSize, nodes])
 
   return (
     <div
@@ -281,12 +190,12 @@ const Canvas: React.FC<CanvasProps> = ({ isSingleOutputConnection, onSelectionZo
       onKeyDown={onKeyDown}
       onMouseDown={onMouseDown}
       tabIndex={0}
-      ref={containerRef}
-      className="react-flow-editor"
+      ref={editorContainerRef}
+      className={CLASSES.EDITOR}
     >
       <div
         ref={zoomContainerRef}
-        className="zoom-container"
+        className={CLASSES.ZOOM_CONTAINER}
         style={{ transform: `translate(${transformation.dx}px, ${transformation.dy}px) scale(${transformation.zoom})` }}
       >
         <NodeContainer />
@@ -296,5 +205,3 @@ const Canvas: React.FC<CanvasProps> = ({ isSingleOutputConnection, onSelectionZo
     </div>
   )
 }
-
-export default Canvas
