@@ -1,4 +1,8 @@
+import { MutableRefObject, useCallback, useContext, useEffect } from "react"
+import { useRecoilState, useRecoilValue } from "recoil"
 import { Node, RectZone, SelectionZone, Transformation } from "../../types"
+import { dragItemState, selectionZoneState } from "../ducks/store"
+import { EditorContext } from "../Editor"
 
 export const isNodeInSelectionZone = (node: Node, zone: SelectionZone, transform: Transformation): boolean => {
   const { left, top, right, bottom } = cornersToRect(zone)
@@ -25,3 +29,47 @@ export const cornersToRect = (zone: SelectionZone): RectZone =>
         right: 0,
         bottom: 0
       }
+
+export const useSelectionZone = (zoomContainerRef: MutableRefObject<HTMLElement>) => {
+  const [selectionZone, setSelectionZone] = useRecoilState(selectionZoneState)
+  const { onSelectionZoneChanged, transformation } = useContext(EditorContext)
+  const currentDragItem = useRecoilValue(dragItemState)
+
+  useEffect(() => {
+    onSelectionZoneChanged(cornersToRect(selectionZone))
+  }, [selectionZone])
+
+  const initSelectionZone = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      if (e.shiftKey && zoomContainerRef.current) {
+        const zoomContainerRect = zoomContainerRef.current.getBoundingClientRect()
+        const left = (e.clientX - zoomContainerRect.left) / transformation.zoom
+        const top = (e.clientY - zoomContainerRect.top) / transformation.zoom
+        const point = { x: left, y: top }
+
+        setSelectionZone({ cornerStart: point, cornerEnd: point })
+      }
+    },
+    [transformation, zoomContainerRef]
+  )
+
+  const expandSelectionZone = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      setSelectionZone((zone) => {
+        const deltaX = (e.clientX - currentDragItem.x) / transformation.zoom
+        const deltaY = (e.clientY - currentDragItem.y) / transformation.zoom
+
+        return {
+          ...zone,
+          cornerEnd: {
+            x: zone.cornerEnd.x + deltaX,
+            y: zone.cornerEnd.y + deltaY
+          }
+        }
+      })
+    },
+    [currentDragItem, transformation, setSelectionZone]
+  )
+
+  return { initSelectionZone, expandSelectionZone }
+}

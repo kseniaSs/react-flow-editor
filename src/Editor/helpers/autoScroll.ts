@@ -48,7 +48,7 @@ const useCheckAutoScrollEnable = (editorContainerRef: MutableRefObject<HTMLEleme
         setAutoScroll({ speed: 0, direction: null })
       }
     },
-    [autoScroll]
+    [autoScroll, editorContainerRef]
   )
 }
 
@@ -120,7 +120,7 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
     const scrollInterval = setInterval(scroll, DRAG_AUTO_SCROLL_TIME)
 
     return () => clearInterval(scrollInterval)
-  }, [autoScroll, currentDragItem, newConnection, nodes, transformation, selectionZone])
+  }, [autoScroll, currentDragItem, newConnection, nodes, transformation, selectionZone, setNodes, setSelectionZone])
 
   return useCheckAutoScrollEnable(editorContainerRef)
 }
