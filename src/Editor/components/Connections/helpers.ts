@@ -46,3 +46,9 @@ export const computeNodeGroupsRect = (nodes: Node[], transform: Transformation):
     realWidth: dimensionsRect.rightPoint - dimensionsRect.leftPoint
   }
 }
+
+export const connectionContainerStyle = (rect: NodeGroupsRect): React.CSSProperties => ({
+  minWidth: rect.realWidth,
+  minHeight: rect.realHeight,
+  transform: `translate(${rect.leftPoint}px, ${rect.topPoint}px)`
+})

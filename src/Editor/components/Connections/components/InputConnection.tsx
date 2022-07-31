@@ -1,10 +1,12 @@
+import { isEqual } from "lodash"
 import React from "react"
-import _ from "lodash"
-import { Vector2d } from "../../../geometry"
+import { Point } from "../../../../types"
+import { CLASSES } from "../../../constants"
+import { ARROW_ID } from "./Arrow"
 
 type InputConnectionProps = {
-  inputPosition: Vector2d
-  outputPosition: Vector2d
+  inputPosition: Point
+  outputPosition: Point
 }
 
 const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition }) => {
@@ -18,7 +20,7 @@ const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, output
   // just line, will be when we add props connectionType
   // cmd = `M ${outputPosition.x} ${outputPosition.y} L ${inputPosition.x} ${inputPosition.y}`
 
-  return <path className="connection" d={cmd} markerStart="url(#triangle)" />
+  return <path className={CLASSES.CONNECTION} d={cmd} markerStart={`url(#${ARROW_ID})`} />
 }
 
-export default React.memo(InputConnection, _.isEqual)
+export default React.memo(InputConnection, isEqual)

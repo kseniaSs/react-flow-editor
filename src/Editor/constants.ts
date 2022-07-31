@@ -13,5 +13,7 @@ export const CLASSES = {
   ZOOM_CONTAINER: "zoom-container",
   EDITOR: "react-flow-editor",
   BACKGROUND: "react-flow__background",
-  DOT: "dot"
+  DOT: "dot",
+  CONNECTIONS: "connections",
+  CONNECTION: "connection"
 }

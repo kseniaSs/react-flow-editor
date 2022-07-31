@@ -1,3 +1,4 @@
+import { isEqual } from "lodash"
 import React, { useContext, useMemo } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import { BUTTON_LEFT, CLASSES } from "../../constants"
@@ -11,7 +12,7 @@ type PointProps = {
   nodeId: string
 }
 
-export const Point: React.FC<PointProps> = ({ nodeId }) => {
+export const Point: React.FC<PointProps> = React.memo(({ nodeId }) => {
   const { transformation, nodes, setNodes } = useContext(EditorContext)
 
   const setDragItem = useSetRecoilState(dragItemState)
@@ -56,4 +57,4 @@ export const Point: React.FC<PointProps> = ({ nodeId }) => {
       onMouseDown={setNode}
     />
   )
-}
+}, isEqual)

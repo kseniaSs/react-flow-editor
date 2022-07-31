@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react"
 import { dragItemState } from "./ducks/store"
-import { Container as ConnectionContainer } from "./components/Connections/Container"
+import { Container as ConnectionContainer } from "./components/Connections"
 import Background from "./components/Background"
 import { CLASSES, KEY_CODE_BACK, KEY_CODE_DELETE } from "./constants"
 import { EditorContext } from "./Editor"
@@ -9,8 +9,9 @@ import { useDnD } from "./helpers/DnD"
 import { useZoom } from "./helpers/zoom"
 import { useRecoilValue } from "recoil"
 import Node from "./components/Node"
+import { isEqual } from "lodash"
 
-export const Canvas: React.FC = () => {
+export const Canvas: React.FC = React.memo(() => {
   const { nodes, transformation, setNodes } = useContext(EditorContext)
 
   const currentDragItem = useRecoilValue(dragItemState)
@@ -50,4 +51,4 @@ export const Canvas: React.FC = () => {
       <Background />
     </div>
   )
-}
+}, isEqual)
