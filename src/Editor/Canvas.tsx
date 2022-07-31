@@ -2,13 +2,13 @@ import React, { useEffect, useContext } from "react"
 import { dragItemState } from "./ducks/store"
 import { Container as ConnectionContainer } from "./components/Connections/Container"
 import Background from "./components/Background"
-import { NodeContainer } from "./components/Nodes/NodesContainer"
 import { CLASSES, KEY_CODE_BACK, KEY_CODE_DELETE } from "./constants"
 import { EditorContext } from "./Editor"
 import { TransformCanvasStyle, useEditorMount, useRecalculateRects } from "./helpers"
 import { useDnD } from "./helpers/DnD"
 import { useZoom } from "./helpers/zoom"
 import { useRecoilValue } from "recoil"
+import Node from "./components/Node"
 
 export const Canvas: React.FC = () => {
   const { nodes, transformation, setNodes } = useContext(EditorContext)
@@ -42,7 +42,9 @@ export const Canvas: React.FC = () => {
       className={CLASSES.EDITOR}
     >
       <div ref={zoomContainerRef} className={CLASSES.ZOOM_CONTAINER} style={TransformCanvasStyle(transformation)}>
-        <NodeContainer />
+        {nodes.map((node) => (
+          <Node node={node} key={node.id} />
+        ))}
         <ConnectionContainer />
       </div>
       <Background />

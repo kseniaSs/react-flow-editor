@@ -2,6 +2,7 @@ import { first } from "lodash"
 import { useCallback, useContext, useEffect, useRef } from "react"
 import { useRecoilState } from "recoil"
 import { Transformation } from "../../types"
+import { buildDotId } from "../components/Node/helpers"
 import { dotSizeState } from "../ducks/store"
 import { EditorContext } from "../Editor"
 
@@ -24,7 +25,7 @@ export const useEditorMount = () => {
 
   useEffect(() => {
     if (!dotSize.height && !dotSize.width && nodes.length) {
-      const rect = document.getElementById(`dot-${first(nodes).id}`)?.getBoundingClientRect()
+      const rect = document.getElementById(buildDotId(first(nodes).id))?.getBoundingClientRect()
 
       rect && setDotSize(rect)
     }

@@ -11,5 +11,7 @@ export const DRAG_AUTO_SCROLL_TIME = 10
 
 export const CLASSES = {
   ZOOM_CONTAINER: "zoom-container",
-  EDITOR: "react-flow-editor"
+  EDITOR: "react-flow-editor",
+  BACKGROUND: "react-flow__background",
+  DOT: "dot"
 }
