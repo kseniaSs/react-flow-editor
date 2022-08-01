@@ -109,6 +109,7 @@ body {
   border: $node-border-width solid $node-border-color;
   box-sizing: content-box;
   z-index: 1;
+  width: 150px;
 
   transition: $node-transitions;
 

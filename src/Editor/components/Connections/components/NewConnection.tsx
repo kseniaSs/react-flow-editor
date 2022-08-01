@@ -10,7 +10,7 @@ import InputConnection from "./InputConnection"
 const BORDER_CONNECTION_LEFT_OFFSET = 120
 
 export const NewConnection: React.FC = () => {
-  const { nodes, transformation, styleConfig } = useContext(EditorContext)
+  const { nodes, styleConfig } = useContext(EditorContext)
 
   const newConnectionPosition = useRecoilValue(newConnectionState)
   const svgOffset = useRecoilValue(svgOffsetState)
@@ -23,15 +23,10 @@ export const NewConnection: React.FC = () => {
 
   const outputPosition = outputNode.rectPosition
     ? {
-        x:
-          -svgOffset.x +
-          outputNode.position.x +
-          (outputNode.rectPosition?.width || 0) / transformation.zoom -
-          (outputNode?.outputPosition?.x || 0),
+        x: -svgOffset.x + outputNode.position.x + (outputNode?.outputPosition?.x || 0),
         y:
           -svgOffset.y +
           outputNode.position.y +
-          (outputNode.rectPosition?.height || 0) / transformation.zoom -
           (outputNode?.outputPosition?.y || 0) -
           (styleConfig?.point?.width || DEFAULT_POINT_SIZE) / 2
       }

@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom"
 import { Editor, Node, OnEditorRectsMountedProps, Transformation } from "@kseniass/react-flow-editor"
 import "./simple.scss"
 import { SelectionZone } from "./types"
-import { initialNodes, TIPS } from "./constants"
+import { initialNodes, STYLED_CONFIG, TIPS } from "./constants"
 import { computeSelectionZone, nodeFactory } from "./helpers"
 import { NodeAttributes } from "./parts"
 
@@ -41,6 +41,7 @@ const App = () => {
           isSingleOutputConnection
           onSelectionZoneChanged={onSelectionZoneChanged}
           onEditorRectsMounted={onEditorRectsMounted}
+          styleConfig={STYLED_CONFIG}
         />
       </div>
       <pre className="tips">{TIPS}</pre>
