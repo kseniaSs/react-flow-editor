@@ -23,12 +23,16 @@ export const NewConnection: React.FC = () => {
 
   const outputPosition = outputNode.rectPosition
     ? {
-        x: -svgOffset.x + outputNode.position.x + (outputNode?.outputPosition?.x || 0),
+        x:
+          -svgOffset.x +
+          outputNode.position.x +
+          (outputNode?.outputPosition?.x || 0) +
+          (styleConfig?.point?.width || DEFAULT_POINT_SIZE) / 2,
         y:
           -svgOffset.y +
           outputNode.position.y +
-          (outputNode?.outputPosition?.y || 0) -
-          (styleConfig?.point?.width || DEFAULT_POINT_SIZE) / 2
+          (outputNode?.outputPosition?.y || 0) +
+          (styleConfig?.point?.height || DEFAULT_POINT_SIZE) / 2
       }
     : outputNode.position
 
