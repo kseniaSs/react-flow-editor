@@ -12,6 +12,8 @@ export const DRAG_AUTO_SCROLL_TIME = 10
 export const DEFAULT_POINT_SIZE = 8
 export const DEFAULT_COLOR = "black"
 
+export const MINIMUM_SVG_SIZE = 15000
+
 export const CLASSES = {
   ZOOM_CONTAINER: "zoom-container",
   EDITOR: "react-flow-editor",

@@ -1,4 +1,5 @@
 import { Node, Transformation } from "../../../types"
+import { MINIMUM_SVG_SIZE } from "../../constants"
 import { NodeGroupsRect } from "../../types"
 
 const WHITE_SPACE_SCREENS = 2
@@ -35,10 +36,14 @@ export const computeNodeGroupsRect = (nodes: Node[], transform: Transformation):
   const whiteSpaceX = WHITE_SPACE_SCREENS * window.innerWidth * transform.zoom
   const whiteSpaceY = WHITE_SPACE_SCREENS * window.innerHeight * transform.zoom
 
-  dimensionsRect.leftPoint -= whiteSpaceX
-  dimensionsRect.rightPoint += whiteSpaceX
-  dimensionsRect.topPoint -= whiteSpaceY
-  dimensionsRect.bottomPoint += whiteSpaceY
+  dimensionsRect.leftPoint =
+    dimensionsRect.leftPoint < -MINIMUM_SVG_SIZE ? dimensionsRect.leftPoint - whiteSpaceX : -MINIMUM_SVG_SIZE
+  dimensionsRect.rightPoint =
+    dimensionsRect.rightPoint > MINIMUM_SVG_SIZE ? dimensionsRect.rightPoint + whiteSpaceX : MINIMUM_SVG_SIZE
+  dimensionsRect.topPoint =
+    dimensionsRect.topPoint < -MINIMUM_SVG_SIZE ? dimensionsRect.topPoint - whiteSpaceY : -MINIMUM_SVG_SIZE
+  dimensionsRect.bottomPoint =
+    dimensionsRect.bottomPoint > MINIMUM_SVG_SIZE ? dimensionsRect.bottomPoint + whiteSpaceY : MINIMUM_SVG_SIZE
 
   return {
     ...dimensionsRect,
