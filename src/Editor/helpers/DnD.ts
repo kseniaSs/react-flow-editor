@@ -33,13 +33,15 @@ const useDragTransformations = ({ expandSelectionZone }: { expandSelectionZone: 
     },
 
     [ItemType.viewPort]: (e: React.MouseEvent<HTMLElement>) => {
-      const newPos = { x: e.clientX, y: e.clientY }
-      const offset = { x: newPos.x - currentDragItem.x, y: newPos.y - currentDragItem.y }
+      const newPos = {
+        x: (e.clientX - currentDragItem.x) / transformation.zoom,
+        y: (e.clientY - currentDragItem.y) / transformation.zoom
+      }
 
       setTransformation({
         ...transformation,
-        dx: transformation.dx + offset.x,
-        dy: transformation.dy + offset.y
+        dx: transformation.dx + newPos.x,
+        dy: transformation.dy + newPos.y
       })
 
       recalculateRects()
