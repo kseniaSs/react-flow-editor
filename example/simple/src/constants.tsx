@@ -1,10 +1,10 @@
-import React from "react"
 import { Node } from "@kseniass/react-flow-editor"
+import { SimpleNode } from "./parts"
 
 export const initialNodes: Node[] = [
-  { id: "Node_1", children: <div>Node_1</div>, position: { x: 110, y: 110 }, input: ["Node_2"] },
-  { id: "Node_2", children: <div>Node_2</div>, position: { x: 310, y: 110 }, input: ["Node_3"] },
-  { id: "Node_3", children: <div>Node_3</div>, position: { x: 310, y: 510 }, input: [] }
+  { id: "Node_1", children: SimpleNode({ expandable: true }), position: { x: 110, y: 110 }, next: ["Node_2"] },
+  { id: "Node_2", children: SimpleNode({ expandable: true }), position: { x: 310, y: 310 }, next: ["Node_3"] },
+  { id: "Node_3", children: SimpleNode({ expandable: false }), position: { x: 510, y: 510 }, next: [] }
 ]
 
 export const pointPosition = { x: 30, y: -10 }

@@ -1,7 +1,8 @@
 import { isEqual } from "lodash"
-import React from "react"
+import React, { useContext } from "react"
 import { Point } from "../../../../types"
-import { CLASSES } from "../../../constants"
+import { CLASSES, DEFAULT_COLOR } from "../../../constants"
+import { EditorContext } from "../../../Editor"
 import { ARROW_ID } from "./Arrow"
 
 type InputConnectionProps = {
@@ -10,6 +11,8 @@ type InputConnectionProps = {
 }
 
 const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition }) => {
+  const { styleConfig } = useContext(EditorContext)
+
   const dx = Math.max(Math.abs(outputPosition.x - inputPosition.x) / 1.5, 100)
   const a1 = { x: outputPosition.x - dx, y: outputPosition.y }
   const a2 = { x: inputPosition.x + dx, y: inputPosition.y }
@@ -20,7 +23,15 @@ const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, output
   // just line, will be when we add props connectionType
   // cmd = `M ${outputPosition.x} ${outputPosition.y} L ${inputPosition.x} ${inputPosition.y}`
 
-  return <path className={CLASSES.CONNECTION} d={cmd} markerStart={`url(#${ARROW_ID})`} />
+  return (
+    <path
+      className={CLASSES.CONNECTION}
+      d={cmd}
+      markerStart={`url(#${ARROW_ID})`}
+      fill="transparent"
+      stroke={styleConfig?.connector?.color || DEFAULT_COLOR}
+    />
+  )
 }
 
 export default React.memo(InputConnection, isEqual)

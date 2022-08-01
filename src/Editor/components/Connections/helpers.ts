@@ -25,10 +25,10 @@ export const computeNodeGroupsRect = (nodes: Node[], transform: Transformation):
       return acc
     },
     {
-      leftPoint: -Infinity,
-      rightPoint: Infinity,
-      topPoint: -Infinity,
-      bottomPoint: Infinity
+      leftPoint: Infinity,
+      rightPoint: -Infinity,
+      topPoint: Infinity,
+      bottomPoint: -Infinity
     }
   )
 

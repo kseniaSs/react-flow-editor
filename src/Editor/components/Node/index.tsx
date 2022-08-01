@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react"
 import { useSetRecoilState } from "recoil"
 import { isEqual, omit } from "lodash"
 import { Node as NodeType } from "../../../types"
-import { BUTTON_LEFT } from "../../constants"
+import { BUTTON_LEFT, CLASSES } from "../../constants"
 import { dragItemState, hoveredNodeIdState } from "../../ducks/store"
 import { resetEvent, useRecalculateRects } from "../../helpers"
 import { ItemType } from "../../types"
@@ -49,6 +49,7 @@ const Node: React.FC<NodeProps> = ({ node }) => {
   return (
     <div
       id={node.id}
+      className={CLASSES.NODE}
       onMouseDown={onDragStarted}
       style={nodeStyle(node.position)}
       onMouseEnter={() => setHoveredNodeId(node.id)}

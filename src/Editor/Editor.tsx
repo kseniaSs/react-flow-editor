@@ -3,6 +3,7 @@ import { RecoilRoot } from "recoil"
 import { isEqual } from "lodash"
 import { Canvas } from "./Canvas"
 import { EditorProps } from "../types"
+import "../_style.scss"
 
 export const EditorContext = createContext<EditorProps | null>(null)
 

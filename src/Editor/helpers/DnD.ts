@@ -56,7 +56,7 @@ const useDragTransformations = ({ expandSelectionZone }: { expandSelectionZone: 
                   x: el.position.x + (e.clientX - currentDragItem.x) / transformation.zoom,
                   y: el.position.y + (e.clientY - currentDragItem.y) / transformation.zoom
                 },
-                rectPosition: document.getElementById(el.id).getClientRects()[0]
+                rectPosition: document.getElementById(el.id).getBoundingClientRect()
               }
             : el
         )

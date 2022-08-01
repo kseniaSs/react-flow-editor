@@ -20,11 +20,17 @@ export const Canvas: React.FC = React.memo(() => {
   const { onDrag, onDragEnded, onDragStarted } = useDnD(editorContainerRef, zoomContainerRef)
   const { onWheel } = useZoom()
 
-  const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
-    if ([KEY_CODE_BACK, KEY_CODE_DELETE].includes(e.key)) {
-      setNodes((nodes) => nodes.filter((node) => !node.isSelected))
+  useEffect(() => {
+    const hotKeysHandler = (e: KeyboardEvent) => {
+      if ([KEY_CODE_BACK, KEY_CODE_DELETE].includes(e.key)) {
+        setNodes((nodes) => nodes.filter((node) => !node.isSelected))
+      }
     }
-  }
+
+    window.addEventListener("keydown", hotKeysHandler)
+
+    return () => window.removeEventListener("keydown", hotKeysHandler)
+  }, [])
 
   useEffect(() => {
     if (!nodes.length) return
@@ -37,7 +43,6 @@ export const Canvas: React.FC = React.memo(() => {
       onMouseUp={onDragEnded}
       onMouseMove={currentDragItem.type && onDrag}
       onWheel={onWheel}
-      onKeyDown={onKeyDown}
       onMouseDown={onDragStarted}
       ref={editorContainerRef}
       className={CLASSES.EDITOR}

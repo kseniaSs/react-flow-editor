@@ -1,9 +1,5 @@
-import { first } from "lodash"
 import { useCallback, useContext, useEffect, useRef } from "react"
-import { useRecoilState } from "recoil"
 import { Transformation } from "../../types"
-import { buildDotId } from "../components/Node/helpers"
-import { dotSizeState } from "../ducks/store"
 import { EditorContext } from "../Editor"
 
 export const resetEvent = (e: React.MouseEvent<HTMLElement>) => {
@@ -12,9 +8,7 @@ export const resetEvent = (e: React.MouseEvent<HTMLElement>) => {
 }
 
 export const useEditorMount = () => {
-  const { onEditorRectsMounted, nodes } = useContext(EditorContext)
-
-  const [dotSize, setDotSize] = useRecoilState(dotSizeState)
+  const { onEditorRectsMounted } = useContext(EditorContext)
 
   const zoomContainerRef = useRef<HTMLDivElement | null>(null)
   const editorContainerRef = useRef<HTMLDivElement | null>(null)
@@ -22,14 +16,6 @@ export const useEditorMount = () => {
   useEffect(() => {
     onEditorRectsMounted({ zoomContainerRef, editorContainerRef })
   }, [])
-
-  useEffect(() => {
-    if (!dotSize.height && !dotSize.width && nodes.length) {
-      const rect = document.getElementById(buildDotId(first(nodes).id))?.getBoundingClientRect()
-
-      rect && setDotSize(rect)
-    }
-  }, [dotSize, nodes])
 
   return { zoomContainerRef, editorContainerRef }
 }

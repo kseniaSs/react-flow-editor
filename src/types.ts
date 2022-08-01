@@ -28,22 +28,43 @@ export type SelectionZone = {
   cornerEnd: Point
 }
 
-export type ChildrenProps = Omit<Node, "children"> & { onSizeChanged: () => void }
+export type NodeProps = NodeBase & {
+  onSizeChanged: () => void
+}
 
-export type Node = {
+export type Node = NodeBase & {
+  children: React.FC<NodeProps>
+}
+
+export type NodeBase = {
   id: string
   next: string[]
   position: Point
-  children: React.FC<ChildrenProps>
   rectPosition?: DOMRect
   isSelected?: boolean
   outputPosition?: Point
   inputPosition?: Point
 }
 
-export type onEditorRectsMountedProps = {
+export type OnEditorRectsMountedProps = {
   zoomContainerRef: MutableRefObject<HTMLDivElement>
   editorContainerRef: MutableRefObject<HTMLDivElement>
+}
+
+export type PointStyleConfig = {
+  width: number
+  height: number
+  color: string
+}
+
+export type ConnectorStyleConfig = {
+  color: string
+  width: number
+}
+
+export type StyleConfig = {
+  point?: PointStyleConfig
+  connector?: ConnectorStyleConfig
 }
 
 export type EditorProps = {
@@ -53,5 +74,6 @@ export type EditorProps = {
   setTransformation: (transformation: Transformation) => void
   isSingleOutputConnection?: boolean
   onSelectionZoneChanged?: (value: RectZone) => void
-  onEditorRectsMounted?: (value: onEditorRectsMountedProps) => void
+  onEditorRectsMounted?: (value: OnEditorRectsMountedProps) => void
+  styleConfig?: StyleConfig
 }

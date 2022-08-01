@@ -24,4 +24,13 @@
     height: 100%;
     width: 100%;
   }
+
+  .dot {
+    border-radius: 50%;
+    position: absolute;
+  }
+
+  .node {
+    position: absolute;
+  }
 }

@@ -1,6 +1,7 @@
 import { isEqual } from "lodash"
 import React from "react"
 import { Size } from "../../../../types"
+import { DEFAULT_COLOR } from "../../../constants"
 
 type ArrowProps = {
   color?: string
@@ -9,7 +10,7 @@ type ArrowProps = {
 export const ARROW_ID = "triangle"
 
 export const Arrow: React.FC<ArrowProps> = React.memo(
-  ({ color = "#3C7BE1", width = 10, height = 8 }) => (
+  ({ color = DEFAULT_COLOR, width = 10, height = 10 }) => (
     <defs>
       <marker
         id={ARROW_ID}

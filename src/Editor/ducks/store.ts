@@ -1,5 +1,5 @@
 import { atom } from "recoil"
-import { Point, SelectionZone, Size } from "../../types"
+import { Point, SelectionZone } from "../../types"
 import { AutoScrollState, SVGOffsetState, DragItemState } from "../types"
 
 export const newConnectionState = atom<Point>({
@@ -15,11 +15,6 @@ export const autoScrollState = atom<AutoScrollState>({
 export const selectionZoneState = atom<SelectionZone | null>({
   key: "selectionZoneState",
   default: null
-})
-
-export const dotSizeState = atom<Size>({
-  key: "dotSizeState",
-  default: { width: 0, height: 0 }
 })
 
 export const svgOffsetState = atom<SVGOffsetState>({

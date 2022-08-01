@@ -9,11 +9,15 @@ export const DRAG_OFFSET_TRANSFORM = 80
 export const DRAG_AUTO_SCROLL_DIST = 30
 export const DRAG_AUTO_SCROLL_TIME = 10
 
+export const DEFAULT_POINT_SIZE = 8
+export const DEFAULT_COLOR = "black"
+
 export const CLASSES = {
   ZOOM_CONTAINER: "zoom-container",
   EDITOR: "react-flow-editor",
   BACKGROUND: "react-flow__background",
   DOT: "dot",
   CONNECTIONS: "connections",
-  CONNECTION: "connection"
+  CONNECTION: "connection",
+  NODE: "node"
 }

@@ -9,7 +9,7 @@ import { Arrow } from "./components/Arrow"
 import { CLASSES } from "../../constants"
 
 export const Container: React.FC = () => {
-  const { transformation, nodes } = useContext(EditorContext)
+  const { transformation, nodes, styleConfig } = useContext(EditorContext)
 
   const setSvgOffsetState = useSetRecoilState(svgOffsetState)
   const nodesRect = computeNodeGroupsRect(nodes, transformation)
@@ -25,7 +25,7 @@ export const Container: React.FC = () => {
 
   return (
     <svg className={CLASSES.CONNECTIONS} style={connectionContainerStyle(nodesRect)}>
-      <Arrow />
+      <Arrow color={styleConfig?.connector?.color} />
       {nodes.map((node) => (
         <Connection key={node.id} node={node} />
       ))}

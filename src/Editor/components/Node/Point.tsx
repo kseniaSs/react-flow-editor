@@ -13,7 +13,7 @@ type PointProps = {
 }
 
 export const Point: React.FC<PointProps> = React.memo(({ nodeId }) => {
-  const { transformation, nodes, setNodes } = useContext(EditorContext)
+  const { transformation, nodes, setNodes, styleConfig } = useContext(EditorContext)
 
   const setDragItem = useSetRecoilState(dragItemState)
   const setNewConnectionState = useSetRecoilState(newConnectionState)
@@ -30,12 +30,12 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId }) => {
         x:
           -svgOffset.x +
           currentNode.position.x -
-          currentNode.outputPosition.x +
+          (currentNode?.outputPosition?.x || 0) +
           currentNode.rectPosition.width / transformation.zoom,
         y:
           -svgOffset.y +
           currentNode.position.y -
-          currentNode.outputPosition.y +
+          (currentNode?.outputPosition?.y || 0) +
           currentNode.rectPosition.height / transformation.zoom
       }
 
@@ -53,7 +53,7 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId }) => {
     <div
       id={buildDotId(nodeId)}
       className={CLASSES.DOT}
-      style={pointStyle(currentNode.outputPosition)}
+      style={pointStyle(currentNode.outputPosition, styleConfig?.point)}
       onMouseDown={setNode}
     />
   )

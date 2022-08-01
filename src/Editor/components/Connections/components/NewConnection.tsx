@@ -1,7 +1,8 @@
 import { first } from "lodash"
 import React, { useContext, useMemo } from "react"
 import { useRecoilValue } from "recoil"
-import { dotSizeState, dragItemState, newConnectionState, svgOffsetState } from "../../../ducks/store"
+import { DEFAULT_POINT_SIZE } from "../../../constants"
+import { dragItemState, newConnectionState, svgOffsetState } from "../../../ducks/store"
 import { EditorContext } from "../../../Editor"
 import { ItemType } from "../../../types"
 import InputConnection from "./InputConnection"
@@ -9,10 +10,9 @@ import InputConnection from "./InputConnection"
 const BORDER_CONNECTION_LEFT_OFFSET = 120
 
 export const NewConnection: React.FC = () => {
-  const { nodes, transformation } = useContext(EditorContext)
+  const { nodes, transformation, styleConfig } = useContext(EditorContext)
 
   const newConnectionPosition = useRecoilValue(newConnectionState)
-  const dotSize = useRecoilValue(dotSizeState)
   const svgOffset = useRecoilValue(svgOffsetState)
   const dragItem = useRecoilValue(dragItemState)
 
@@ -21,38 +21,31 @@ export const NewConnection: React.FC = () => {
 
   if (!newConnectionPosition || !outputNode || dragItem.type !== ItemType.connection) return null
 
-  const outputPosition = useMemo(
-    () =>
-      outputNode.rectPosition
-        ? {
-            x:
-              -svgOffset.x +
-              outputNode.position.x +
-              (outputNode.rectPosition?.width || 0) / transformation.zoom -
-              outputNode.outputPosition.x,
-            y:
-              -svgOffset.y +
-              outputNode.position.y +
-              (outputNode.rectPosition?.height || 0) / transformation.zoom -
-              outputNode.outputPosition.y -
-              (dotSize?.width || 0) / 2
-          }
-        : outputNode.position,
-    [outputNode, svgOffset, transformation, dotSize]
-  )
+  const outputPosition = outputNode.rectPosition
+    ? {
+        x:
+          -svgOffset.x +
+          outputNode.position.x +
+          (outputNode.rectPosition?.width || 0) / transformation.zoom -
+          (outputNode?.outputPosition?.x || 0),
+        y:
+          -svgOffset.y +
+          outputNode.position.y +
+          (outputNode.rectPosition?.height || 0) / transformation.zoom -
+          (outputNode?.outputPosition?.y || 0) -
+          (styleConfig?.point?.width || DEFAULT_POINT_SIZE) / 2
+      }
+    : outputNode.position
 
-  const draggingConnection = useMemo(() => {
-    const temp = {
-      ...newConnectionPosition
-    }
+  const draggingConnection = {
+    ...newConnectionPosition
+  }
 
-    temp.x = temp.x < BORDER_CONNECTION_LEFT_OFFSET ? BORDER_CONNECTION_LEFT_OFFSET : temp.x
-    temp.y = temp.y < 0 ? 0 : temp.y
-    temp.x = temp.x > svgOffset.width ? svgOffset.width : temp.x
-    temp.y = temp.y > svgOffset.height ? svgOffset.height : temp.y
-
-    return temp
-  }, [svgOffset])
+  draggingConnection.x =
+    draggingConnection.x < BORDER_CONNECTION_LEFT_OFFSET ? BORDER_CONNECTION_LEFT_OFFSET : draggingConnection.x
+  draggingConnection.y = draggingConnection.y < 0 ? 0 : draggingConnection.y
+  draggingConnection.x = draggingConnection.x > svgOffset.width ? svgOffset.width : draggingConnection.x
+  draggingConnection.y = draggingConnection.y > svgOffset.height ? svgOffset.height : draggingConnection.y
 
   return <InputConnection key={outputNode.id} outputPosition={draggingConnection} inputPosition={outputPosition} />
 }
