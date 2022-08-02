@@ -30,6 +30,9 @@ const App = () => {
         <div className="button" onClick={() => setNodes((nodes) => [...nodes, nodeFactory()])}>
           Create new Node
         </div>
+        <div className="button" onClick={() => editorRefs.overview()}>
+          Overview
+        </div>
         <NodeAttributes nodes={nodes} />
       </div>
       <div className="react-editor-container">

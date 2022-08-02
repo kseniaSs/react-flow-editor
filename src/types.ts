@@ -58,6 +58,7 @@ export type NodeBase = {
 export type OnEditorRectsMountedProps = {
   zoomContainerRef: MutableRefObject<HTMLDivElement>
   editorContainerRef: MutableRefObject<HTMLDivElement>
+  overview: () => void
 }
 
 export type PointStyleConfig = {

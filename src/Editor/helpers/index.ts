@@ -1,5 +1,6 @@
-import { useCallback, useContext, useEffect, useRef, useMemo } from "react"
+import { useCallback, useContext, useEffect, useRef, useMemo, useState } from "react"
 import { Transformation } from "../../types"
+import { DRAG_OFFSET_TRANSFORM } from "../constants"
 import { EditorContext } from "../Editor"
 
 export const resetEvent = (e: React.MouseEvent<HTMLElement>) => {
@@ -8,13 +9,61 @@ export const resetEvent = (e: React.MouseEvent<HTMLElement>) => {
 }
 
 export const useEditorMount = () => {
-  const { onEditorRectsMounted } = useContext(EditorContext)
+  const { onEditorRectsMounted, nodes, transformation, setTransformation } = useContext(EditorContext)
+  const [underOverview, setUnderOverview] = useState<boolean>(false)
 
   const zoomContainerRef = useRef<HTMLDivElement | null>(null)
   const editorContainerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    onEditorRectsMounted({ zoomContainerRef, editorContainerRef })
+    if (underOverview) {
+      const editorRect = editorContainerRef?.current?.getBoundingClientRect()
+
+      const dimensionsRect = nodes.reduce(
+        (acc, node) => {
+          if (node.position.x > acc.rightPoint)
+            acc.rightPoint = node.position.x + node.rectPosition.width / transformation.zoom
+          if (node.position.x < acc.leftPoint) acc.leftPoint = node.position.x
+          if (node.position.y > acc.bottomPoint)
+            acc.bottomPoint = node.position.y + node.rectPosition.height / transformation.zoom
+          if (node.position.y < acc.topPoint) acc.topPoint = node.position.y
+
+          return acc
+        },
+        {
+          leftPoint: Infinity,
+          rightPoint: -Infinity,
+          topPoint: Infinity,
+          bottomPoint: -Infinity
+        }
+      )
+
+      const width = dimensionsRect.rightPoint - dimensionsRect.leftPoint
+      const height = dimensionsRect.bottomPoint - dimensionsRect.topPoint
+
+      const newZoom = Math.min(
+        (editorRect.width + DRAG_OFFSET_TRANSFORM) / width,
+        (editorRect.height + DRAG_OFFSET_TRANSFORM) / height
+      )
+      const newZoomCorrected = newZoom > 1 ? 1 : newZoom
+
+      const dx = -dimensionsRect.leftPoint + (editorRect.width - width) / 2
+      const dy = -dimensionsRect.topPoint + (editorRect.height - height) / 2
+
+      zoomContainerRef.current.style.transformOrigin = `${dx}px ${dy}px`
+
+      setTransformation({
+        dx,
+        dy,
+        zoom: newZoomCorrected
+      })
+
+      setUnderOverview(false)
+    }
+  }, [underOverview, nodes, transformation, editorContainerRef])
+
+  useEffect(() => {
+    onEditorRectsMounted({ zoomContainerRef, editorContainerRef, overview: () => setUnderOverview(true) })
   }, [])
 
   return useMemo(
