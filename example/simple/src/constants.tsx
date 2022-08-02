@@ -1,7 +1,12 @@
 import { Node } from "@kseniass/react-flow-editor"
 import { SimpleNode } from "./parts"
 
-const DEFAULT_OUTPUT = {
+export const DEFAULT_OUTPUT = {
+  x: 145,
+  y: 30
+}
+
+const DEFAULT_OUTPUT_2 = {
   x: 145,
   y: 45
 }
@@ -16,7 +21,9 @@ export const initialNodes: Node[] = [
     id: "Node_1",
     children: SimpleNode({ expandable: true }),
     position: { x: 110, y: 110 },
-    outputPosition: DEFAULT_OUTPUT,
+    outputPosition: [DEFAULT_OUTPUT, DEFAULT_OUTPUT_2],
+    outputNumber: 2,
+    inputNumber: 0,
     inputPosition: DEFAULT_INPUT,
     next: ["Node_2"]
   },
@@ -24,16 +31,19 @@ export const initialNodes: Node[] = [
     id: "Node_2",
     children: SimpleNode({ expandable: true }),
     position: { x: 310, y: 310 },
-    outputPosition: DEFAULT_OUTPUT,
+    outputPosition: [DEFAULT_OUTPUT, DEFAULT_OUTPUT_2],
+    outputNumber: 2,
+    inputNumber: 1,
     inputPosition: DEFAULT_INPUT,
-
     next: ["Node_3"]
   },
   {
     id: "Node_3",
     children: SimpleNode({ expandable: false }),
     position: { x: 510, y: 510 },
-    outputPosition: DEFAULT_OUTPUT,
+    outputPosition: [DEFAULT_OUTPUT],
+    outputNumber: 1,
+    inputNumber: 2,
     inputPosition: DEFAULT_INPUT,
     next: []
   }

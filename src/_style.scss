@@ -28,9 +28,19 @@
   .dot {
     border-radius: 50%;
     position: absolute;
+    cursor: pointer;
   }
 
   .node {
     position: absolute;
+  }
+
+  .disconnector {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    fill: transparent;
+    pointer-events: all;
   }
 }

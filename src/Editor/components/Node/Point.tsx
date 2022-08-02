@@ -11,9 +11,10 @@ import { buildDotId, pointStyle } from "./helpers"
 
 type PointProps = {
   nodeId: string
+  nextId: string
 }
 
-export const Point: React.FC<PointProps> = React.memo(({ nodeId }) => {
+export const Point: React.FC<PointProps> = React.memo(({ nodeId, nextId }) => {
   const { nodes, setNodes, styleConfig, transformation } = useContext(EditorContext)
   const { zoomContainerRef } = useContext(RectsContext)
 
@@ -23,6 +24,7 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId }) => {
   const zoomRect = zoomContainerRef?.current?.getBoundingClientRect()
 
   const currentNode = useMemo(() => nodes.find((node) => node.id === nodeId), [nodes, nodeId])
+  const pointInx = nextId ? currentNode.next.findIndex((id) => id === nextId) : currentNode.next.length
 
   const setNode = (e: React.MouseEvent<HTMLElement>) => {
     resetEvent(e)
@@ -38,6 +40,8 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId }) => {
 
       setDragItem({
         type: ItemType.connection,
+        nextId,
+        fromId: nodeId,
         x: e.clientX,
         y: e.clientY
       })
@@ -48,7 +52,7 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId }) => {
     <div
       id={buildDotId(nodeId)}
       className={CLASSES.DOT}
-      style={pointStyle(currentNode.outputPosition, styleConfig?.point)}
+      style={pointStyle(currentNode.outputPosition[pointInx], styleConfig?.point)}
       onMouseDown={setNode}
     />
   )

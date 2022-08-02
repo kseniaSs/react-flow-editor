@@ -42,10 +42,10 @@ export type NodeBase = {
   position: Point
   rectPosition?: DOMRect
   isSelected?: boolean
-  outputPosition?: Point
+  outputPosition: Point[]
   inputPosition?: Point
-  outputNumber?: number
-  inputNumber?: number
+  outputNumber: number
+  inputNumber: number
 }
 
 export type OnEditorRectsMountedProps = {

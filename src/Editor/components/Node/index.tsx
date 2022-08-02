@@ -55,7 +55,9 @@ const Node: React.FC<NodeProps> = ({ node }) => {
       onMouseEnter={() => setHoveredNodeId(node.id)}
       onMouseLeave={() => setHoveredNodeId(null)}
     >
-      <Point nodeId={node.id} />
+      {node.next.concat(node.outputNumber > node.next.length ? [null] : []).map((nextId) => (
+        <Point key={nextId} nodeId={node.id} nextId={nextId} />
+      ))}
       <NodeComponent onSizeChanged={recalculateRects} {...omit(node, ["children"])} />
     </div>
   )

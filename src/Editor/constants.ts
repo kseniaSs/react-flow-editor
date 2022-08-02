@@ -17,6 +17,8 @@ export const DEFAULT_COLOR = "black"
 
 export const MINIMUM_SVG_SIZE = 15000
 
+export const DISCONNECTOR_ZONE = 20
+
 export const CLASSES = {
   ZOOM_CONTAINER: "zoom-container",
   EDITOR: "react-flow-editor",
@@ -24,5 +26,6 @@ export const CLASSES = {
   DOT: "dot",
   CONNECTIONS: "connections",
   CONNECTION: "connection",
-  NODE: "node"
+  NODE: "node",
+  DISCONNECTOR: "disconnector"
 }

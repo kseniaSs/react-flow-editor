@@ -23,7 +23,7 @@ export type AutoScrollState = { speed: number; direction: AutoScrollDirection }
 
 export type SVGOffsetState = Point & Size
 
-export type DragItemState = { type?: ItemType } & Point
+export type DragItemState = { type?: ItemType; nextId?: string; fromId?: string } & Point
 
 export type NodeGroupsRect = {
   leftPoint: number

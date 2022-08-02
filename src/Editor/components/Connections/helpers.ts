@@ -1,5 +1,5 @@
-import { Node, Transformation } from "../../../types"
-import { MINIMUM_SVG_SIZE } from "../../constants"
+import { Node, Point, Transformation } from "../../../types"
+import { DISCONNECTOR_ZONE, MINIMUM_SVG_SIZE } from "../../constants"
 import { NodeGroupsRect } from "../../types"
 
 const WHITE_SPACE_SCREENS = 2
@@ -56,4 +56,8 @@ export const connectionContainerStyle = (rect: NodeGroupsRect): React.CSSPropert
   minWidth: rect.realWidth,
   minHeight: rect.realHeight,
   transform: `translate(${rect.leftPoint}px, ${rect.topPoint}px)`
+})
+
+export const disconnectorStyle = (pos: Point) => ({
+  transform: `translate(${pos.x - DISCONNECTOR_ZONE / 2}px, ${pos.y - DISCONNECTOR_ZONE / 2}px)`
 })

@@ -1,5 +1,4 @@
-import { first } from "lodash"
-import React, { useContext, useMemo } from "react"
+import React, { useContext } from "react"
 import { useRecoilValue } from "recoil"
 import { DEFAULT_POINT_SIZE } from "../../../constants"
 import { dragItemState, newConnectionState, svgOffsetState } from "../../../ducks/store"
@@ -14,22 +13,25 @@ export const NewConnection: React.FC = () => {
   const svgOffset = useRecoilValue(svgOffsetState)
   const dragItem = useRecoilValue(dragItemState)
 
-  const selectedNodes = useMemo(() => nodes.filter((node) => node.isSelected), [nodes])
-  const outputNode = selectedNodes.length === 1 ? first(selectedNodes) : null
+  const outputNode = nodes.find((node) => node.id === dragItem?.fromId)
 
   if (!newConnectionPosition || !outputNode || dragItem.type !== ItemType.connection) return null
+
+  const currentConPosInx = dragItem.nextId
+    ? outputNode.next.findIndex((conId) => conId === dragItem.nextId)
+    : outputNode.next.length
 
   const outputPosition = outputNode.rectPosition
     ? {
         x:
           -svgOffset.x +
           outputNode.position.x +
-          (outputNode?.outputPosition?.x || 0) +
+          (outputNode.outputPosition[currentConPosInx]?.x || 0) +
           (styleConfig?.point?.width || DEFAULT_POINT_SIZE) / 2,
         y:
           -svgOffset.y +
           outputNode.position.y +
-          (outputNode?.outputPosition?.y || 0) +
+          (outputNode.outputPosition[currentConPosInx]?.y || 0) +
           (styleConfig?.point?.height || DEFAULT_POINT_SIZE) / 2
       }
     : outputNode.position

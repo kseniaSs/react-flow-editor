@@ -118,16 +118,43 @@ export const useDnD = (
     setAutoScroll({ speed: 0, direction: null })
     if (currentDragItem.type === ItemType.connection) {
       const inputNode = nodes.find((currentElement) => hoveredNodeId === currentElement.id)
-      const selectedNode = nodes.filter((node) => node.isSelected)
-      const outputNode = selectedNode.length === 1 ? selectedNode[0] : null
+      const outputNode = nodes.find((node) => node.id === currentDragItem.fromId)
 
-      if (inputNode && outputNode) {
+      const inputIdsForInputNode = nodes.filter((node) => node.next.includes(inputNode?.id))
+      const connectedPointInx = outputNode.next.findIndex((id) => id === currentDragItem.nextId)
+      const isNew = connectedPointInx === -1
+
+      if (!inputNode && outputNode && !isNew) {
         setNodes((nodesState) =>
-          nodesState.map((el) =>
-            el.id === outputNode.id && !el.next.includes(inputNode.id)
-              ? { ...el, input: [...el.next, inputNode.id] }
-              : el
-          )
+          nodesState.map((el) => {
+            if (el.id !== outputNode.id) return el
+
+            const next = [...el.next]
+            next.splice(connectedPointInx, 1)
+
+            return {
+              ...el,
+              next
+            }
+          })
+        )
+      }
+
+      if (inputNode && outputNode && inputNode.inputNumber > inputIdsForInputNode.length) {
+        setNodes((nodesState) =>
+          nodesState.map((el) => {
+            if (el.id === outputNode.id && !el.next.includes(inputNode.id)) {
+              const next = [...el.next]
+              next.splice(isNew ? next.length : connectedPointInx, isNew ? 0 : 1, inputNode.id)
+
+              return {
+                ...el,
+                next
+              }
+            }
+
+            return el
+          })
         )
       }
     }
