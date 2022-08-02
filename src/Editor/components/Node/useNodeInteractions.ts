@@ -20,20 +20,28 @@ export const useNodeInteractions = (node: Node) => {
         const point = { x: e.clientX, y: e.clientY }
         setDragItem({ type: ItemType.node, ...point })
 
-        setNodes((nodes) =>
-          nodes.map((nodeItem) => ({
-            ...nodeItem,
-            states:
-              nodeItem.id === node.id || (e.shiftKey && nodeItem.states.includes(NodeState.selected))
-                ? [NodeState.dragging]
-                : []
-          }))
-        )
-
         setInitialClickCoords(point)
       }
     },
     [setNodes]
+  )
+
+  const onMouseMove: React.MouseEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      if (dragItem.type !== ItemType.node || node.states.includes(NodeState.dragging)) return
+
+      setNodes((nodes) =>
+        nodes.map((nodeItem) => ({
+          ...nodeItem,
+          states:
+            (nodeItem.id === node.id && !node.states.includes(NodeState.dragging)) ||
+            (e.shiftKey && nodeItem.states.includes(NodeState.selected))
+              ? [NodeState.dragging]
+              : []
+        }))
+      )
+    },
+    [setNodes, dragItem]
   )
 
   const onMouseUp: React.MouseEventHandler<HTMLDivElement> = useCallback(
@@ -44,8 +52,10 @@ export const useNodeInteractions = (node: Node) => {
             ...nodeItem,
             states:
               (nodeItem.id === node.id && initialClickCoords.x === e.clientX && initialClickCoords.y === e.clientY) ||
-              (e.shiftKey && nodeItem.id !== node.id && nodeItem.states.includes(NodeState.dragging))
+              (e.shiftKey && nodeItem.states.includes(NodeState.dragging))
                 ? [NodeState.selected]
+                : e.shiftKey && nodeItem.states.includes(NodeState.selected)
+                ? nodeItem.states
                 : []
           }))
         )
@@ -91,6 +101,7 @@ export const useNodeInteractions = (node: Node) => {
     onDragStarted,
     onMouseUp,
     onMouseEnter,
-    onMouseLeave
+    onMouseLeave,
+    onMouseMove
   }
 }

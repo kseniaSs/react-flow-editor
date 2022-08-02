@@ -26,7 +26,7 @@ const Node: React.FC<NodeProps> = ({ node }) => {
     )
   }, [node.id])
 
-  const { onDragStarted, onMouseUp, onMouseEnter, onMouseLeave } = useNodeInteractions(node)
+  const { onDragStarted, onMouseUp, onMouseEnter, onMouseLeave, onMouseMove } = useNodeInteractions(node)
 
   const NodeComponent = node.children
 
@@ -39,6 +39,7 @@ const Node: React.FC<NodeProps> = ({ node }) => {
       style={nodeStyle(node.position)}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      onMouseMove={onMouseMove}
     >
       {node.next.concat(node.outputNumber > node.next.length ? [null] : []).map((nextId) => (
         <Point key={nextId} nodeId={node.id} nextId={nextId} />
