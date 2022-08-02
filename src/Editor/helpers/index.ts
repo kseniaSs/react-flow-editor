@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef } from "react"
+import { useCallback, useContext, useEffect, useRef, useMemo } from "react"
 import { Transformation } from "../../types"
 import { EditorContext } from "../Editor"
 
@@ -17,7 +17,10 @@ export const useEditorMount = () => {
     onEditorRectsMounted({ zoomContainerRef, editorContainerRef })
   }, [])
 
-  return { zoomContainerRef, editorContainerRef }
+  return useMemo(
+    () => ({ zoomContainerRef, editorContainerRef }),
+    [zoomContainerRef.current, editorContainerRef.current]
+  )
 }
 
 export const useRecalculateRects = () => {

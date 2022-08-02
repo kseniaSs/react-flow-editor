@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react"
+import React, { useEffect, useContext, createContext } from "react"
 import { dragItemState } from "./ducks/store"
 import { Container as ConnectionContainer } from "./components/Connections"
 import Background from "./components/Background"
@@ -12,11 +12,14 @@ import Node from "./components/Node"
 import { isEqual } from "lodash"
 import { useHotKeys } from "./helpers/hotKeys"
 
+export const RectsContext = createContext<Partial<ReturnType<typeof useEditorMount>>>({})
+
 export const Canvas: React.FC = React.memo(() => {
   const { nodes, transformation } = useContext(EditorContext)
 
   const currentDragItem = useRecoilValue(dragItemState)
-  const { zoomContainerRef, editorContainerRef } = useEditorMount()
+  const rects = useEditorMount()
+  const { zoomContainerRef, editorContainerRef } = rects
   const recalculateRects = useRecalculateRects()
   const { onDrag, onDragEnded, onDragStarted } = useDnD(editorContainerRef, zoomContainerRef)
   const { onWheel } = useZoom(zoomContainerRef, editorContainerRef)
@@ -30,21 +33,23 @@ export const Canvas: React.FC = React.memo(() => {
   }, [transformation.zoom])
 
   return (
-    <div
-      onMouseUp={onDragEnded}
-      onMouseMove={currentDragItem.type && onDrag}
-      onWheel={onWheel}
-      onMouseDown={onDragStarted}
-      ref={editorContainerRef}
-      className={CLASSES.EDITOR}
-    >
-      <div ref={zoomContainerRef} className={CLASSES.ZOOM_CONTAINER} style={TransformCanvasStyle(transformation)}>
-        {nodes.map((node) => (
-          <Node node={node} key={node.id} />
-        ))}
-        <ConnectionContainer />
+    <RectsContext.Provider value={rects}>
+      <div
+        onMouseUp={onDragEnded}
+        onMouseMove={currentDragItem.type && onDrag}
+        onWheel={onWheel}
+        onMouseDown={onDragStarted}
+        ref={editorContainerRef}
+        className={CLASSES.EDITOR}
+      >
+        <div ref={zoomContainerRef} className={CLASSES.ZOOM_CONTAINER} style={TransformCanvasStyle(transformation)}>
+          {nodes.map((node) => (
+            <Node node={node} key={node.id} />
+          ))}
+          <ConnectionContainer />
+        </div>
+        <Background />
       </div>
-      <Background />
-    </div>
+    </RectsContext.Provider>
   )
 }, isEqual)

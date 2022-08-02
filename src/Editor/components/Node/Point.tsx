@@ -1,6 +1,7 @@
 import { isEqual } from "lodash"
 import React, { useContext, useMemo } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
+import { RectsContext } from "../../Canvas"
 import { BUTTON_LEFT, CLASSES } from "../../constants"
 import { dragItemState, newConnectionState, svgOffsetState } from "../../ducks/store"
 import { EditorContext } from "../../Editor"
@@ -13,11 +14,13 @@ type PointProps = {
 }
 
 export const Point: React.FC<PointProps> = React.memo(({ nodeId }) => {
-  const { nodes, setNodes, styleConfig } = useContext(EditorContext)
+  const { nodes, setNodes, styleConfig, transformation } = useContext(EditorContext)
+  const { zoomContainerRef } = useContext(RectsContext)
 
   const setDragItem = useSetRecoilState(dragItemState)
   const setNewConnectionState = useSetRecoilState(newConnectionState)
   const svgOffset = useRecoilValue(svgOffsetState)
+  const zoomRect = zoomContainerRef?.current?.getBoundingClientRect()
 
   const currentNode = useMemo(() => nodes.find((node) => node.id === nodeId), [nodes, nodeId])
 
@@ -27,8 +30,8 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId }) => {
       setNodes((nodes) => nodes.map((node) => ({ ...node, isSelected: node.id === currentNode.id })))
 
       const pos = {
-        x: -svgOffset.x + currentNode.position.x + (currentNode?.outputPosition?.x || 0),
-        y: -svgOffset.y + currentNode.position.y + (currentNode?.outputPosition?.y || 0)
+        x: -svgOffset.x + (e.clientX - zoomRect.left) / transformation.zoom,
+        y: -svgOffset.y + (e.clientY - zoomRect.top) / transformation.zoom
       }
 
       setNewConnectionState(pos)

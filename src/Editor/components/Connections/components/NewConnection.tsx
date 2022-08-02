@@ -7,8 +7,6 @@ import { EditorContext } from "../../../Editor"
 import { ItemType } from "../../../types"
 import InputConnection from "./InputConnection"
 
-const BORDER_CONNECTION_LEFT_OFFSET = 120
-
 export const NewConnection: React.FC = () => {
   const { nodes, styleConfig } = useContext(EditorContext)
 
@@ -36,15 +34,5 @@ export const NewConnection: React.FC = () => {
       }
     : outputNode.position
 
-  const draggingConnection = {
-    ...newConnectionPosition
-  }
-
-  draggingConnection.x =
-    draggingConnection.x < BORDER_CONNECTION_LEFT_OFFSET ? BORDER_CONNECTION_LEFT_OFFSET : draggingConnection.x
-  draggingConnection.y = draggingConnection.y < 0 ? 0 : draggingConnection.y
-  draggingConnection.x = draggingConnection.x > svgOffset.width ? svgOffset.width : draggingConnection.x
-  draggingConnection.y = draggingConnection.y > svgOffset.height ? svgOffset.height : draggingConnection.y
-
-  return <InputConnection key={outputNode.id} outputPosition={draggingConnection} inputPosition={outputPosition} />
+  return <InputConnection key={outputNode.id} outputPosition={newConnectionPosition} inputPosition={outputPosition} />
 }

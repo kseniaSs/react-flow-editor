@@ -44,6 +44,8 @@ export type NodeBase = {
   isSelected?: boolean
   outputPosition?: Point
   inputPosition?: Point
+  outputNumber?: number
+  inputNumber?: number
 }
 
 export type OnEditorRectsMountedProps = {
@@ -72,7 +74,6 @@ export type EditorProps = {
   setNodes: (action: SetStateAction<Node[]>) => void
   transformation: Transformation
   setTransformation: (transformation: Transformation) => void
-  isSingleOutputConnection?: boolean
   onSelectionZoneChanged?: (value: RectZone) => void
   onEditorRectsMounted?: (value: OnEditorRectsMountedProps) => void
   styleConfig?: StyleConfig

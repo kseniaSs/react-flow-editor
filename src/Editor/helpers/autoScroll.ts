@@ -63,12 +63,12 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
   useEffect(() => {
     if (!autoScroll.direction) return
 
-    const delta = DRAG_AUTO_SCROLL_DIST * autoScroll.speed
+    const delta = DRAG_AUTO_SCROLL_DIST * autoScroll.speed * transformation.zoom
 
     const scroll = () => {
       if ([ItemType.node, ItemType.connection, ItemType.selectionZone].includes(currentDragItem.type)) {
-        const dx = transformation.dx - getSign(Axis.x, autoScroll) * delta * transformation.zoom
-        const dy = transformation.dy - getSign(Axis.y, autoScroll) * delta * transformation.zoom
+        const dx = transformation.dx - getSign(Axis.x, autoScroll) * delta
+        const dy = transformation.dy - getSign(Axis.y, autoScroll) * delta
 
         setTransformation({
           ...transformation,

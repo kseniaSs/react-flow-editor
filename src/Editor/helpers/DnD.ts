@@ -7,26 +7,36 @@ import {
   dragItemState,
   hoveredNodeIdState,
   newConnectionState,
-  selectionZoneState
+  selectionZoneState,
+  svgOffsetState
 } from "../ducks/store"
 import { EditorContext } from "../Editor"
 import { ItemType } from "../types"
 import { useAutoScroll } from "./autoScroll"
 import { isNodeInSelectionZone, useSelectionZone } from "./selectionZone"
 
-const useDragTransformations = ({ expandSelectionZone }: { expandSelectionZone: (e: React.MouseEvent) => void }) => {
+const useDragTransformations = ({
+  expandSelectionZone,
+  zoomContainerRef
+}: {
+  expandSelectionZone: (e: React.MouseEvent) => void
+  zoomContainerRef: MutableRefObject<HTMLElement>
+}) => {
   const { nodes, transformation, setNodes, setTransformation } = useContext(EditorContext)
 
   const currentDragItem = useRecoilValue(dragItemState)
-  const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
+  const setNewConnectionState = useSetRecoilState(newConnectionState)
+  const svgOffset = useRecoilValue(svgOffsetState)
   const selectionZone = useRecoilValue(selectionZoneState)
   const recalculateRects = useRecalculateRects()
+
+  const zoomRect = zoomContainerRef?.current?.getBoundingClientRect()
 
   return {
     [ItemType.connection]: (e: React.MouseEvent<HTMLElement>) => {
       const newPos = {
-        x: newConnection.x + (e.clientX - currentDragItem.x) / transformation.zoom,
-        y: newConnection.y + (e.clientY - currentDragItem.y) / transformation.zoom
+        x: (e.clientX - zoomRect.left) / transformation.zoom - svgOffset.x,
+        y: (e.clientY - zoomRect.top) / transformation.zoom - svgOffset.y
       }
 
       setNewConnectionState(newPos)
@@ -78,7 +88,7 @@ export const useDnD = (
   editorContainerRef: MutableRefObject<HTMLElement>,
   zoomContainerRef: MutableRefObject<HTMLElement>
 ) => {
-  const { nodes, setNodes, isSingleOutputConnection } = useContext(EditorContext)
+  const { nodes, setNodes } = useContext(EditorContext)
 
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
   const setNewConnectionState = useSetRecoilState(newConnectionState)
@@ -89,11 +99,11 @@ export const useDnD = (
   const checkAutoScrollEnable = useAutoScroll(editorContainerRef)
   const { initSelectionZone, expandSelectionZone } = useSelectionZone(zoomContainerRef)
 
-  const dragTranformations = useDragTransformations({ expandSelectionZone })
+  const dragTranformations = useDragTransformations({ expandSelectionZone, zoomContainerRef })
 
   const onDrag = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
-      if (!autoScroll.direction) dragTranformations[currentDragItem.type](e)
+      dragTranformations[currentDragItem.type](e)
 
       if ([ItemType.node, ItemType.connection, ItemType.selectionZone].includes(currentDragItem.type)) {
         checkAutoScrollEnable(e)
@@ -115,7 +125,7 @@ export const useDnD = (
         setNodes((nodesState) =>
           nodesState.map((el) =>
             el.id === outputNode.id && !el.next.includes(inputNode.id)
-              ? { ...el, input: isSingleOutputConnection ? [inputNode.id] : [...el.next, inputNode.id] }
+              ? { ...el, input: [...el.next, inputNode.id] }
               : el
           )
         )
@@ -124,7 +134,7 @@ export const useDnD = (
     setNewConnectionState(undefined)
     setDragItem((dragItem) => ({ ...dragItem, type: undefined }))
     setSelectionZone(null)
-  }, [currentDragItem, nodes, hoveredNodeId, setNodes, isSingleOutputConnection])
+  }, [currentDragItem, nodes, hoveredNodeId, setNodes])
 
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {

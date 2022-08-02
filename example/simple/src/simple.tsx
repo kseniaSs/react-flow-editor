@@ -38,7 +38,6 @@ const App = () => {
           setNodes={setNodes}
           transformation={transformation}
           setTransformation={setTransformation}
-          isSingleOutputConnection
           onSelectionZoneChanged={onSelectionZoneChanged}
           onEditorRectsMounted={onEditorRectsMounted}
           styleConfig={STYLED_CONFIG}
