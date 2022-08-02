@@ -23,7 +23,10 @@ export const useNodeInteractions = (node: Node) => {
         setNodes((nodes) =>
           nodes.map((nodeItem) => ({
             ...nodeItem,
-            states: nodeItem.id === node.id && !e.shiftKey ? [NodeState.dragging] : nodeItem.states
+            states:
+              nodeItem.id === node.id || (e.shiftKey && nodeItem.states.includes(NodeState.selected))
+                ? [NodeState.dragging]
+                : []
           }))
         )
 
@@ -40,10 +43,9 @@ export const useNodeInteractions = (node: Node) => {
           nodes.map((nodeItem) => ({
             ...nodeItem,
             states:
-              nodeItem.id === node.id && initialClickCoords.x === e.clientX && initialClickCoords.y === e.clientY
+              (nodeItem.id === node.id && initialClickCoords.x === e.clientX && initialClickCoords.y === e.clientY) ||
+              (e.shiftKey && nodeItem.id !== node.id && nodeItem.states.includes(NodeState.dragging))
                 ? [NodeState.selected]
-                : e.shiftKey
-                ? nodeItem.states
                 : []
           }))
         )

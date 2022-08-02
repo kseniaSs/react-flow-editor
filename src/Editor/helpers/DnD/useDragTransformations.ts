@@ -50,9 +50,7 @@ export const useDragTransformations = ({
       recalculateRects()
     },
     [ItemType.node]: (e: React.MouseEvent<HTMLElement>) => {
-      const draggingNodesIds = nodes
-        .filter((node) => node.states.includes(e.shiftKey ? NodeState.selected : NodeState.dragging))
-        .map((node) => node.id)
+      const draggingNodesIds = nodes.filter((node) => node.states.includes(NodeState.dragging)).map((node) => node.id)
 
       setNodes((nodes) =>
         nodes.map((el) =>
