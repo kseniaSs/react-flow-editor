@@ -28,16 +28,16 @@ export const useNodeInteractions = (node: Node) => {
 
   const onMouseMove: React.MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
-      if (dragItem.type !== ItemType.node || node.states.includes(NodeState.dragging)) return
+      if (dragItem.type !== ItemType.node || node.state === NodeState.dragging) return
 
       setNodes((nodes) =>
         nodes.map((nodeItem) => ({
           ...nodeItem,
-          states:
-            (nodeItem.id === node.id && !node.states.includes(NodeState.dragging)) ||
-            (e.shiftKey && nodeItem.states.includes(NodeState.selected))
-              ? [NodeState.dragging]
-              : []
+          state:
+            (nodeItem.id === node.id && node.state !== NodeState.dragging) ||
+            (e.shiftKey && nodeItem.state === NodeState.selected)
+              ? NodeState.dragging
+              : null
         }))
       )
     },
@@ -50,13 +50,13 @@ export const useNodeInteractions = (node: Node) => {
         setNodes((nodes) =>
           nodes.map((nodeItem) => ({
             ...nodeItem,
-            states:
+            state:
               (nodeItem.id === node.id && initialClickCoords.x === e.clientX && initialClickCoords.y === e.clientY) ||
-              (e.shiftKey && nodeItem.states.includes(NodeState.dragging))
-                ? [NodeState.selected]
-                : e.shiftKey && nodeItem.states.includes(NodeState.selected)
-                ? nodeItem.states
-                : []
+              (e.shiftKey && nodeItem.state === NodeState.dragging)
+                ? NodeState.selected
+                : e.shiftKey && nodeItem.state === NodeState.selected
+                ? nodeItem.state
+                : null
           }))
         )
 
@@ -70,13 +70,13 @@ export const useNodeInteractions = (node: Node) => {
     setNodes((nodes) =>
       nodes.map((nodeItem) => ({
         ...nodeItem,
-        states:
+        state:
           nodeItem.id === node.id &&
           dragItem.type === ItemType.connection &&
           dragItem.fromId !== node.id &&
-          !nodeItem.states.includes(NodeState.connectorHovered)
-            ? [NodeState.connectorHovered]
-            : nodeItem.states
+          nodeItem.state !== NodeState.connectorHovered
+            ? NodeState.connectorHovered
+            : nodeItem.state
       }))
     )
 
@@ -87,10 +87,12 @@ export const useNodeInteractions = (node: Node) => {
     setNodes((nodes) =>
       nodes.map((nodeItem) => ({
         ...nodeItem,
-        states:
-          nodeItem.id === node.id && dragItem.type === ItemType.connection
-            ? nodeItem.states.filter((state) => state !== NodeState.connectorHovered)
-            : nodeItem.states
+        state:
+          nodeItem.id === node.id &&
+          dragItem.type === ItemType.connection &&
+          nodeItem.state !== NodeState.draggingConnector
+            ? null
+            : nodeItem.state
       }))
     )
 

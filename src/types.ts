@@ -52,7 +52,7 @@ export type NodeBase = {
   inputPosition?: Point
   outputNumber: number
   inputNumber: number
-  states: NodeState[]
+  state: NodeState | null
 }
 
 export type OnEditorRectsMountedProps = {

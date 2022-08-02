@@ -26,7 +26,7 @@ export const initialNodes: Node[] = [
     inputNumber: 0,
     inputPosition: DEFAULT_INPUT,
     next: ["Node_2"],
-    states: []
+    state: null
   },
   {
     id: "Node_2",
@@ -37,7 +37,7 @@ export const initialNodes: Node[] = [
     inputNumber: 1,
     inputPosition: DEFAULT_INPUT,
     next: ["Node_3"],
-    states: []
+    state: null
   },
   {
     id: "Node_3",
@@ -48,7 +48,7 @@ export const initialNodes: Node[] = [
     inputNumber: 2,
     inputPosition: DEFAULT_INPUT,
     next: [],
-    states: []
+    state: null
   }
 ]
 

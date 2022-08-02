@@ -9,7 +9,7 @@ export const useHotKeys = () => {
   useEffect(() => {
     const hotKeysHandler = (e: KeyboardEvent) => {
       if ([KEY_CODE_BACK, KEY_CODE_DELETE].includes(e.key)) {
-        const selectedNodesIds = nodes.filter((node) => node.states.includes(NodeState.selected)).map((node) => node.id)
+        const selectedNodesIds = nodes.filter((node) => node.state === NodeState.selected).map((node) => node.id)
 
         setNodes((nodes) =>
           nodes

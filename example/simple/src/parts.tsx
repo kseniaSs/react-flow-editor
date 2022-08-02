@@ -22,7 +22,7 @@ export const SimpleNode =
   (props: NodeProps) =>
     <NodeExpanded expandable={expandable} {...props} />
 
-export const NodeExpanded: React.FC<SimpleNodeProps> = ({ onSizeChanged, expandable, states }) => {
+export const NodeExpanded: React.FC<SimpleNodeProps> = ({ onSizeChanged, expandable, state }) => {
   const [height, setHeight] = React.useState(NodeHeight.folded)
   const [clickCoords, setClickCoords] = React.useState({ x: 0, y: 0 })
 
@@ -32,7 +32,7 @@ export const NodeExpanded: React.FC<SimpleNodeProps> = ({ onSizeChanged, expanda
 
   return (
     <div
-      className={`nodeElement ${states.includes(NodeState.selected) ? "selected" : ""}`}
+      className={`nodeElement ${state === NodeState.selected ? "selected" : ""}`}
       onMouseUp={(e) =>
         !e.shiftKey &&
         expandable &&

@@ -1,4 +1,3 @@
-import { uniq } from "lodash"
 import { MutableRefObject, useCallback, useContext, useEffect } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { NodeState } from "../../types"
@@ -98,15 +97,13 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
         setNodes((nodes) =>
           nodes.map((el) => ({
             ...el,
-            states: isNodeInSelectionZone(el, selectionZone, transformation)
-              ? uniq([...el.states, NodeState.selected])
-              : el.states.filter((state) => state !== NodeState.selected)
+            state: isNodeInSelectionZone(el, selectionZone, transformation) ? NodeState.selected : null
           }))
         )
       }
 
       if (currentDragItem.type === ItemType.node) {
-        const draggingNodesIds = nodes.filter((node) => node.states.includes(NodeState.dragging)).map((node) => node.id)
+        const draggingNodesIds = nodes.filter((node) => node.state === NodeState.dragging).map((node) => node.id)
 
         setNodes((nodes) =>
           nodes.map((el) =>

@@ -1,176 +1,31 @@
-[![npm version](https://badge.fury.io/js/@kseniass%2Freact-flow-editor.svg)](https://badge.fury.io/js/@kseniass%2Freact-flow-editor.svg)
-# Graph editor
+# Flow Editor
 
-An ui library for creating flow based editors with react and typescript/javascript.
+## Node states
 
-![Screen Video](./docs/screen.gif)
+- `null`
+- `dragging`
+- `selected`
+- `draggingConnector`
+- `connectorHovered`
 
-Try the [demo](https://lochbrunner.github.io/react-flow-editor/simple) in your browser.
+### Rules for node states
 
-If you are interested in *redux* dive into the [example](./example/redux/) or try the more advanced [demo](https://lochbrunner.github.io/react-flow-editor/redux/index.html).
+1. node mouseDown = no changes in state
+2. node mouseDown -> mouseUp = `selected`
+3. node mouseDown -> mouseMove = `dragging`
+4. node mouseDown -> mouseMove -> mouseUp = `null`
 
-## Getting started
+5. SHIFT + node mouseDown = no changes in state
+6. SHIFT + (node mouseDown -> mouseUp) = `selected`
+7. SHIFT + (node mouseDown-> mouseMove)  = `dragging`
+8. SHIFT + (node mouseDown-> mouseMove -> mouseUp)  = `selected`
 
-```typescript
-import * as ReactDOM from 'react-dom';
-import { Editor, Node, Config} from 'react-flow-editor';
+9. SHIFT + (node click -> node_2 click)  = `selected` both
+10. SHIFT + (node click -> node_2 click -> (node or node_2) mouseDown -> mouseMove)  = `dragging` both
+11. SHIFT + (node click -> node_2 click -> (node or node_2) mouseDown -> mouseMove -> mouseUp) = `selected` both
 
-// Create the initial graph
-const nodes: Node[] = [
-    {
-        id: 'Node 1',
-        name: 'First Node',
-        payload: { h1: 'hello' },
-        inputs: [{
-            connection: [], name: 'input 1'
-        }],
-        type: 'node-type-1',
-        outputs: []
-}];
+12. DnD from node_1 point = `draggingConnector`
+13. DnD from node_1 point over node_2 point = node_1 `draggingConnector` and node_2 `connectorHovered`
+14. DnD from node_1 point drop in any place = `null` for all
 
-// Renders the body of each node
-function resolver(data: any): JSX.Element {
-    if (data.type === '') return <h2 />;
-    return (
-        <p>{data.payload.h1}</p>
-    );
-}
-
-const config: Config = {
-    resolver,
-    connectionType: 'bezier',
-    grid: true,
-    demoMode: true,
-};
-
-const App = () => {
-    const { editorProps } = useEditor({ initialNodes: nodes, config })
-
-    return (
-        <div>
-            <Editor {...editorProps} />
-        </div>
-    )
-}
-
-ReactDOM.render(<App />, document.getElementById('root'));
-
-```
-
-See [example](./example/) for usage.
-
-## API
-
-### Configuration
-
-The config interface looks as follow
-
-```typescript
-export interface Config {
-    resolver: (payload: any) => JSX.Element;
-    connectionValidator?: (output: { nodeId: string, port: number }, input: { nodeId: string, port: number }) => boolean;
-    onChanged?: (node: ChangeAction) => void;
-    connectionType?: 'bezier' | 'linear';
-    grid?: boolean | { size: number };
-    connectionAnchorsLength?: number;
-    direction?: 'ew' | 'we';
-    demoMode?: boolean;
-}
-```
-
-| Property                  | Description                                                                                                                                  |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `resolver`                | A function returning a React component which gets placed into the node                                                                       |
-| `connectionValidator`     | A function which evaluates if a possible connection might be valid or not                                                                    |
-| `onChanged`               | A callback which gets called when the flow graph changed                                                                                     |
-| `connectionType`          | The geometry type of the connection lines between the nodes                                                                                  |
-| `grid`                    | Specifies if the grid should be rendered or not (Default is `true`). Optional specifies distances between the lines (`size`). Default is 18. |
-| `connectionAnchorsLength` | Specifies the langth of the anker when using `bezier` as `connectionType`.                                                                   |
-| `direction`               | Specifies the orientation of the input and output ports. Default is `we`.                                                                    |
-| `demoMode`                | If this set to true, the Editor takes care of updating the nodes in the props. Be carful using this in production.                           |
-
-### Nodes
-
-A node is specified by the following interface
-
-```typescript
-export interface Node {
-  name: string;
-  type: string;
-  id: string;
-  inputs: InputPort[];
-  outputs: OutputPort[];
-  payload?: any;
-  position?: Vector2d;
-  properties?: {display: 'stacked' | 'only-dots'};
-  classNames?: string[];
-  style: Style;
-}
-```
-
-For now `InputPort` and `OutputPort` are identically to the `Port` interface:
-
-```typescript
-export interface Port {
-  name: string;
-  connection?: Connection|Connection[];
-  payload?: any;
-  renderer?: (connection: Port) => JSX.Element;
-}
-```
-
-```typescript
-export interface Connection {
-  nodeId: string;
-  port: number;
-  classNames?: string[];
-  notes?: string;
-}
-```
-
-### Themes
-
-By default we recommend to import the default theme with
-
-```sass
-@import "react-flow-editor/dist/default-theme.scss";
-```
-
-But you can change the style of all components by coping that file and adjust its values.
-
-### Postcss support
-
-When using postcss generated class names just forward them with
-
-```ts
-import * as style from './style.scss';
-
-// ...
-
-const config: Config = {
-    resolver,
-    connectionType: 'bezier',
-    grid: true,
-    demoMode: true,
-    direction: 'we',
-    style
-};
-// ...
-```
-
-See [Example](./example/postcss).
-
-## Roadmap
-
-* Editing the title of the node
-* Grouping nodes (similar to *Blender*)
-* Optimize hooking
-* Fix zooming and scrolling
-
-## Contributing
-
-This library is very young. So please consider that it might have some bugs, but I will try to fix them, when they get reported.
-
-If you have any problems or miss an important feature:
-
-**Feel free to create a PR or report an issue!**
+15. click away from nodes = `null` for all

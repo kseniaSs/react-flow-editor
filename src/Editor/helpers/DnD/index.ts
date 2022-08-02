@@ -1,6 +1,5 @@
 import { MutableRefObject, useCallback, useContext } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
-import { NodeState } from "../../../types"
 import { BUTTON_LEFT } from "../../constants"
 import {
   autoScrollState,
@@ -55,6 +54,15 @@ export const useDnD = (
       const connectedPointInx = outputNode.next.findIndex((id) => id === currentDragItem.nextId)
       const isNew = connectedPointInx === -1
 
+      if (!inputNode && outputNode && isNew) {
+        setNodes((nodesState) =>
+          nodesState.map((el) => ({
+            ...el,
+            state: null
+          }))
+        )
+      }
+
       if (!inputNode && outputNode && !isNew) {
         setNodes((nodesState) =>
           nodesState.map((el) => {
@@ -66,7 +74,7 @@ export const useDnD = (
             return {
               ...el,
               next,
-              states: el.states.filter((state) => state !== NodeState.draggingConnector)
+              state: null
             }
           })
         )
@@ -82,11 +90,11 @@ export const useDnD = (
               return {
                 ...el,
                 next,
-                states: el.states.filter((state) => state !== NodeState.draggingConnector)
+                state: null
               }
             }
 
-            return { ...el, state: [] }
+            return { ...el, state: null }
           })
         )
       }
@@ -104,7 +112,7 @@ export const useDnD = (
       }
 
       if (!currentDragItem.type) {
-        setNodes((nodes) => nodes.map((node) => ({ ...node, states: [] })))
+        setNodes((nodes) => nodes.map((node) => ({ ...node, state: null })))
       }
     },
     [currentDragItem, initSelectionZone, setNodes]

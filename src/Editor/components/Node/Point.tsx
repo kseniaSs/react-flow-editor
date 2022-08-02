@@ -33,7 +33,7 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId, nextId }) => {
       setNodes((nodes) =>
         nodes.map((node) => ({
           ...node,
-          states: node.id === nodeId ? [NodeState.draggingConnector] : []
+          state: node.id === nodeId ? NodeState.draggingConnector : null
         }))
       )
 

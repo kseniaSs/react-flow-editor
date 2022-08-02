@@ -31,5 +31,5 @@ export const nodeFactory = (): Node => ({
   inputNumber: 2,
   outputNumber: 1,
   outputPosition: [DEFAULT_OUTPUT],
-  states: []
+  state: null
 })
