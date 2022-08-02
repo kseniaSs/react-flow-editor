@@ -1,19 +1,26 @@
 import { useContext, useEffect } from "react"
+import { NodeState } from "../../types"
 import { KEY_CODE_BACK, KEY_CODE_DELETE } from "../constants"
 import { EditorContext } from "../Editor"
 
 export const useHotKeys = () => {
-  const { setNodes } = useContext(EditorContext)
+  const { setNodes, nodes } = useContext(EditorContext)
 
   useEffect(() => {
     const hotKeysHandler = (e: KeyboardEvent) => {
       if ([KEY_CODE_BACK, KEY_CODE_DELETE].includes(e.key)) {
-        setNodes((nodes) => nodes.filter((node) => !node.isSelected))
+        const selectedNodesIds = nodes.filter((node) => node.states.includes(NodeState.selected)).map((node) => node.id)
+
+        setNodes((nodes) =>
+          nodes
+            .filter((node) => !selectedNodesIds.includes(node.id))
+            .map((node) => ({ ...node, next: node.next.filter((nextId) => !selectedNodesIds.includes(nextId)) }))
+        )
       }
     }
 
     window.addEventListener("keydown", hotKeysHandler)
 
     return () => window.removeEventListener("keydown", hotKeysHandler)
-  }, [])
+  }, [nodes])
 }

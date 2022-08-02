@@ -36,16 +36,23 @@ export type Node = NodeBase & {
   children: React.FC<NodeProps>
 }
 
+export enum NodeState {
+  dragging = "dragging",
+  draggingConnector = "draggingConnector",
+  connectorHovered = "connectorHovered",
+  selected = "selected"
+}
+
 export type NodeBase = {
   id: string
   next: string[]
   position: Point
   rectPosition?: DOMRect
-  isSelected?: boolean
   outputPosition: Point[]
   inputPosition?: Point
   outputNumber: number
   inputNumber: number
+  states: NodeState[]
 }
 
 export type OnEditorRectsMountedProps = {

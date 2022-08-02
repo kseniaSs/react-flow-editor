@@ -1,6 +1,7 @@
 import { isEqual } from "lodash"
 import React, { useContext, useMemo } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
+import { NodeState } from "../../../types"
 import { RectsContext } from "../../Canvas"
 import { BUTTON_LEFT, CLASSES } from "../../constants"
 import { dragItemState, newConnectionState, svgOffsetState } from "../../ducks/store"
@@ -29,7 +30,12 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId, nextId }) => {
   const setNode = (e: React.MouseEvent<HTMLElement>) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
-      setNodes((nodes) => nodes.map((node) => ({ ...node, isSelected: node.id === currentNode.id })))
+      setNodes((nodes) =>
+        nodes.map((node) => ({
+          ...node,
+          states: node.id === nodeId ? [NodeState.draggingConnector] : []
+        }))
+      )
 
       const pos = {
         x: -svgOffset.x + (e.clientX - zoomRect.left) / transformation.zoom,

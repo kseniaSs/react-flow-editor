@@ -1,5 +1,7 @@
+import { uniq } from "lodash"
 import { MutableRefObject, useCallback, useContext, useEffect } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
+import { NodeState } from "../../types"
 import { DRAG_AUTO_SCROLL_DIST, DRAG_AUTO_SCROLL_TIME, DRAG_OFFSET_TRANSFORM } from "../constants"
 import { autoScrollState, dragItemState, newConnectionState, selectionZoneState } from "../ducks/store"
 import { EditorContext } from "../Editor"
@@ -94,12 +96,17 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
         }))
 
         setNodes((nodes) =>
-          nodes.map((el) => ({ ...el, isSelected: isNodeInSelectionZone(el, selectionZone, transformation) }))
+          nodes.map((el) => ({
+            ...el,
+            states: isNodeInSelectionZone(el, selectionZone, transformation)
+              ? uniq([...el.states, NodeState.selected])
+              : el.states.filter((state) => state !== NodeState.selected)
+          }))
         )
       }
 
       if (currentDragItem.type === ItemType.node) {
-        const draggingNodesIds = nodes.filter((node) => node.isSelected).map((node) => node.id)
+        const draggingNodesIds = nodes.filter((node) => node.states.includes(NodeState.selected)).map((node) => node.id)
 
         setNodes((nodes) =>
           nodes.map((el) =>

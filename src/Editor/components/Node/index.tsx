@@ -1,14 +1,12 @@
 import React, { useContext, useEffect } from "react"
-import { useSetRecoilState } from "recoil"
 import { isEqual, omit } from "lodash"
 import { Node as NodeType } from "../../../types"
-import { BUTTON_LEFT, CLASSES } from "../../constants"
-import { dragItemState, hoveredNodeIdState } from "../../ducks/store"
-import { resetEvent, useRecalculateRects } from "../../helpers"
-import { ItemType } from "../../types"
+import { CLASSES } from "../../constants"
+import { useRecalculateRects } from "../../helpers"
 import { EditorContext } from "../../Editor"
 import { nodeStyle } from "./helpers"
 import { Point } from "./Point"
+import { useNodeInteractions } from "./useNodeInteractions"
 
 type NodeProps = {
   node: NodeType
@@ -16,8 +14,6 @@ type NodeProps = {
 
 const Node: React.FC<NodeProps> = ({ node }) => {
   const { setNodes } = useContext(EditorContext)
-  const setDragItem = useSetRecoilState(dragItemState)
-  const setHoveredNodeId = useSetRecoilState(hoveredNodeIdState)
   const recalculateRects = useRecalculateRects()
 
   useEffect(() => {
@@ -30,19 +26,7 @@ const Node: React.FC<NodeProps> = ({ node }) => {
     )
   }, [node.id])
 
-  const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    resetEvent(e)
-    if (e.button === BUTTON_LEFT) {
-      setDragItem({ type: ItemType.node, x: e.clientX, y: e.clientY })
-    }
-
-    setNodes((nodes) =>
-      nodes.map((nodeItem) => ({
-        ...nodeItem,
-        isSelected: nodeItem.id === node.id || (e.shiftKey ? nodeItem.isSelected : false)
-      }))
-    )
-  }
+  const { onDragStarted, onMouseUp, onMouseEnter, onMouseLeave } = useNodeInteractions(node)
 
   const NodeComponent = node.children
 
@@ -51,9 +35,10 @@ const Node: React.FC<NodeProps> = ({ node }) => {
       id={node.id}
       className={CLASSES.NODE}
       onMouseDown={onDragStarted}
+      onMouseUp={onMouseUp}
       style={nodeStyle(node.position)}
-      onMouseEnter={() => setHoveredNodeId(node.id)}
-      onMouseLeave={() => setHoveredNodeId(null)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {node.next.concat(node.outputNumber > node.next.length ? [null] : []).map((nextId) => (
         <Point key={nextId} nodeId={node.id} nextId={nextId} />

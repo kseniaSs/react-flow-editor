@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Node, NodeProps } from "@kseniass/react-flow-editor"
+import { Node, NodeProps, NodeState } from "@kseniass/react-flow-editor"
 import { SimpleNodeProps } from "./types"
 import { omit } from "lodash"
 
@@ -22,7 +22,7 @@ export const SimpleNode =
   (props: NodeProps) =>
     <NodeExpanded expandable={expandable} {...props} />
 
-export const NodeExpanded: React.FC<SimpleNodeProps> = ({ onSizeChanged, expandable, isSelected }) => {
+export const NodeExpanded: React.FC<SimpleNodeProps> = ({ onSizeChanged, expandable, states }) => {
   const [height, setHeight] = React.useState(NodeHeight.folded)
   const [clickCoords, setClickCoords] = React.useState({ x: 0, y: 0 })
 
@@ -32,7 +32,7 @@ export const NodeExpanded: React.FC<SimpleNodeProps> = ({ onSizeChanged, expanda
 
   return (
     <div
-      className={`nodeElement ${isSelected ? "selected" : ""}`}
+      className={`nodeElement ${states.includes(NodeState.selected) ? "selected" : ""}`}
       onMouseUp={(e) =>
         !e.shiftKey &&
         expandable &&

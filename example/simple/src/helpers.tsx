@@ -30,5 +30,6 @@ export const nodeFactory = (): Node => ({
   next: [],
   inputNumber: 2,
   outputNumber: 1,
-  outputPosition: [DEFAULT_OUTPUT]
+  outputPosition: [DEFAULT_OUTPUT],
+  states: []
 })
