@@ -14,7 +14,7 @@ export const useDragTransformations = ({
   expandSelectionZone: (e: React.MouseEvent) => void
   zoomContainerRef: MutableRefObject<HTMLElement>
 }) => {
-  const { nodes, transformation, setNodes, setTransformation } = useContext(EditorContext)
+  const { transformation, setNodes, setTransformation } = useContext(EditorContext)
 
   const currentDragItem = useRecoilValue(dragItemState)
   const setNewConnectionState = useSetRecoilState(newConnectionState)
