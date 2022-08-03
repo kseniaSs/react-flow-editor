@@ -17,38 +17,43 @@ export const useEditorMount = () => {
 
   useEffect(() => {
     if (underOverview) {
-      const editorRect = editorContainerRef?.current?.getBoundingClientRect()
+      if (nodes.length) {
+        const editorRect = editorContainerRef?.current?.getBoundingClientRect()
 
-      const dimensionsRect = nodes.reduce((acc, node) => {
-        if (node.position.x > acc.rightPoint)
-          acc.rightPoint = node.position.x + node.rectPosition.width / transformation.zoom
-        if (node.position.x < acc.leftPoint) acc.leftPoint = node.position.x
-        if (node.position.y > acc.bottomPoint)
-          acc.bottomPoint = node.position.y + node.rectPosition.height / transformation.zoom
-        if (node.position.y < acc.topPoint) acc.topPoint = node.position.y
+        const dimensionsRect = nodes.reduce(
+          (acc, node) => {
+            if (node.position.x > acc.rightPoint)
+              acc.rightPoint = node.position.x + node.rectPosition.width / transformation.zoom
+            if (node.position.x < acc.leftPoint) acc.leftPoint = node.position.x
+            if (node.position.y > acc.bottomPoint)
+              acc.bottomPoint = node.position.y + node.rectPosition.height / transformation.zoom
+            if (node.position.y < acc.topPoint) acc.topPoint = node.position.y
 
-        return acc
-      }, LARGEST_RECT)
+            return acc
+          },
+          { ...LARGEST_RECT }
+        )
 
-      const width = dimensionsRect.rightPoint - dimensionsRect.leftPoint
-      const height = dimensionsRect.bottomPoint - dimensionsRect.topPoint
+        const width = dimensionsRect.rightPoint - dimensionsRect.leftPoint
+        const height = dimensionsRect.bottomPoint - dimensionsRect.topPoint
 
-      const newZoom = Math.min(
-        (editorRect.width + DRAG_OFFSET_TRANSFORM) / width,
-        (editorRect.height + DRAG_OFFSET_TRANSFORM) / height
-      )
-      const newZoomCorrected = newZoom > 1 ? 1 : newZoom
+        const newZoom = Math.min(
+          (editorRect.width + DRAG_OFFSET_TRANSFORM) / width,
+          (editorRect.height + DRAG_OFFSET_TRANSFORM) / height
+        )
+        const newZoomCorrected = newZoom > 1 ? 1 : newZoom
 
-      const dx = -dimensionsRect.leftPoint + (editorRect.width - width) / 2
-      const dy = -dimensionsRect.topPoint + (editorRect.height - height) / 2
+        const dx = -dimensionsRect.leftPoint + (editorRect.width - width) / 2
+        const dy = -dimensionsRect.topPoint + (editorRect.height - height) / 2
 
-      zoomContainerRef.current.style.transformOrigin = `${dx}px ${dy}px`
+        zoomContainerRef.current.style.transformOrigin = `${dx}px ${dy}px`
 
-      setTransformation({
-        dx,
-        dy,
-        zoom: newZoomCorrected
-      })
+        setTransformation({
+          dx,
+          dy,
+          zoom: newZoomCorrected
+        })
+      }
 
       setUnderOverview(false)
     }

@@ -16,14 +16,17 @@ export const computeNodeGroupsRect = (nodes: Node[], transform: Transformation):
     }
   }
 
-  const dimensionsRect = nodes.reduce((acc, node) => {
-    if (node.position.x > acc.rightPoint) acc.rightPoint = node.position.x
-    if (node.position.x < acc.leftPoint) acc.leftPoint = node.position.x
-    if (node.position.y > acc.bottomPoint) acc.bottomPoint = node.position.y
-    if (node.position.y < acc.topPoint) acc.topPoint = node.position.y
+  const dimensionsRect = nodes.reduce(
+    (acc, node) => {
+      if (node.position.x > acc.rightPoint) acc.rightPoint = node.position.x
+      if (node.position.x < acc.leftPoint) acc.leftPoint = node.position.x
+      if (node.position.y > acc.bottomPoint) acc.bottomPoint = node.position.y
+      if (node.position.y < acc.topPoint) acc.topPoint = node.position.y
 
-    return acc
-  }, LARGEST_RECT)
+      return acc
+    },
+    { ...LARGEST_RECT }
+  )
 
   const whiteSpaceX = WHITE_SPACE_SCREENS * window.innerWidth * transform.zoom
   const whiteSpaceY = WHITE_SPACE_SCREENS * window.innerHeight * transform.zoom
