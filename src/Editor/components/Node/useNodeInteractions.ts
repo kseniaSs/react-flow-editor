@@ -18,30 +18,12 @@ export const useNodeInteractions = (node: Node) => {
       resetEvent(e)
       if (e.button === BUTTON_LEFT) {
         const point = { x: e.clientX, y: e.clientY }
-        setDragItem({ type: ItemType.node, ...point })
+        setDragItem({ type: ItemType.node, ...point, id: node.id })
 
         setInitialClickCoords(point)
       }
     },
     [setNodes]
-  )
-
-  const onMouseMove: React.MouseEventHandler<HTMLDivElement> = useCallback(
-    (e) => {
-      if (dragItem.type !== ItemType.node || node.state === NodeState.dragging) return
-
-      setNodes((nodes) =>
-        nodes.map((nodeItem) => ({
-          ...nodeItem,
-          state:
-            (nodeItem.id === node.id && node.state !== NodeState.dragging) ||
-            (e.shiftKey && nodeItem.state === NodeState.selected)
-              ? NodeState.dragging
-              : null
-        }))
-      )
-    },
-    [setNodes, dragItem]
   )
 
   const onMouseUp: React.MouseEventHandler<HTMLDivElement> = useCallback(
@@ -103,7 +85,6 @@ export const useNodeInteractions = (node: Node) => {
     onDragStarted,
     onMouseUp,
     onMouseEnter,
-    onMouseLeave,
-    onMouseMove
+    onMouseLeave
   }
 }

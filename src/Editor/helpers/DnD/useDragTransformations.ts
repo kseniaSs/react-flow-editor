@@ -49,21 +49,23 @@ export const useDragTransformations = ({
       recalculateRects()
     },
     [ItemType.node]: (e: React.MouseEvent<HTMLElement>) => {
-      const draggingNodesIds = nodes.filter((node) => node.state === NodeState.dragging).map((node) => node.id)
-
       setNodes((nodes) =>
-        nodes.map((el) =>
-          draggingNodesIds.includes(el.id)
+        nodes.map((el) => {
+          const isDragging = el.id === currentDragItem.id
+          const isShiftSelected = e.shiftKey && el.state === NodeState.selected
+
+          return isDragging || isShiftSelected
             ? {
                 ...el,
                 position: {
                   x: el.position.x + (e.clientX - currentDragItem.x) / transformation.zoom,
                   y: el.position.y + (e.clientY - currentDragItem.y) / transformation.zoom
                 },
-                rectPosition: document.getElementById(el.id).getBoundingClientRect()
+                rectPosition: document.getElementById(el.id).getBoundingClientRect(),
+                state: isShiftSelected ? NodeState.selected : NodeState.dragging
               }
-            : el
-        )
+            : { ...el, state: null }
+        })
       )
     },
     [ItemType.selectionZone]: (e: React.MouseEvent<HTMLElement>) => {
