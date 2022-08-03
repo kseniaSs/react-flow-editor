@@ -29,3 +29,10 @@ export const CLASSES = {
   NODE: "node",
   DISCONNECTOR: "disconnector"
 }
+
+export const LARGEST_RECT = {
+  leftPoint: Infinity,
+  rightPoint: -Infinity,
+  topPoint: Infinity,
+  bottomPoint: -Infinity
+}
