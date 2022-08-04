@@ -38,7 +38,7 @@ export const useZoom = (
       })
       recalculateRects()
     },
-    [currentDragItem, transformation]
+    [currentDragItem, transformation, recalculateRects]
   )
 
   return { onWheel }
