@@ -28,7 +28,8 @@ jobs:
           cd example/simple
           yarn
           yarn build
-          git add -f dist
+          cp -R dist ../../docs
+          git add -f ../../docs
           git config --local user.email "romankalugernovoros@gmail.com"
           git config --local user.name "Roman Kaluger"
           git commit -m 'deploy'
