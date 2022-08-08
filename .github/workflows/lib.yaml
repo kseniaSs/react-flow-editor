@@ -22,7 +22,7 @@ jobs:
         run: yarn build
 
       - name: Init new repo in dist folder and commit generated files
-        run:
+        run: |
           cd dist
           git init
           git add -A
