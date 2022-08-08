@@ -20,24 +20,6 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Build library
         run: yarn build
-
-      - name: Init new repo in dist folder and commit generated files
-        run: |
-          cd dist
-          git init
-          git add -A
-          git config --local user.email "romankalugernovoros@gmail.com"
-          git config --local user.name "Roman"
-          git commit -m 'deploy'
-        
-      - name: Force push to destination branch
-        uses: ad-m/github-push-action@v0.5.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: gh-pages
-          force: true
-          directory: ./dist
-
         # TODO: Publish
         # - name: Publish if version has been updated
         #   uses: pascalgn/npm-publish-action@06e0830ea83eea10ed4a62654eeaedafb8bf50fc
