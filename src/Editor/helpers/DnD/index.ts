@@ -54,7 +54,7 @@ export const useDnD = (
       const connectedPointInx = outputNode.next.findIndex((id) => id === currentDragItem.nextId)
       const isNew = connectedPointInx === -1
 
-      if (!inputNode && outputNode && isNew) {
+      if (!inputNode && outputNode && isNew && nodes.some((node) => Boolean(node.state))) {
         setNodes((nodesState) =>
           nodesState.map((el) => ({
             ...el,
@@ -111,11 +111,11 @@ export const useDnD = (
         initSelectionZone(e)
       }
 
-      if (!currentDragItem.type) {
+      if (!currentDragItem.type && nodes.some((node) => Boolean(node.state))) {
         setNodes((nodes) => nodes.map((node) => ({ ...node, state: null })))
       }
     },
-    [currentDragItem, initSelectionZone, setNodes]
+    [currentDragItem, initSelectionZone, nodes, setNodes]
   )
 
   return { onDrag, onDragEnded, onDragStarted }

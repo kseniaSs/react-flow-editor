@@ -50,7 +50,7 @@ export const useSelectionZone = (zoomContainerRef: MutableRefObject<HTMLElement>
         setSelectionZone({ cornerStart: point, cornerEnd: point })
       }
     },
-    [transformation, zoomContainerRef]
+    [transformation.zoom, zoomContainerRef]
   )
 
   const expandSelectionZone = useCallback(
@@ -68,7 +68,7 @@ export const useSelectionZone = (zoomContainerRef: MutableRefObject<HTMLElement>
         }
       })
     },
-    [currentDragItem, transformation, setSelectionZone]
+    [currentDragItem, transformation.zoom, setSelectionZone]
   )
 
   return { initSelectionZone, expandSelectionZone }
