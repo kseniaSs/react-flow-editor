@@ -1,8 +1,16 @@
 import { Node, Point, Transformation } from "../../../types"
 import { DISCONNECTOR_ZONE, LARGEST_RECT, MINIMUM_SVG_SIZE } from "../../constants"
-import { NodeGroupsRect } from "../../types"
+import { Axis, NodeGroupsRect } from "../../types"
 
 const WHITE_SPACE_SCREENS = 2
+
+const recomputeBorder = (border: number, transform: Transformation, axis: Axis, isStartEdge?: boolean): number => {
+  const whiteSpace = WHITE_SPACE_SCREENS * (axis === Axis.x ? window.innerWidth : window.innerHeight) * transform.zoom
+  const svgOffset = (isStartEdge ? -1 : 1) * MINIMUM_SVG_SIZE
+  const inZoneCondition = isStartEdge ? border < svgOffset : border > svgOffset
+
+  return inZoneCondition ? border - whiteSpace : svgOffset
+}
 
 export const computeNodeGroupsRect = (nodes: Node[], transform: Transformation): NodeGroupsRect => {
   if (!nodes.length) {
@@ -28,17 +36,10 @@ export const computeNodeGroupsRect = (nodes: Node[], transform: Transformation):
     { ...LARGEST_RECT }
   )
 
-  const whiteSpaceX = WHITE_SPACE_SCREENS * window.innerWidth * transform.zoom
-  const whiteSpaceY = WHITE_SPACE_SCREENS * window.innerHeight * transform.zoom
-
-  dimensionsRect.leftPoint =
-    dimensionsRect.leftPoint < -MINIMUM_SVG_SIZE ? dimensionsRect.leftPoint - whiteSpaceX : -MINIMUM_SVG_SIZE
-  dimensionsRect.rightPoint =
-    dimensionsRect.rightPoint > MINIMUM_SVG_SIZE ? dimensionsRect.rightPoint + whiteSpaceX : MINIMUM_SVG_SIZE
-  dimensionsRect.topPoint =
-    dimensionsRect.topPoint < -MINIMUM_SVG_SIZE ? dimensionsRect.topPoint - whiteSpaceY : -MINIMUM_SVG_SIZE
-  dimensionsRect.bottomPoint =
-    dimensionsRect.bottomPoint > MINIMUM_SVG_SIZE ? dimensionsRect.bottomPoint + whiteSpaceY : MINIMUM_SVG_SIZE
+  dimensionsRect.leftPoint = recomputeBorder(dimensionsRect.leftPoint, transform, Axis.x, true)
+  dimensionsRect.rightPoint = recomputeBorder(dimensionsRect.rightPoint, transform, Axis.x)
+  dimensionsRect.topPoint = recomputeBorder(dimensionsRect.topPoint, transform, Axis.y, true)
+  dimensionsRect.bottomPoint = recomputeBorder(dimensionsRect.bottomPoint, transform, Axis.y)
 
   return {
     ...dimensionsRect,

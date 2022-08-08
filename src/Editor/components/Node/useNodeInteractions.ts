@@ -30,16 +30,31 @@ export const useNodeInteractions = (node: Node) => {
     (e) => {
       if (e.button === BUTTON_LEFT) {
         setNodes((nodes) =>
-          nodes.map((nodeItem) => ({
-            ...nodeItem,
-            state:
+          nodes.map((nodeItem) => {
+            const isSelected =
               (nodeItem.id === node.id && initialClickCoords.x === e.clientX && initialClickCoords.y === e.clientY) ||
               (e.shiftKey && nodeItem.state === NodeState.dragging)
-                ? NodeState.selected
-                : e.shiftKey && nodeItem.state === NodeState.selected
-                ? nodeItem.state
-                : null
-          }))
+
+            if (isSelected) {
+              return {
+                ...nodeItem,
+                state: NodeState.selected
+              }
+            }
+
+            const isIdentity = e.shiftKey && nodeItem.state === NodeState.selected
+
+            if (isIdentity) {
+              return {
+                ...nodeItem
+              }
+            }
+
+            return {
+              ...nodeItem,
+              state: null
+            }
+          })
         )
 
         setDragItem({ type: undefined, x: e.clientX, y: e.clientY })
