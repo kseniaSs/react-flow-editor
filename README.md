@@ -1,6 +1,100 @@
 # Flow Editor
 
-## Node states
+## Main features
+
+- DnD to move canvas or nodes
+- Available autoScroll when DnD connection or nodes
+- Multiple Selection with SHIFT + click nodes
+- Multiple Selection with SHIFT and dragging select zone
+- Delete (multiple too) selected nodes with DELETE/BACKSPACE
+- DnD multiple selected nodes with SHIFT
+- Scroll mouse to zoom
+- Connectors could be disconnected from both edges
+- Overview function to place all the nodes to viewPort
+
+## API
+
+### Editor Configuration
+
+The editor props looks as follow
+
+```typescript
+export type EditorProps = {
+  nodes: Node[]
+  setNodes: (action: SetStateAction<Node[]>) => void
+  transformation: Transformation
+  setTransformation: (transformation: Transformation) => void
+  onSelectionZoneChanged?: (value: RectZone) => void
+  onEditorRectsMounted?: (value: OnEditorRectsMountedProps) => void
+  styleConfig?: StyleConfig
+}
+
+export type NodeBase = {
+  id: string
+  next: string[]
+  position: Point
+  rectPosition?: DOMRect
+  outputPosition: Point[]
+  inputPosition?: Point
+  outputNumber: number
+  inputNumber: number
+  state: NodeState | null
+}
+
+export type Node = NodeBase & {
+  children: React.FC<NodeProps>
+}
+
+export type NodeProps = NodeBase & {
+  onSizeChanged: () => void
+}
+
+export type Transformation = {
+  dx: number
+  dy: number
+  zoom: number
+}
+
+export type RectZone = {
+  left: number
+  right: number
+  top: number
+  bottom: number
+}
+
+export type OnEditorRectsMountedProps = {
+  zoomContainerRef: MutableRefObject<HTMLDivElement>
+  editorContainerRef: MutableRefObject<HTMLDivElement>
+  overview: () => void
+}
+```
+
+| Prop      | Description |
+| ----------- | ----------- |
+| `nodes`| Array of nodes to render in editor |
+| `setNodes`| Function for nodes managing |
+| `transformation`| Editor translate and scale transformation  |
+| `setTransformation`| Transformation managing function |
+| `onEditorRectsMounted`| Callback for receiving editor DOMRect and nodes container DOMRect |
+| `onSelectionZoneChanged`| Callback for receiving selection zone coordinates |
+| `styleConfig`| Config of editor parts styles |
+
+
+### Node
+
+| Prop      | Description |
+| ----------- | ----------- |
+| `id`| The unique identifier for the node |
+| `next`| Array of the connected nodes |
+| `position`| Coordinates of the node |
+| `rectPosition`| DOMRect for the node |
+| `outputPosition`| Array of positions of output points for connectors (relatively to node) |
+| `inputPosition`| Position of input point for connectors (relatively to node) |
+| `outputNumber`| Max number of outputs |
+| `inputNumber`| Max number of inputs |
+| `state`| Node state |
+
+### Node states
 
 - `null`
 - `dragging`
@@ -8,7 +102,7 @@
 - `draggingConnector`
 - `connectorHovered`
 
-### Rules for node states
+#### Rules for node states
 
 1. node mouseDown = no changes in state
 2. node mouseDown -> mouseUp = `selected`
@@ -29,3 +123,50 @@
 14. DnD from node_1 point drop in any place = `null` for all
 
 15. click away from nodes = `null` for all
+
+### Transfromation
+
+| Prop      | Description |
+| ----------- | ----------- |
+| `dx`| Horizontal editor offset |
+| `dy`| Vertical editor offset |
+| `zoom`| Editor zoom |
+
+### Selection zone
+
+| Prop      | Description |
+| ----------- | ----------- |
+| `cornerStart`| Coordinates of the start selection point |
+| `cornerEnd`| Coordinates of the end selection point |
+
+
+### OnEditorRectsMountedProps
+
+| Prop      | Description |
+| ----------- | ----------- |
+| `zoomContainerRef`| React Ref Object of nodes container |
+| `editorContainerRef`| React Ref Object of editor |
+| `overview`| Function for applying transformation to place all the nodes into viewPort |
+
+### styleConfig
+
+| Prop      | Description |
+| ----------- | ----------- |
+| `point`| Point styles |
+| `connector`| Connector styles |
+
+### PointStyleConfig
+
+| Prop      | Description |
+| ----------- | ----------- |
+| `width`| Point width |
+| `height`| Point height |
+| `color`| Point color |
+
+### ConnectorStyleConfig
+
+| Prop      | Description |
+| ----------- | ----------- |
+| `width`| Connector width |
+| `color`| Connector color |
+
