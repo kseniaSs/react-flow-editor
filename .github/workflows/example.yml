@@ -31,11 +31,12 @@ jobs:
           git config --local user.name "Roman"
           git config --global --add safe.directory /github/workspace/dist
           git commit -m 'deploy'
+          git remote add origin https://github.com/MasterKufa/MasterKufa.github.io.git
         
       - name: Force push to destination branch
         uses: ad-m/github-push-action@v0.5.0
         with:
-          github_token: ${{ secrets.TEST }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: master
           force: true
           directory: ./dist
