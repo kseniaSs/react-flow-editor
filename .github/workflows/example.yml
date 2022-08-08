@@ -28,9 +28,9 @@ jobs:
           cd example/simple
           yarn
           yarn build
-          git add -A
+          git add -f dist
           git config --local user.email "romankalugernovoros@gmail.com"
-          git config --local user.name "Roman"
+          git config --local user.name "Roman Kaluger"
           git commit -m 'deploy'
           
       - name: Force push to destination branch
@@ -39,4 +39,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
           force: true
-          directory: ./dist/simple
+          directory: example/simple/dist
