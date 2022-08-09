@@ -1,4 +1,4 @@
-name: lib
+name: example deploy
 
 on: [push]
 
