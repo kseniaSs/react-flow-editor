@@ -1,30 +1,15 @@
 import { atom } from "recoil"
-import { Node } from "../../types"
-import { ItemType, SelectionZone } from "../types"
+import { Point, SelectionZone } from "../../types"
+import { AutoScrollState, SVGOffsetState, DragItemState } from "../types"
 
-export const nodesState = atom<Node[]>({
-  key: "nodesStateAtom",
-  default: []
-})
-
-export const newConnectionState = atom({
+export const newConnectionState = atom<Point>({
   key: "newConnectionState",
   default: { x: 0, y: 0 }
 })
 
-export const zoomState = atom({
-  key: "zoomStateAtom",
-  default: { zoom: 1, dx: 0, dy: 0 }
-})
-
-export const autoScrollState = atom({
+export const autoScrollState = atom<AutoScrollState>({
   key: "autoScrollState",
   default: { speed: 0, direction: null }
-})
-
-export const offsetState = atom({
-  key: "offsetState",
-  default: { offsetTop: 0, offsetLeft: 0, maxRight: 0, maxBottom: 0 }
 })
 
 export const selectionZoneState = atom<SelectionZone | null>({
@@ -32,32 +17,15 @@ export const selectionZoneState = atom<SelectionZone | null>({
   default: null
 })
 
-export const dotSizeState = atom({
-  key: "dotSizeState",
-  default: { width: 0, height: 0 }
-})
-
-export const pointPositionState = atom({
-  key: "positionStateAtom",
-  default: { x: 0, y: 0 }
-})
-
-export const inputPositionState = atom({
-  key: "inputPositionState",
-  default: { x: 0, y: 0 }
-})
-
-export const svgOffsetState = atom({
+export const svgOffsetState = atom<SVGOffsetState>({
   key: "svgOffsetState",
   default: { x: 0, y: 0, width: 0, height: 0 }
 })
 
-export const hoveredNodeIdState = atom({
+export const hoveredNodeIdState = atom<null | string>({
   key: "hoveredNodeId",
   default: null
 })
-
-type DragItemState = { type?: ItemType; x: number; y: number }
 
 export const dragItemState = atom<DragItemState>({
   key: "setDragItemAtom",

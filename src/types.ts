@@ -1,27 +1,88 @@
-import { Vector2d } from "./geometry"
+import { MutableRefObject, SetStateAction } from "react"
 
-export interface Size {
+export type Size = {
   width: number
   height: number
 }
 
-export interface Node {
-  /**
-   * Uniqle id
-   */
-  id: string
-  input: InputPort
-  position: Vector2d
-  classNames?: string[]
-  children: JSX.Element
-  rectPosition?: DOMRect
-  isSelected?: boolean
+export type Point = {
+  x: number
+  y: number
 }
 
-/**
- * Connection endpoint
- * Each connection is defined by a Port and a Connection
- * Which describes the Node+Port of the other endpoint of that connection
- */
+export type RectZone = {
+  left: number
+  right: number
+  top: number
+  bottom: number
+}
 
-export type InputPort = Array<string>
+export type Transformation = {
+  dx: number
+  dy: number
+  zoom: number
+}
+
+export type SelectionZone = {
+  cornerStart: Point
+  cornerEnd: Point
+}
+
+export type NodeProps = NodeBase & {
+  onSizeChanged: () => void
+}
+
+export type Node = NodeBase & {
+  children: React.FC<NodeProps>
+}
+
+export enum NodeState {
+  dragging = "dragging",
+  draggingConnector = "draggingConnector",
+  connectorHovered = "connectorHovered",
+  selected = "selected"
+}
+
+export type NodeBase = {
+  id: string
+  next: string[]
+  position: Point
+  rectPosition?: DOMRect
+  outputPosition: Point[]
+  inputPosition?: Point
+  outputNumber: number
+  inputNumber: number
+  state: NodeState | null
+}
+
+export type OnEditorRectsMountedProps = {
+  zoomContainerRef: MutableRefObject<HTMLDivElement>
+  editorContainerRef: MutableRefObject<HTMLDivElement>
+  overview: () => void
+}
+
+export type PointStyleConfig = {
+  width: number
+  height: number
+  color: string
+}
+
+export type ConnectorStyleConfig = {
+  color: string
+  width: number
+}
+
+export type StyleConfig = {
+  point?: PointStyleConfig
+  connector?: ConnectorStyleConfig
+}
+
+export type EditorProps = {
+  nodes: Node[]
+  setNodes: (action: SetStateAction<Node[]>) => void
+  transformation: Transformation
+  setTransformation: (transformation: Transformation) => void
+  onSelectionZoneChanged?: (value: RectZone) => void
+  onEditorRectsMounted?: (value: OnEditorRectsMountedProps) => void
+  styleConfig?: StyleConfig
+}

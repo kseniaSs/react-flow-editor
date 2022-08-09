@@ -1,176 +1,174 @@
-[![npm version](https://badge.fury.io/js/@kseniass%2Freact-flow-editor.svg)](https://badge.fury.io/js/@kseniass%2Freact-flow-editor.svg)
-# Graph editor
+# Flow Editor
 
-An ui library for creating flow based editors with react and typescript/javascript.
+## Main features
 
-![Screen Video](./docs/screen.gif)
-
-Try the [demo](https://lochbrunner.github.io/react-flow-editor/simple) in your browser.
-
-If you are interested in *redux* dive into the [example](./example/redux/) or try the more advanced [demo](https://lochbrunner.github.io/react-flow-editor/redux/index.html).
-
-## Getting started
-
-```typescript
-import * as ReactDOM from 'react-dom';
-import { Editor, Node, Config} from 'react-flow-editor';
-
-// Create the initial graph
-const nodes: Node[] = [
-    {
-        id: 'Node 1',
-        name: 'First Node',
-        payload: { h1: 'hello' },
-        inputs: [{
-            connection: [], name: 'input 1'
-        }],
-        type: 'node-type-1',
-        outputs: []
-}];
-
-// Renders the body of each node
-function resolver(data: any): JSX.Element {
-    if (data.type === '') return <h2 />;
-    return (
-        <p>{data.payload.h1}</p>
-    );
-}
-
-const config: Config = {
-    resolver,
-    connectionType: 'bezier',
-    grid: true,
-    demoMode: true,
-};
-
-const App = () => {
-    const { editorProps } = useEditor({ initialNodes: nodes, config })
-
-    return (
-        <div>
-            <Editor {...editorProps} />
-        </div>
-    )
-}
-
-ReactDOM.render(<App />, document.getElementById('root'));
-
-```
-
-See [example](./example/) for usage.
+- DnD to move canvas or nodes
+- Available autoScroll when DnD connection or nodes
+- Multiple Selection with SHIFT + click nodes
+- Multiple Selection with SHIFT and dragging select zone
+- Delete (multiple too) selected nodes with DELETE/BACKSPACE
+- DnD multiple selected nodes with SHIFT
+- Scroll mouse to zoom
+- Connectors could be disconnected from both edges
+- Overview function to place all the nodes to viewPort
 
 ## API
 
-### Configuration
+### Editor Configuration
 
-The config interface looks as follow
+The editor props looks as follow
 
 ```typescript
-export interface Config {
-    resolver: (payload: any) => JSX.Element;
-    connectionValidator?: (output: { nodeId: string, port: number }, input: { nodeId: string, port: number }) => boolean;
-    onChanged?: (node: ChangeAction) => void;
-    connectionType?: 'bezier' | 'linear';
-    grid?: boolean | { size: number };
-    connectionAnchorsLength?: number;
-    direction?: 'ew' | 'we';
-    demoMode?: boolean;
+export type EditorProps = {
+  nodes: Node[]
+  setNodes: (action: SetStateAction<Node[]>) => void
+  transformation: Transformation
+  setTransformation: (transformation: Transformation) => void
+  onSelectionZoneChanged?: (value: RectZone) => void
+  onEditorRectsMounted?: (value: OnEditorRectsMountedProps) => void
+  styleConfig?: StyleConfig
+}
+
+export type NodeBase = {
+  id: string
+  next: string[]
+  position: Point
+  rectPosition?: DOMRect
+  outputPosition: Point[]
+  inputPosition?: Point
+  outputNumber: number
+  inputNumber: number
+  state: NodeState | null
+}
+
+export type Node = NodeBase & {
+  children: React.FC<NodeProps>
+}
+
+export type NodeProps = NodeBase & {
+  onSizeChanged: () => void
+}
+
+export type Transformation = {
+  dx: number
+  dy: number
+  zoom: number
+}
+
+export type RectZone = {
+  left: number
+  right: number
+  top: number
+  bottom: number
+}
+
+export type OnEditorRectsMountedProps = {
+  zoomContainerRef: MutableRefObject<HTMLDivElement>
+  editorContainerRef: MutableRefObject<HTMLDivElement>
+  overview: () => void
 }
 ```
 
-| Property                  | Description                                                                                                                                  |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `resolver`                | A function returning a React component which gets placed into the node                                                                       |
-| `connectionValidator`     | A function which evaluates if a possible connection might be valid or not                                                                    |
-| `onChanged`               | A callback which gets called when the flow graph changed                                                                                     |
-| `connectionType`          | The geometry type of the connection lines between the nodes                                                                                  |
-| `grid`                    | Specifies if the grid should be rendered or not (Default is `true`). Optional specifies distances between the lines (`size`). Default is 18. |
-| `connectionAnchorsLength` | Specifies the langth of the anker when using `bezier` as `connectionType`.                                                                   |
-| `direction`               | Specifies the orientation of the input and output ports. Default is `we`.                                                                    |
-| `demoMode`                | If this set to true, the Editor takes care of updating the nodes in the props. Be carful using this in production.                           |
+| Prop      | Description |
+| ----------- | ----------- |
+| `nodes`| Array of nodes to render in editor |
+| `setNodes`| Function for nodes managing |
+| `transformation`| Editor translate and scale transformation  |
+| `setTransformation`| Transformation managing function |
+| `onEditorRectsMounted`| Callback for receiving editor DOMRect and nodes container DOMRect |
+| `onSelectionZoneChanged`| Callback for receiving selection zone coordinates |
+| `styleConfig`| Config of editor parts styles |
 
-### Nodes
 
-A node is specified by the following interface
+### Node
 
-```typescript
-export interface Node {
-  name: string;
-  type: string;
-  id: string;
-  inputs: InputPort[];
-  outputs: OutputPort[];
-  payload?: any;
-  position?: Vector2d;
-  properties?: {display: 'stacked' | 'only-dots'};
-  classNames?: string[];
-  style: Style;
-}
-```
+| Prop      | Description |
+| ----------- | ----------- |
+| `id`| The unique identifier for the node |
+| `next`| Array of the connected nodes |
+| `position`| Coordinates of the node |
+| `rectPosition`| DOMRect for the node |
+| `outputPosition`| Array of positions of output points for connectors (relatively to node) |
+| `inputPosition`| Position of input point for connectors (relatively to node) |
+| `outputNumber`| Max number of outputs |
+| `inputNumber`| Max number of inputs |
+| `state`| Node state |
 
-For now `InputPort` and `OutputPort` are identically to the `Port` interface:
+### Node states
 
-```typescript
-export interface Port {
-  name: string;
-  connection?: Connection|Connection[];
-  payload?: any;
-  renderer?: (connection: Port) => JSX.Element;
-}
-```
+- `null`
+- `dragging`
+- `selected`
+- `draggingConnector`
+- `connectorHovered`
 
-```typescript
-export interface Connection {
-  nodeId: string;
-  port: number;
-  classNames?: string[];
-  notes?: string;
-}
-```
+#### Rules for node states
 
-### Themes
+1. node mouseDown = no changes in state
+2. node mouseDown -> mouseUp = `selected`
+3. node mouseDown -> mouseMove = `dragging`
+4. node mouseDown -> mouseMove -> mouseUp = `null`
 
-By default we recommend to import the default theme with
+5. SHIFT + node mouseDown = no changes in state
+6. SHIFT + (node mouseDown -> mouseUp) = `selected`
+7. SHIFT + (node mouseDown-> mouseMove)  = `dragging`
+8. SHIFT + (node mouseDown-> mouseMove -> mouseUp)  = `selected`
 
-```sass
-@import "react-flow-editor/dist/default-theme.scss";
-```
+9. SHIFT + (node click -> node_2 click)  = `selected` both
+10. SHIFT + (node click -> node_2 click -> (node or node_2) mouseDown -> mouseMove)  = `dragging` both
+11. SHIFT + (node click -> node_2 click -> (node or node_2) mouseDown -> mouseMove -> mouseUp) = `selected` both
 
-But you can change the style of all components by coping that file and adjust its values.
+12. DnD from node_1 point = `draggingConnector`
+13. DnD from node_1 point over node_2 point = node_1 `draggingConnector` and node_2 `connectorHovered`
+14. DnD from node_1 point drop in any place = `null` for all
 
-### Postcss support
+15. click away from nodes = `null` for all
 
-When using postcss generated class names just forward them with
+### Transfromation
 
-```ts
-import * as style from './style.scss';
+| Prop      | Description |
+| ----------- | ----------- |
+| `dx`| Horizontal editor offset |
+| `dy`| Vertical editor offset |
+| `zoom`| Editor zoom |
 
-// ...
+### Selection zone
 
-const config: Config = {
-    resolver,
-    connectionType: 'bezier',
-    grid: true,
-    demoMode: true,
-    direction: 'we',
-    style
-};
-// ...
-```
+| Prop      | Description |
+| ----------- | ----------- |
+| `cornerStart`| Coordinates of the start selection point |
+| `cornerEnd`| Coordinates of the end selection point |
 
-See [Example](./example/postcss).
 
-## Roadmap
+### OnEditorRectsMountedProps
 
-* Editing the title of the node
-* Grouping nodes (similar to *Blender*)
-* Optimize hooking
-* Fix zooming and scrolling
+| Prop      | Description |
+| ----------- | ----------- |
+| `zoomContainerRef`| React Ref Object of nodes container |
+| `editorContainerRef`| React Ref Object of editor |
+| `overview`| Function for applying transformation to place all the nodes into viewPort |
 
-## Contributing
+### styleConfig
 
-This library is very young. So please consider that it might have some bugs, but I will try to fix them, when they get reported.
+| Prop      | Description |
+| ----------- | ----------- |
+| `point`| Point styles |
+| `connector`| Connector styles |
 
-If you have any problems or miss an important feature:
+### PointStyleConfig
 
-**Feel free to create a PR or report an issue!**
+| Prop      | Description |
+| ----------- | ----------- |
+| `width`| Point width |
+| `height`| Point height |
+| `color`| Point color |
+
+### ConnectorStyleConfig
+
+| Prop      | Description |
+| ----------- | ----------- |
+| `width`| Connector width |
+| `color`| Connector color |
+
+
+### [Changelog](./changelog.md "Changelog")

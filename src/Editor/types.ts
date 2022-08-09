@@ -1,5 +1,4 @@
-import { Vector2d } from "../geometry"
-import { Node as NodeType, Size } from "../types"
+import { Point, Size } from "../types"
 
 export enum ItemType {
   node = "node",
@@ -8,32 +7,9 @@ export enum ItemType {
   selectionZone = "selectionZone"
 }
 
-export interface WorkItemConnection {
-  type: ItemType.connection
-  input: Vector2d
-  output: Vector2d
-}
-
-export type WorkItem = WorkItemConnection
-
-export type Point = {
-  x: number
-  y: number
-}
-
-export type Offset = {
-  offsetTop: number
-  offsetLeft: number
-}
-
-export type Transformation = { dx: number; dy: number; zoom: number }
-
-export type EditorState = {
-  connectionState: Map<string, Vector2d>
-  selection?: { type: ItemType; id: string }
-  workingItem?: WorkItem
-  transformation: Transformation
-  componentSize: Size
+export enum Axis {
+  x = "x",
+  y = "y"
 }
 
 export enum AutoScrollDirection {
@@ -43,22 +19,17 @@ export enum AutoScrollDirection {
   bottom = "bottom"
 }
 
-export enum Axis {
-  x = "x",
-  y = "y"
-}
+export type AutoScrollState = { speed: number; direction: AutoScrollDirection }
 
-export type SelectionZone = {
-  cornerStart: Point
-  cornerEnd: Point
-}
+export type SVGOffsetState = Point & Size
 
-export type EditorProps = {
-  nodes: NodeType[]
-  pointPosition?: Point
-  inputPosition?: Point
-  isSingleOutputConnection?: boolean
-  onSelectionZoneChanged: (value: RectZone) => void
-}
+export type DragItemState = { type?: ItemType; nextId?: string; fromId?: string; id?: string } & Point
 
-export type RectZone = { left: number; right: number; top: number; bottom: number }
+export type NodeGroupsRect = {
+  leftPoint: number
+  rightPoint: number
+  topPoint: number
+  bottomPoint: number
+  realHeight: number
+  realWidth: number
+}

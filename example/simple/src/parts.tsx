@@ -1,12 +1,13 @@
 import * as React from "react"
-import { Node } from "@kseniass/react-flow-editor"
-import _ from "lodash"
+import { Node, NodeProps, NodeState } from "@kseniass/react-flow-editor"
+import { SimpleNodeProps } from "./types"
+import { omit } from "lodash"
 
 export const NodeAttributes: React.FC<{ nodes: Node[] }> = ({ nodes }) => (
   <div>
     <h2>Nodes attributes</h2>
     {nodes.map((node) => (
-      <pre key={node.id}> {JSON.stringify(_.omit(node, ["children"], null, 1)).replaceAll(/([{,])/g, "$1\n")}</pre>
+      <pre key={node.id}> {JSON.stringify(omit(node, ["children"], null, 1)).replaceAll(/([{,])/g, "$1\n")}</pre>
     ))}
   </div>
 )
@@ -16,25 +17,33 @@ const NodeHeight = {
   expanded: 150
 }
 
-export const NodeExpanded: React.FC<{ recalculateRects?: () => void }> = ({ recalculateRects }) => {
+export const SimpleNode =
+  ({ expandable }: { expandable?: boolean }): React.FC<SimpleNodeProps> =>
+  (props: NodeProps) =>
+    <NodeExpanded expandable={expandable} {...props} />
+
+export const NodeExpanded: React.FC<SimpleNodeProps> = ({ onSizeChanged, expandable, state }) => {
   const [height, setHeight] = React.useState(NodeHeight.folded)
   const [clickCoords, setClickCoords] = React.useState({ x: 0, y: 0 })
 
   React.useEffect(() => {
-    recalculateRects && recalculateRects()
+    onSizeChanged && onSizeChanged()
   }, [height])
 
   return (
     <div
+      className={`nodeElement ${state === NodeState.selected ? "selected" : ""}`}
       onMouseUp={(e) =>
+        !e.shiftKey &&
+        expandable &&
         clickCoords.x === e.clientX &&
         clickCoords.y === e.clientY &&
         setHeight(height === NodeHeight.folded ? NodeHeight.expanded : NodeHeight.folded)
       }
-      onMouseDown={(e) => setClickCoords({ x: e.clientX, y: e.clientY })}
+      onMouseDown={(e) => expandable && setClickCoords({ x: e.clientX, y: e.clientY })}
       style={{ height: `${height}px` }}
     >
-      Expandable Node
+      {expandable && "Expandable"} Node
     </div>
   )
 }

@@ -1,10 +1,55 @@
-import React from "react"
 import { Node } from "@kseniass/react-flow-editor"
+import { SimpleNode } from "./parts"
+
+export const DEFAULT_OUTPUT = {
+  x: 145,
+  y: 30
+}
+
+const DEFAULT_OUTPUT_2 = {
+  x: 145,
+  y: 45
+}
+
+const DEFAULT_INPUT = {
+  x: 0,
+  y: 25
+}
 
 export const initialNodes: Node[] = [
-  { id: "Node_1", children: <div>Node_1</div>, position: { x: 110, y: 110 }, input: ["Node_2"] },
-  { id: "Node_2", children: <div>Node_2</div>, position: { x: 310, y: 110 }, input: ["Node_3"] },
-  { id: "Node_3", children: <div>Node_3</div>, position: { x: 310, y: 510 }, input: [] }
+  {
+    id: "Node_1",
+    children: SimpleNode({ expandable: true }),
+    position: { x: 110, y: 110 },
+    outputPosition: [DEFAULT_OUTPUT, DEFAULT_OUTPUT_2],
+    outputNumber: 2,
+    inputNumber: 0,
+    inputPosition: DEFAULT_INPUT,
+    next: ["Node_2"],
+    state: null
+  },
+  {
+    id: "Node_2",
+    children: SimpleNode({ expandable: true }),
+    position: { x: 310, y: 310 },
+    outputPosition: [DEFAULT_OUTPUT, DEFAULT_OUTPUT_2],
+    outputNumber: 2,
+    inputNumber: 1,
+    inputPosition: DEFAULT_INPUT,
+    next: ["Node_3"],
+    state: null
+  },
+  {
+    id: "Node_3",
+    children: SimpleNode({ expandable: false }),
+    position: { x: 510, y: 510 },
+    outputPosition: [DEFAULT_OUTPUT],
+    outputNumber: 1,
+    inputNumber: 2,
+    inputPosition: DEFAULT_INPUT,
+    next: [],
+    state: null
+  }
 ]
 
 export const pointPosition = { x: 30, y: -10 }
@@ -19,3 +64,14 @@ export const TIPS = `
   - DnD multiple selected nodes with SHIFT\n
   - Scroll mouse to zoom
 `
+
+export const STYLED_CONFIG = {
+  point: {
+    width: 10,
+    height: 10,
+    color: "gray"
+  },
+  connector: {
+    color: "gray"
+  }
+}

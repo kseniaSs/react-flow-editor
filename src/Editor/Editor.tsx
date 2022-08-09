@@ -1,41 +1,19 @@
-import React, { useEffect } from "react"
-import { RecoilRoot, useRecoilState } from "recoil"
-import _ from "lodash"
-import { EditorProps } from "./types"
-import Canvas from "./Canvas"
-import { inputPositionState, nodesState, pointPositionState } from "./ducks/store"
+import React, { createContext } from "react"
+import { RecoilRoot } from "recoil"
+import { isEqual } from "lodash"
+import { Canvas } from "./Canvas"
+import { EditorProps } from "../types"
+import "../_style.scss"
 
-const App: React.FC<EditorProps> = ({
-  nodes,
-  pointPosition,
-  inputPosition,
-  onSelectionZoneChanged,
-  isSingleOutputConnection
-}) => {
-  const [pointStatePosition, setPointStatePosition] = useRecoilState(pointPositionState)
-  const [inputStatePosition, setInputStatePosition] = useRecoilState(inputPositionState)
-  const [stateNodes, setNodes] = useRecoilState(nodesState)
-
-  useEffect(() => {
-    if (!_.isEqual(_.omit(nodes, ["children"]), _.omit(stateNodes, ["children"]))) setNodes(nodes)
-    if (pointPosition && !_.isEqual(pointPosition, pointStatePosition)) setPointStatePosition(pointPosition)
-    if (inputPosition && !_.isEqual(inputPosition, inputStatePosition)) setInputStatePosition(inputPosition)
-  }, [nodes, pointPosition, inputPosition])
-
-  return <Canvas onSelectionZoneChanged={onSelectionZoneChanged} isSingleOutputConnection={isSingleOutputConnection} />
-}
+export const EditorContext = createContext<EditorProps | null>(null)
 
 export const Editor: React.FC<EditorProps> = React.memo(
-  ({ nodes, pointPosition, inputPosition, onSelectionZoneChanged, isSingleOutputConnection }) => (
-    <RecoilRoot>
-      <App
-        nodes={nodes}
-        onSelectionZoneChanged={onSelectionZoneChanged}
-        inputPosition={inputPosition}
-        isSingleOutputConnection={isSingleOutputConnection}
-        pointPosition={pointPosition}
-      />
-    </RecoilRoot>
+  (props) => (
+    <EditorContext.Provider value={props}>
+      <RecoilRoot>
+        <Canvas />
+      </RecoilRoot>
+    </EditorContext.Provider>
   ),
-  _.isEqual
+  isEqual
 )
