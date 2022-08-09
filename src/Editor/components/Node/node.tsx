@@ -12,7 +12,7 @@ type NodeProps = {
   node: NodeType
 }
 
-const Node: React.FC<NodeProps> = ({ node }) => {
+export const Provider = ({ node }: NodeProps) => {
   const { setNodes } = useContext(EditorContext)
   const recalculateRects = useRecalculateRects()
 
@@ -26,27 +26,44 @@ const Node: React.FC<NodeProps> = ({ node }) => {
     )
   }, [node.id])
 
-  const { onDragStarted, onMouseUp, onMouseEnter, onMouseLeave } = useNodeInteractions(node)
+  const nodeInteractions = useNodeInteractions(node)
+  const nodeComponentProps = useMemo(() => omit(node, ["children"]), [node])
 
+  return (
+    <Node
+      node={node}
+      nodeInteractions={nodeInteractions}
+      nodeComponentProps={nodeComponentProps}
+      recalculateRects={recalculateRects}
+    />
+  )
+}
+
+const Node: React.FC<
+  NodeProps & {
+    nodeInteractions: ReturnType<typeof useNodeInteractions>
+    nodeComponentProps: Omit<NodeType, "children">
+    recalculateRects: ReturnType<typeof useRecalculateRects>
+  }
+> = React.memo(({ node, nodeInteractions, nodeComponentProps, recalculateRects }) => {
   const NodeComponent = node.children
-  const NodeComponentProps = useMemo(() => omit(node, ["children"]), [node])
 
   return (
     <div
       id={node.id}
       className={CLASSES.NODE}
-      onMouseDown={onDragStarted}
-      onMouseUp={onMouseUp}
+      onMouseDown={nodeInteractions.onDragStarted}
+      onMouseUp={nodeInteractions.onMouseUp}
       style={nodeStyle(node.position)}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onMouseEnter={nodeInteractions.onMouseEnter}
+      onMouseLeave={nodeInteractions.onMouseLeave}
     >
       {node.next.concat(node.outputNumber > node.next.length ? [null] : []).map((nextId) => (
         <Point key={nextId} nodeId={node.id} nextId={nextId} />
       ))}
-      <NodeComponent onSizeChanged={recalculateRects} {...NodeComponentProps} />
+      <NodeComponent onSizeChanged={recalculateRects} {...nodeComponentProps} />
     </div>
   )
-}
+}, isEqual)
 
-export default React.memo(Node, isEqual)
+export default React.memo(Provider, isEqual)

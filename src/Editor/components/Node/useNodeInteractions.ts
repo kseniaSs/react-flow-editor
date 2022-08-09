@@ -78,7 +78,7 @@ export const useNodeInteractions = (node: Node) => {
     )
 
     setHoveredNodeId(node.id)
-  }, [setNodes, dragItem])
+  }, [setNodes, dragItem.fromId])
 
   const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
     setNodes((nodes) =>
@@ -94,7 +94,7 @@ export const useNodeInteractions = (node: Node) => {
     )
 
     setHoveredNodeId(null)
-  }, [setNodes, dragItem])
+  }, [setNodes, dragItem.type === ItemType.connection])
 
   return {
     onDragStarted,
