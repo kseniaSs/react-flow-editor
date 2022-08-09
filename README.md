@@ -170,3 +170,5 @@ export type OnEditorRectsMountedProps = {
 | `width`| Connector width |
 | `color`| Connector color |
 
+
+### [Changelog](./changelog.md "Changelog")
