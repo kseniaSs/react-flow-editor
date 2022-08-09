@@ -60,7 +60,7 @@ export const useNodeInteractions = (node: Node) => {
         setDragItem({ type: undefined, x: e.clientX, y: e.clientY })
       }
     },
-    [setNodes]
+    [setNodes, initialClickCoords]
   )
 
   const onMouseEnter: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
