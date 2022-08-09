@@ -21,8 +21,6 @@ export const ConnectionTrack: React.FC<{ nextNodeId: string; node: Node; inx: nu
   const svgOffset = useRecoilValue(svgOffsetState)
   const nextNode = nodes.find((node) => node.id === nextNodeId)
 
-  if (!nextNode) return null
-
   const inputPosition = useMemo(
     () =>
       node.rectPosition
@@ -43,12 +41,15 @@ export const ConnectionTrack: React.FC<{ nextNodeId: string; node: Node; inx: nu
   )
 
   const outputPosition = useMemo(
-    () => ({
-      x: -svgOffset.x + nextNode.position.x + (nextNode?.inputPosition?.x || 0),
-      y: -svgOffset.y + nextNode.position.y + (nextNode?.inputPosition?.y || 0)
-    }),
+    () =>
+      nextNode && {
+        x: -svgOffset.x + nextNode.position.x + (nextNode?.inputPosition?.x || 0),
+        y: -svgOffset.y + nextNode.position.y + (nextNode?.inputPosition?.y || 0)
+      },
     [svgOffset, nextNode]
   )
+
+  if (!nextNode) return null
 
   return (
     <React.Fragment key={nextNodeId}>
