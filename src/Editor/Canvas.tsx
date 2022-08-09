@@ -1,36 +1,27 @@
-import React, { useEffect, useContext, createContext } from "react"
+import React, { useContext, createContext } from "react"
 import { dragItemState } from "./ducks/store"
-import { Container as ConnectionContainer } from "./components/Connections"
 import Background from "./components/Background"
 import { CLASSES } from "./constants"
 import { EditorContext } from "./Editor"
-import { TransformCanvasStyle, useEditorMount, useRecalculateRects } from "./helpers"
+import { TransformCanvasStyle, useEditorMount } from "./helpers"
 import { useDnD } from "./helpers/DnD"
 import { useZoom } from "./helpers/zoom"
 import { useRecoilValue } from "recoil"
-import Node from "./components/Node"
 import { isEqual } from "lodash"
 import { useHotKeys } from "./helpers/hotKeys"
+import { NodesContainer } from "./components/Node"
 
 export const RectsContext = createContext<Partial<ReturnType<typeof useEditorMount>>>({})
 
 export const Canvas: React.FC = React.memo(() => {
-  const { nodes, transformation } = useContext(EditorContext)
-
+  const { transformation } = useContext(EditorContext)
   const currentDragItem = useRecoilValue(dragItemState)
   const rects = useEditorMount()
   const { zoomContainerRef, editorContainerRef } = rects
-  const recalculateRects = useRecalculateRects()
   const { onDrag, onDragEnded, onDragStarted } = useDnD(editorContainerRef, zoomContainerRef)
   const { onWheel } = useZoom(zoomContainerRef, editorContainerRef)
 
   useHotKeys()
-
-  useEffect(() => {
-    if (!nodes.length) return
-
-    recalculateRects()
-  }, [transformation.zoom])
 
   return (
     <RectsContext.Provider value={rects}>
@@ -43,10 +34,7 @@ export const Canvas: React.FC = React.memo(() => {
         className={CLASSES.EDITOR}
       >
         <div ref={zoomContainerRef} className={CLASSES.ZOOM_CONTAINER} style={TransformCanvasStyle(transformation)}>
-          {nodes.map((node) => (
-            <Node node={node} key={node.id} />
-          ))}
-          <ConnectionContainer />
+          <NodesContainer />
         </div>
         <Background />
       </div>
