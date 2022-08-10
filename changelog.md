@@ -1,6 +1,6 @@
 # Changelog
 
-### Version 0.7.50
+### Version 0.7.52
 
 #####  Api changes
 

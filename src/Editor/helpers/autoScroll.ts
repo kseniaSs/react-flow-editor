@@ -103,7 +103,9 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
       }
 
       if (currentDragItem.type === ItemType.node) {
-        const draggingNodesIds = nodes.filter((node) => node.state === NodeState.dragging).map((node) => node.id)
+        const draggingNodesIds = nodes
+          .filter((node) => [NodeState.dragging, NodeState.selected].includes(node.state))
+          .map((node) => node.id)
 
         setNodes((nodes) =>
           nodes.map((el) =>
