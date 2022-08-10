@@ -1,0 +1,43 @@
+name: example deploy
+
+on:
+  push:
+    branches: [ master ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build library
+        run: yarn build
+
+      - name: Init new repo in dist folder and commit generated files
+        run: |
+          git init
+          cd example/simple
+          yarn
+          yarn build
+          cp -R dist ../../docs
+          git add -f ../../docs
+          git config --local user.email "romankalugernovoros@gmail.com"
+          git config --local user.name "Roman Kaluger"
+          git commit -m 'deploy'
+          
+      - name: Force push to destination branch
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          force: true
+          directory: example/simple/dist

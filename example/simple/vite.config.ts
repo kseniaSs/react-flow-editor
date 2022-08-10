@@ -6,12 +6,13 @@ import * as path from "path"
 export default defineConfig({
   plugins: [react({ jsxRuntime: "classic" })],
   root: "src",
+  base: "./",
   resolve: {
     alias: {
       "@kseniass/react-flow-editor": path.resolve("../../src")
     }
   },
   build: {
-    outDir: "../../../dist/simple"
+    outDir: "../dist"
   }
 })
