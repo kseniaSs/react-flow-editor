@@ -1,5 +1,9 @@
 # Flow Editor
 
+[![npm version](https://badge.fury.io/js/@kseniass%2Freact-flow-editor.svg)](https://www.npmjs.com/package/@kseniass/react-flow-editor)
+
+[Try](https://kseniass.github.io/react-flow-editor/) in your browser.
+
 ## Main features
 
 - DnD to move canvas or nodes
