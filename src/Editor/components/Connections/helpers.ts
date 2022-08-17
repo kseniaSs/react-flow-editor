@@ -57,3 +57,6 @@ export const connectionContainerStyle = (rect: NodeGroupsRect): React.CSSPropert
 export const disconnectorStyle = (pos: Point) => ({
   transform: `translate(${pos.x - DISCONNECTOR_ZONE / 2}px, ${pos.y - DISCONNECTOR_ZONE / 2}px)`
 })
+
+export const numberFallback = (number: unknown, fallback: number): number =>
+  typeof number === "number" ? number : fallback

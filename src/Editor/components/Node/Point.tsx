@@ -7,6 +7,7 @@ import { BUTTON_LEFT, CLASSES, EditorContext } from "../../constants"
 import { dragItemState, newConnectionState, svgOffsetState } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 import { ItemType } from "../../types"
+import { numberFallback } from "../Connections/helpers"
 import { buildDotId, pointStyle } from "./helpers"
 
 type PointProps = {
@@ -57,7 +58,7 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId, nextId }) => {
     <div
       id={buildDotId(nodeId)}
       className={CLASSES.DOT}
-      style={pointStyle(currentNode.outputPosition[pointInx], styleConfig?.point)}
+      style={pointStyle(currentNode.outputPosition[numberFallback(pointInx, 0)], styleConfig?.point)}
       onMouseDown={setNode}
     />
   )

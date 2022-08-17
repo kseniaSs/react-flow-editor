@@ -17,7 +17,7 @@ const Background: FC<BackgroundProps> = ({ variant = BackgroundVariant.Dots, gap
   const xOffset = dx % scaledGap
   const yOffset = dy % scaledGap
 
-  const bgColor = color || defaultColors[variant]
+  const bgColor = color || defaultColors[`${variant}`]
   const path =
     variant === BackgroundVariant.Lines
       ? createGridLinesPath(scaledGap, size, bgColor)

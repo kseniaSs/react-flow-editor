@@ -26,7 +26,7 @@
   },
   "scripts": {
     "build": "vite build",
-    "lint:error": "eslint . --ext .ts,.tsx --quiet",
+    "lint:error": "./node_modules/.bin/eslint . --ext .ts,.tsx --quiet",
     "lint:fix": "eslint --fix",
     "prettier": "./node_modules/.bin/prettier . --write",
     "refresh-all": "npm run refresh-redux && npm run refresh-simple",
@@ -55,6 +55,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-security": "^1.5.0",
     "prettier": "^2.7.1",
     "sass": "^1.53.0",
     "typescript": "^4.0.2",
