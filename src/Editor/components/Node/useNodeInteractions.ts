@@ -8,7 +8,7 @@ import { resetEvent } from "../../helpers"
 import { ItemType } from "../../types"
 
 export const useNodeInteractions = (node: Node) => {
-  const { setNodes } = useContext(EditorContext)
+  const { setNodes, nodes } = useContext(EditorContext)
   const [dragItem, setDragItem] = useRecoilState(dragItemState)
   const setHoveredNodeId = useSetRecoilState(hoveredNodeIdState)
   const [initialClickCoords, setInitialClickCoords] = useState<Point>({ x: 0, y: 0 })
@@ -64,34 +64,38 @@ export const useNodeInteractions = (node: Node) => {
   )
 
   const onMouseEnter: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
-    setNodes((nodes) =>
-      nodes.map((nodeItem) => ({
-        ...nodeItem,
-        state:
-          nodeItem.id === node.id &&
-          dragItem.type === ItemType.connection &&
-          dragItem.fromId !== node.id &&
-          nodeItem.state !== NodeState.connectorHovered
-            ? NodeState.connectorHovered
-            : nodeItem.state
-      }))
-    )
+    const isNodeHovered = (nodeItem: Node) =>
+      nodeItem.id === node.id &&
+      dragItem.type === ItemType.connection &&
+      dragItem.fromId !== node.id &&
+      nodeItem.state !== NodeState.connectorHovered
+
+    const needUpdateNodes = nodes.some(isNodeHovered)
+
+    needUpdateNodes &&
+      setNodes((nodes) =>
+        nodes.map((nodeItem) => ({
+          ...nodeItem,
+          state: isNodeHovered(nodeItem) ? NodeState.connectorHovered : nodeItem.state
+        }))
+      )
 
     setHoveredNodeId(node.id)
-  }, [setNodes, dragItem.fromId])
+  }, [setNodes, dragItem.fromId, nodes])
 
   const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
-    setNodes((nodes) =>
-      nodes.map((nodeItem) => ({
-        ...nodeItem,
-        state:
-          nodeItem.id === node.id &&
-          dragItem.type === ItemType.connection &&
-          nodeItem.state !== NodeState.draggingConnector
-            ? null
-            : nodeItem.state
-      }))
-    )
+    const isNodeLeavedWithConnector = (nodeItem: Node) =>
+      nodeItem.id === node.id && dragItem.type === ItemType.connection && nodeItem.state !== NodeState.draggingConnector
+
+    const needUpdateNodes = nodes.some(isNodeLeavedWithConnector)
+
+    needUpdateNodes &&
+      setNodes((nodes) =>
+        nodes.map((nodeItem) => ({
+          ...nodeItem,
+          state: isNodeLeavedWithConnector(nodeItem) ? null : nodeItem.state
+        }))
+      )
 
     setHoveredNodeId(null)
   }, [setNodes, dragItem.type === ItemType.connection])
