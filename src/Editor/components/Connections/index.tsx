@@ -5,7 +5,8 @@ import { svgOffsetState } from "../../ducks/store"
 import { useSetRecoilState } from "recoil"
 import { computeNodeGroupsRect, connectionContainerStyle } from "./helpers"
 import { Arrow } from "./components/Arrow"
-import { CLASSES, EditorContext } from "../../constants"
+import { CLASSES } from "../../constants"
+import { EditorContext } from "../../context"
 
 export const Container: React.FC = () => {
   const { transformation, nodes, styleConfig } = useContext(EditorContext)

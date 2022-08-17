@@ -3,7 +3,7 @@ import { Container as ConnectionContainer } from "../../components/Connections"
 import { useRecalculateRects } from "../../helpers"
 import Node from "./node"
 import { isEqual } from "lodash"
-import { EditorContext } from "../../constants"
+import { EditorContext } from "../../context"
 
 export const NodesContainer: React.FC = React.memo(() => {
   const { nodes, transformation } = useContext(EditorContext)

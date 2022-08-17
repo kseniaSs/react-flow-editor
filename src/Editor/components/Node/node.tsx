@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useMemo } from "react"
 import { isEqual, omit } from "lodash"
 import { Node as NodeType } from "../../../types"
-import { CLASSES, EditorContext } from "../../constants"
+import { CLASSES } from "../../constants"
 import { useRecalculateRects } from "../../helpers"
 import { nodeStyle } from "./helpers"
 import { Point } from "./Point"
 import { useNodeInteractions } from "./useNodeInteractions"
+import { EditorContext } from "../../context"
 
 type NodeProps = {
   node: NodeType

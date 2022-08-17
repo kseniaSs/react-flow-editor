@@ -1,6 +1,7 @@
 import React, { useContext } from "react"
 import { useRecoilValue } from "recoil"
-import { DEFAULT_POINT_SIZE, EditorContext } from "../../../constants"
+import { DEFAULT_POINT_SIZE } from "../../../constants"
+import { EditorContext } from "../../../context"
 import { dragItemState, newConnectionState, svgOffsetState } from "../../../ducks/store"
 import { ItemType } from "../../../types"
 import { numberFallback } from "../helpers"

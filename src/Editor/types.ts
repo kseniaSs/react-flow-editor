@@ -33,3 +33,8 @@ export type NodeGroupsRect = {
   realHeight: number
   realWidth: number
 }
+
+export type MountedContexts = {
+  zoomContainerRef: React.MutableRefObject<HTMLDivElement>
+  editorContainerRef: React.MutableRefObject<HTMLDivElement>
+}

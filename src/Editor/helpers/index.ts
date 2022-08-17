@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useMemo, useState } from "react"
 import { Transformation } from "../../types"
-import { DRAG_OFFSET_TRANSFORM, EditorContext, LARGEST_RECT } from "../constants"
+import { DRAG_OFFSET_TRANSFORM, LARGEST_RECT } from "../constants"
+import { EditorContext } from "../context"
 
 export const resetEvent = (e: React.MouseEvent<HTMLElement>) => {
   e.stopPropagation()

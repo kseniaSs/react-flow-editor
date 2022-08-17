@@ -1,6 +1,3 @@
-import { createContext } from "react"
-import { EditorProps } from "../types"
-
 export const KEY_CODE_BACK = "Backspace"
 export const KEY_CODE_DELETE = "Delete"
 export const BUTTON_LEFT = 0
@@ -39,5 +36,3 @@ export const LARGEST_RECT = {
   topPoint: Infinity,
   bottomPoint: -Infinity
 }
-
-export const EditorContext = createContext<EditorProps | null>(null)

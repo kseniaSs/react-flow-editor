@@ -1,5 +1,6 @@
 import React, { memo, FC, useContext } from "react"
-import { CLASSES, EditorContext } from "../../constants"
+import { CLASSES } from "../../constants"
+import { EditorContext } from "../../context"
 import { BackgroundProps, BackgroundVariant } from "./types"
 import { createGridLinesPath, createGridDotsPath } from "./utils"
 
