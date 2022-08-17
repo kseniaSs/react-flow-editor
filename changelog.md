@@ -1,5 +1,13 @@
 # Changelog
 
+### Version 0.7.53
+
+#####  Refactor
+
+- Circular dependencies have been fixed and eslint no-circular rule has been applied.
+- Eslint security plugin has been applied.
+- Snyk warnings have been fixed and snyk has been added to pipeline.
+- Small performance issues was fixed.
 ### Version 0.7.52
 
 #####  Api changes
