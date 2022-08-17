@@ -43,7 +43,7 @@ export const initialNodes: Node[] = [
     id: "Node_3",
     children: SimpleNode({ expandable: false }),
     position: { x: 510, y: 510 },
-    outputPosition: [DEFAULT_OUTPUT],
+    outputPosition: [DEFAULT_OUTPUT, DEFAULT_OUTPUT_2],
     outputNumber: 10,
     inputNumber: 10,
     inputPosition: DEFAULT_INPUT,
