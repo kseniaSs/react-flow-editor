@@ -4,9 +4,8 @@ import { NewConnection } from "./components/NewConnection"
 import { svgOffsetState } from "../../ducks/store"
 import { useSetRecoilState } from "recoil"
 import { computeNodeGroupsRect, connectionContainerStyle } from "./helpers"
-import { EditorContext } from "../../Editor"
 import { Arrow } from "./components/Arrow"
-import { CLASSES } from "../../constants"
+import { CLASSES, EditorContext } from "../../constants"
 
 export const Container: React.FC = () => {
   const { transformation, nodes, styleConfig } = useContext(EditorContext)

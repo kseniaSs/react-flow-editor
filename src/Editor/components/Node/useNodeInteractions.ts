@@ -1,9 +1,8 @@
 import React, { useCallback, useContext, useState } from "react"
 import { useRecoilState, useSetRecoilState } from "recoil"
 import { Node, NodeState, Point } from "../../../types"
-import { BUTTON_LEFT } from "../../constants"
+import { BUTTON_LEFT, EditorContext } from "../../constants"
 import { dragItemState, hoveredNodeIdState } from "../../ducks/store"
-import { EditorContext } from "../../Editor"
 import { resetEvent } from "../../helpers"
 import { ItemType } from "../../types"
 
