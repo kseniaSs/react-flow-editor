@@ -3,10 +3,10 @@ import { isEqual, omit } from "lodash"
 import { Node as NodeType } from "../../../types"
 import { CLASSES } from "../../constants"
 import { useRecalculateRects } from "../../helpers"
-import { EditorContext } from "../../Editor"
 import { nodeStyle } from "./helpers"
 import { Point } from "./Point"
 import { useNodeInteractions } from "./useNodeInteractions"
+import { EditorContext } from "../../context"
 
 type NodeProps = {
   node: NodeType

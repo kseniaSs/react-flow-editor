@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react"
 import { NodeState } from "../../types"
 import { KEY_CODE_BACK, KEY_CODE_DELETE } from "../constants"
-import { EditorContext } from "../Editor"
+import { EditorContext } from "../context"
 
 export const useHotKeys = () => {
   const { setNodes, nodes } = useContext(EditorContext)

@@ -1,6 +1,7 @@
 import { MutableRefObject, useCallback, useContext } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { BUTTON_LEFT } from "../../constants"
+import { EditorContext } from "../../context"
 import {
   autoScrollState,
   dragItemState,
@@ -8,7 +9,6 @@ import {
   newConnectionState,
   selectionZoneState
 } from "../../ducks/store"
-import { EditorContext } from "../../Editor"
 import { ItemType } from "../../types"
 import { useAutoScroll } from "../autoScroll"
 import { useSelectionZone } from "../selectionZone"

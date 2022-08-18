@@ -1,6 +1,6 @@
 import React, { memo, FC, useContext } from "react"
 import { CLASSES } from "../../constants"
-import { EditorContext } from "../../Editor"
+import { EditorContext } from "../../context"
 import { BackgroundProps, BackgroundVariant } from "./types"
 import { createGridLinesPath, createGridDotsPath } from "./utils"
 
@@ -18,7 +18,7 @@ const Background: FC<BackgroundProps> = ({ variant = BackgroundVariant.Dots, gap
   const xOffset = dx % scaledGap
   const yOffset = dy % scaledGap
 
-  const bgColor = color || defaultColors[variant]
+  const bgColor = color || defaultColors[`${variant}`]
   const path =
     variant === BackgroundVariant.Lines
       ? createGridLinesPath(scaledGap, size, bgColor)

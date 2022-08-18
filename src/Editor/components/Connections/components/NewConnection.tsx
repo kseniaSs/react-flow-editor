@@ -1,9 +1,10 @@
 import React, { useContext } from "react"
 import { useRecoilValue } from "recoil"
 import { DEFAULT_POINT_SIZE } from "../../../constants"
+import { EditorContext } from "../../../context"
 import { dragItemState, newConnectionState, svgOffsetState } from "../../../ducks/store"
-import { EditorContext } from "../../../Editor"
 import { ItemType } from "../../../types"
+import { numberFallback } from "../helpers"
 import InputConnection from "./InputConnection"
 
 export const NewConnection: React.FC = () => {
@@ -26,12 +27,12 @@ export const NewConnection: React.FC = () => {
         x:
           -svgOffset.x +
           outputNode.position.x +
-          (outputNode.outputPosition[currentConPosInx]?.x || 0) +
+          (outputNode.outputPosition[numberFallback(currentConPosInx, 0)]?.x || 0) +
           (styleConfig?.point?.width || DEFAULT_POINT_SIZE) / 2,
         y:
           -svgOffset.y +
           outputNode.position.y +
-          (outputNode.outputPosition[currentConPosInx]?.y || 0) +
+          (outputNode.outputPosition[numberFallback(currentConPosInx, 0)]?.y || 0) +
           (styleConfig?.point?.height || DEFAULT_POINT_SIZE) / 2
       }
     : outputNode.position

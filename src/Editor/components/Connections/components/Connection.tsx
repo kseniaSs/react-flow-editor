@@ -2,9 +2,10 @@ import React, { useContext, useMemo } from "react"
 import { useRecoilValue } from "recoil"
 import { Node } from "../../../../types"
 import { DEFAULT_POINT_SIZE } from "../../../constants"
+import { EditorContext } from "../../../context"
 import { dragItemState, svgOffsetState } from "../../../ducks/store"
-import { EditorContext } from "../../../Editor"
 import { ItemType } from "../../../types"
+import { numberFallback } from "../helpers"
 import ArrowDisconnector from "./ArrowDisconnector"
 import InputConnection from "./InputConnection"
 
@@ -28,12 +29,12 @@ export const ConnectionTrack: React.FC<{ nextNodeId: string; node: Node; inx: nu
             x:
               -svgOffset.x +
               node.position.x +
-              (node.outputPosition[inx]?.x || 0) +
+              (node.outputPosition[numberFallback(inx, 0)]?.x || 0) +
               (styleConfig?.point?.width || DEFAULT_POINT_SIZE) / 2,
             y:
               -svgOffset.y +
               node.position.y +
-              (node.outputPosition[inx]?.y || 0) +
+              (node.outputPosition[numberFallback(inx, 0)]?.y || 0) +
               (styleConfig?.point?.height || DEFAULT_POINT_SIZE) / 2
           }
         : node.position,

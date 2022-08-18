@@ -2,12 +2,12 @@ import { isEqual } from "lodash"
 import React, { useContext, useMemo } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import { NodeState } from "../../../types"
-import { RectsContext } from "../../Canvas"
 import { BUTTON_LEFT, CLASSES } from "../../constants"
+import { EditorContext, RectsContext } from "../../context"
 import { dragItemState, newConnectionState, svgOffsetState } from "../../ducks/store"
-import { EditorContext } from "../../Editor"
 import { resetEvent } from "../../helpers"
 import { ItemType } from "../../types"
+import { numberFallback } from "../Connections/helpers"
 import { buildDotId, pointStyle } from "./helpers"
 
 type PointProps = {
@@ -58,7 +58,7 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId, nextId }) => {
     <div
       id={buildDotId(nodeId)}
       className={CLASSES.DOT}
-      style={pointStyle(currentNode.outputPosition[pointInx], styleConfig?.point)}
+      style={pointStyle(currentNode.outputPosition[numberFallback(pointInx, 0)], styleConfig?.point)}
       onMouseDown={setNode}
     />
   )

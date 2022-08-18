@@ -1,6 +1,6 @@
 {
   "name": "@kseniass/react-flow-editor",
-  "version": "0.7.52",
+  "version": "0.7.53",
   "description": "React component which enables creating flow editors with ease",
   "author": {
     "name": "Matthias Lochbrunner",
@@ -26,8 +26,8 @@
   },
   "scripts": {
     "build": "vite build",
-    "lint:error": "eslint . --ext .ts,.tsx --quiet",
-    "lint:fix": "eslint --fix",
+    "lint:error": "./node_modules/.bin/eslint ./src --ext .ts,.tsx --quiet",
+    "lint:fix": "./node_modules/.bin/eslint ./src  --fix",
     "prettier": "./node_modules/.bin/prettier . --write",
     "refresh-all": "npm run refresh-redux && npm run refresh-simple",
     "refresh-simple": " rm -rf ./example/simple/node_modules/@kseniass/react-flow-editor/dist && cp -r ./dist ./example/simple/node_modules/@kseniass/react-flow-editor/dist"
@@ -53,8 +53,10 @@
     "copyfiles": "^2.3.0",
     "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-security": "^1.5.0",
     "prettier": "^2.7.1",
     "sass": "^1.53.0",
     "typescript": "^4.0.2",

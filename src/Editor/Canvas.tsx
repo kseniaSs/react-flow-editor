@@ -1,8 +1,7 @@
-import React, { useContext, createContext } from "react"
+import React, { useContext } from "react"
 import { dragItemState } from "./ducks/store"
 import Background from "./components/Background"
 import { CLASSES } from "./constants"
-import { EditorContext } from "./Editor"
 import { TransformCanvasStyle, useEditorMount } from "./helpers"
 import { useDnD } from "./helpers/DnD"
 import { useZoom } from "./helpers/zoom"
@@ -10,8 +9,7 @@ import { useRecoilValue } from "recoil"
 import { isEqual } from "lodash"
 import { useHotKeys } from "./helpers/hotKeys"
 import { NodesContainer } from "./components/Node"
-
-export const RectsContext = createContext<Partial<ReturnType<typeof useEditorMount>>>({})
+import { EditorContext, RectsContext } from "./context"
 
 export const Canvas: React.FC = React.memo(() => {
   const { transformation } = useContext(EditorContext)

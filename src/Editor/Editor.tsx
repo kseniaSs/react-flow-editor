@@ -1,11 +1,10 @@
-import React, { createContext } from "react"
+import React from "react"
 import { RecoilRoot } from "recoil"
 import { isEqual } from "lodash"
 import { Canvas } from "./Canvas"
 import { EditorProps } from "../types"
 import "../_style.scss"
-
-export const EditorContext = createContext<EditorProps | null>(null)
+import { EditorContext } from "./context"
 
 export const Editor: React.FC<EditorProps> = React.memo(
   (props) => (

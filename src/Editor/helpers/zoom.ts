@@ -2,8 +2,8 @@ import { useContext, useCallback, MutableRefObject, useMemo } from "react"
 import { useRecoilValue } from "recoil"
 import { useRecalculateRects } from "."
 import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from "../constants"
+import { EditorContext } from "../context"
 import { dragItemState } from "../ducks/store"
-import { EditorContext } from "../Editor"
 
 export const useZoom = (
   zoomContainerRef?: MutableRefObject<HTMLDivElement>,

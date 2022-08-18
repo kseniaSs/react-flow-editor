@@ -1,8 +1,8 @@
 import { MutableRefObject, useCallback, useContext, useEffect } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { Node, RectZone, SelectionZone, Transformation } from "../../types"
+import { EditorContext } from "../context"
 import { dragItemState, selectionZoneState } from "../ducks/store"
-import { EditorContext } from "../Editor"
 
 export const isNodeInSelectionZone = (node: Node, zone: SelectionZone, transform: Transformation): boolean => {
   const { left, top, right, bottom } = cornersToRect(zone)
