@@ -69,6 +69,8 @@ export type PointStyleConfig = {
   width: number
   height: number
   color: string
+  disconnectedColor: string
+  disconnectedBg: string
 }
 
 export type ConnectorStyleConfig = {

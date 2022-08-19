@@ -14,7 +14,13 @@ export const useHotKeys = () => {
         setNodes((nodes) =>
           nodes
             .filter((node) => !selectedNodesIds.includes(node.id))
-            .map((node) => ({ ...node, next: node.next.filter((nextId) => !selectedNodesIds.includes(nextId)) }))
+            .map((node) => ({
+              ...node,
+              outputs: node.outputs.map((out) => ({
+                ...out,
+                nextNodeId: selectedNodesIds.includes(out.nextNodeId) ? null : out.nextNodeId
+              }))
+            }))
         )
       }
     }

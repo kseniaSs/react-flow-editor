@@ -69,9 +69,11 @@ export const STYLED_CONFIG = {
   point: {
     width: 10,
     height: 10,
-    color: "gray"
+    color: "rgb(125 125 125)",
+    disconnectedColor: "#ccc",
+    disconnectedBg: "#fafafa"
   },
   connector: {
-    color: "gray"
+    color: "rgb(125 125 125)"
   }
 }

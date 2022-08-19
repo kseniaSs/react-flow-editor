@@ -1,6 +1,6 @@
 import { isEqual } from "lodash"
 import React, { useContext } from "react"
-import { useRecoilValue, useSetRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { NodeState, Output } from "../../../types"
 import { BUTTON_LEFT, CLASSES } from "../../constants"
 import { EditorContext, RectsContext } from "../../context"
@@ -18,7 +18,7 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId, output }) => {
   const { setNodes, styleConfig, transformation } = useContext(EditorContext)
   const { zoomContainerRef } = useContext(RectsContext)
 
-  const setDragItem = useSetRecoilState(dragItemState)
+  const [dragItem, setDragItem] = useRecoilState(dragItemState)
   const setNewConnectionState = useSetRecoilState(newConnectionState)
   const svgOffset = useRecoilValue(svgOffsetState)
   const zoomRect = zoomContainerRef?.current?.getBoundingClientRect()
@@ -54,7 +54,12 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId, output }) => {
     <div
       id={buildDotId(nodeId)}
       className={CLASSES.DOT}
-      style={pointStyle(output.position, styleConfig?.point)}
+      style={pointStyle({
+        position: output.position,
+        pointConfig: styleConfig?.point,
+        dragItem,
+        output
+      })}
       onMouseDown={setNode}
     />
   )
