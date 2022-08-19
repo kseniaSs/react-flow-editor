@@ -21,33 +21,33 @@ export const initialNodes: Node[] = [
     id: "Node_1",
     children: SimpleNode({ expandable: true }),
     position: { x: 110, y: 110 },
-    outputPosition: [DEFAULT_OUTPUT, DEFAULT_OUTPUT_2],
-    outputNumber: 10,
     inputNumber: 10,
     inputPosition: DEFAULT_INPUT,
-    next: ["Node_2"],
+    outputs: [
+      { id: "N_1_1", nextNodeId: "Node_2", position: DEFAULT_OUTPUT },
+      { id: "N_1_2", nextNodeId: null, position: DEFAULT_OUTPUT_2 }
+    ],
     state: null
   },
   {
     id: "Node_2",
     children: SimpleNode({ expandable: true }),
     position: { x: 310, y: 310 },
-    outputPosition: [DEFAULT_OUTPUT, DEFAULT_OUTPUT_2],
-    outputNumber: 10,
     inputNumber: 10,
     inputPosition: DEFAULT_INPUT,
-    next: ["Node_3"],
+    outputs: [{ id: "N_2_1", nextNodeId: "Node_3", position: DEFAULT_OUTPUT }],
     state: null
   },
   {
     id: "Node_3",
     children: SimpleNode({ expandable: false }),
     position: { x: 510, y: 510 },
-    outputPosition: [DEFAULT_OUTPUT, DEFAULT_OUTPUT_2],
-    outputNumber: 10,
     inputNumber: 10,
     inputPosition: DEFAULT_INPUT,
-    next: [],
+    outputs: [
+      { id: "N_3_1", nextNodeId: null, position: DEFAULT_OUTPUT },
+      { id: "N_3_2", nextNodeId: null, position: DEFAULT_OUTPUT_2 }
+    ],
     state: null
   }
 ]

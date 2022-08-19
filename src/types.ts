@@ -43,14 +43,18 @@ export enum NodeState {
   selected = "selected"
 }
 
+export type Output = {
+  id: string
+  position: Point
+  nextNodeId: string | null
+}
+
 export type NodeBase = {
   id: string
-  next: string[]
+  outputs: Output[]
   position: Point
   rectPosition?: DOMRect
-  outputPosition: Point[]
   inputPosition?: Point
-  outputNumber: number
   inputNumber: number
   state: NodeState | null
 }

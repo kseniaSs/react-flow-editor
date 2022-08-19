@@ -1,11 +1,10 @@
 import React, { useContext, useMemo } from "react"
 import { useRecoilValue } from "recoil"
-import { Node } from "../../../../types"
+import { Node, Output } from "../../../../types"
 import { DEFAULT_POINT_SIZE } from "../../../constants"
 import { EditorContext } from "../../../context"
 import { dragItemState, svgOffsetState } from "../../../ducks/store"
 import { ItemType } from "../../../types"
-import { numberFallback } from "../helpers"
 import ArrowDisconnector from "./ArrowDisconnector"
 import InputConnection from "./InputConnection"
 
@@ -13,35 +12,31 @@ type ConnectionProps = {
   node: Node
 }
 
-export const ConnectionTrack: React.FC<{ nextNodeId: string; node: Node; inx: number }> = ({
-  nextNodeId,
-  node,
-  inx
-}) => {
+export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ output, node }) => {
   const { nodes, styleConfig } = useContext(EditorContext)
   const svgOffset = useRecoilValue(svgOffsetState)
-  const nextNode = nodes.find((node) => node.id === nextNodeId)
+  const nextNode = nodes.find((node) => node.id === output.nextNodeId)
 
-  const inputPosition = useMemo(
+  const outputPosition = useMemo(
     () =>
       node.rectPosition
         ? {
             x:
               -svgOffset.x +
               node.position.x +
-              (node.outputPosition[numberFallback(inx, 0)]?.x || 0) +
+              output.position.x +
               (styleConfig?.point?.width || DEFAULT_POINT_SIZE) / 2,
             y:
               -svgOffset.y +
               node.position.y +
-              (node.outputPosition[numberFallback(inx, 0)]?.y || 0) +
+              output.position.y +
               (styleConfig?.point?.height || DEFAULT_POINT_SIZE) / 2
           }
         : node.position,
-    [node, svgOffset, styleConfig]
+    [node, svgOffset, styleConfig, output]
   )
 
-  const outputPosition = useMemo(
+  const inputPosition = useMemo(
     () =>
       nextNode && {
         x: -svgOffset.x + nextNode.position.x + (nextNode?.inputPosition?.x || 0),
@@ -53,9 +48,9 @@ export const ConnectionTrack: React.FC<{ nextNodeId: string; node: Node; inx: nu
   if (!nextNode) return null
 
   return (
-    <React.Fragment key={nextNodeId}>
-      <InputConnection key={nextNodeId} outputPosition={outputPosition} inputPosition={inputPosition} />
-      <ArrowDisconnector position={outputPosition} nextId={nextNodeId} fromId={node.id} />
+    <React.Fragment key={output.id}>
+      <InputConnection outputPosition={outputPosition} inputPosition={inputPosition} />
+      <ArrowDisconnector position={inputPosition} output={output} fromId={node.id} />
     </React.Fragment>
   )
 }
@@ -65,16 +60,21 @@ export const Connection: React.FC<ConnectionProps> = ({ node }) => {
 
   const filteredConnections = useMemo(
     () =>
-      node.next.filter(
-        (id) => !(dragItem.type === ItemType.connection && id === dragItem.nextId && node.id === dragItem.fromId)
+      node.outputs.filter(
+        (out) =>
+          !(
+            dragItem.type === ItemType.connection &&
+            out.nextNodeId === dragItem.output?.nextNodeId &&
+            node.id === dragItem.id
+          )
       ),
     [dragItem.type]
   )
 
   return (
     <>
-      {filteredConnections.map((nextNodeId, inx) => (
-        <ConnectionTrack key={nextNodeId} node={node} nextNodeId={nextNodeId} inx={inx} />
+      {filteredConnections.map((out) => (
+        <ConnectionTrack key={out.id} node={node} output={out} />
       ))}
     </>
   )

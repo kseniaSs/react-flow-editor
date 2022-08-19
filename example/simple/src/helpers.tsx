@@ -27,9 +27,7 @@ export const nodeFactory = (): Node => ({
   id: `Node_${(Math.random() * 10000).toFixed()}`,
   children: SimpleNode({ expandable: true }),
   position: { x: 140 + Math.random() * 100, y: 140 + Math.random() * 100 },
-  next: [],
   inputNumber: 2,
-  outputNumber: 1,
-  outputPosition: [DEFAULT_OUTPUT],
+  outputs: [{ id: `Out${(Math.random() * 10000).toFixed()}`, nextNodeId: "Node_2", position: DEFAULT_OUTPUT }],
   state: null
 })

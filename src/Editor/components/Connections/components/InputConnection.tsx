@@ -13,12 +13,12 @@ type InputConnectionProps = {
 const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition }) => {
   const { styleConfig } = useContext(EditorContext)
 
-  const dx = Math.max(Math.abs(outputPosition.x - inputPosition.x) / 1.5, 100)
-  const a1 = { x: outputPosition.x - dx, y: outputPosition.y }
-  const a2 = { x: inputPosition.x + dx, y: inputPosition.y }
+  const dx = Math.max(Math.abs(inputPosition.x - outputPosition.x) / 1.5, 100)
+  const a1 = { x: inputPosition.x - dx, y: inputPosition.y }
+  const a2 = { x: outputPosition.x + dx, y: outputPosition.y }
 
   // https://javascript.info/bezier-curve
-  const cmd = `M ${outputPosition.x} ${outputPosition.y} C ${a1.x} ${a1.y}, ${a2.x} ${a2.y}, ${inputPosition.x} ${inputPosition.y}`
+  const cmd = `M ${inputPosition.x} ${inputPosition.y} C ${a1.x} ${a1.y}, ${a2.x} ${a2.y}, ${outputPosition.x} ${outputPosition.y}`
 
   // just line, will be when we add props connectionType
   // cmd = `M ${outputPosition.x} ${outputPosition.y} L ${inputPosition.x} ${inputPosition.y}`

@@ -67,7 +67,7 @@ export const useNodeInteractions = (node: Node) => {
     const isNodeHovered = (nodeItem: Node) =>
       nodeItem.id === node.id &&
       dragItem.type === ItemType.connection &&
-      dragItem.fromId !== node.id &&
+      dragItem.id !== node.id &&
       nodeItem.state !== NodeState.connectorHovered
 
     const needUpdateNodes = nodes.some(isNodeHovered)
@@ -81,7 +81,7 @@ export const useNodeInteractions = (node: Node) => {
       )
 
     setHoveredNodeId(node.id)
-  }, [setNodes, dragItem.fromId, nodes])
+  }, [setNodes, dragItem.id, nodes])
 
   const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
     const isNodeLeavedWithConnector = (nodeItem: Node) =>
