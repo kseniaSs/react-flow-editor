@@ -48,11 +48,12 @@ export const useDnD = (
     setAutoScroll({ speed: 0, direction: null })
     if (currentDragItem.type === ItemType.connection) {
       const inputNode = nodes.find((currentElement) => hoveredNodeId === currentElement.id)
-      const outputNode = nodes.find((node) => node.id === currentDragItem.fromId)
+      const outputNode = nodes.find((node) => node.id === currentDragItem.id)
 
-      const inputIdsForInputNode = nodes.filter((node) => node.next.includes(inputNode?.id))
-      const connectedPointInx = outputNode.next.findIndex((id) => id === currentDragItem.nextId)
-      const isNew = connectedPointInx === -1
+      const inputIdsForInputNode = nodes.filter((node) =>
+        node.outputs.map((out) => out.nextNodeId).includes(inputNode?.id)
+      )
+      const isNew = currentDragItem.output?.nextNodeId === null
 
       if (!inputNode && outputNode && isNew && nodes.some((node) => Boolean(node.state))) {
         setNodes((nodesState) =>
@@ -68,12 +69,11 @@ export const useDnD = (
           nodesState.map((el) => {
             if (el.id !== outputNode.id) return el
 
-            const next = [...el.next]
-            next.splice(connectedPointInx, 1)
-
             return {
               ...el,
-              next,
+              outputs: el.outputs.map((out) =>
+                out.id === currentDragItem.output?.id ? { ...out, nextNodeId: null } : out
+              ),
               state: null
             }
           })
@@ -81,22 +81,23 @@ export const useDnD = (
       }
 
       if (inputNode && outputNode && inputNode.inputNumber > inputIdsForInputNode.length) {
-        setNodes((nodesState) =>
-          nodesState.map((el) => {
-            if (el.id === outputNode.id && !el.next.includes(inputNode.id)) {
-              const next = [...el.next]
-              next.splice(isNew ? next.length : connectedPointInx, isNew ? 0 : 1, inputNode.id)
-
-              return {
-                ...el,
-                next,
-                state: null
-              }
-            }
-
-            return { ...el, state: null }
-          })
+        const alreadyConnected = outputNode.outputs.some(
+          (out) => out.id !== currentDragItem.output.id && out.nextNodeId === inputNode.id
         )
+
+        !alreadyConnected &&
+          setNodes((nodesState) =>
+            nodesState.map((el) => ({
+              ...el,
+              outputs:
+                el.id === outputNode.id
+                  ? el.outputs.map((out) =>
+                      out.id === currentDragItem.output.id ? { ...out, nextNodeId: inputNode.id } : out
+                    )
+                  : el.outputs,
+              state: null
+            }))
+          )
       }
     }
     setNewConnectionState(undefined)

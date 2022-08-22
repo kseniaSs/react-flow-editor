@@ -33,14 +33,18 @@ export type EditorProps = {
   styleConfig?: StyleConfig
 }
 
+export type Output = {
+  id: string
+  position: Point
+  nextNodeId: string | null
+}
+
 export type NodeBase = {
   id: string
-  next: string[]
+  outputs: Output[]
   position: Point
   rectPosition?: DOMRect
-  outputPosition: Point[]
   inputPosition?: Point
-  outputNumber: number
   inputNumber: number
   state: NodeState | null
 }
@@ -89,12 +93,10 @@ export type OnEditorRectsMountedProps = {
 | Prop      | Description |
 | ----------- | ----------- |
 | `id`| The unique identifier for the node |
-| `next`| Array of the connected nodes |
 | `position`| Coordinates of the node |
 | `rectPosition`| DOMRect for the node |
-| `outputPosition`| Array of positions of output points for connectors (relatively to node) |
+| `outputs`| Array of outputs. Each output contains data about point position (relatively to node) and connected node id.|
 | `inputPosition`| Position of input point for connectors (relatively to node) |
-| `outputNumber`| Max number of outputs |
 | `inputNumber`| Max number of inputs |
 | `state`| Node state |
 

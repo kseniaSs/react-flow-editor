@@ -1,7 +1,7 @@
 import { isEqual } from "lodash"
 import React, { useCallback, useContext } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
-import { NodeState, Point } from "../../../../types"
+import { NodeState, Output, Point } from "../../../../types"
 import { CLASSES } from "../../../constants"
 import { EditorContext, RectsContext } from "../../../context"
 import { dragItemState, newConnectionState, svgOffsetState } from "../../../ducks/store"
@@ -11,10 +11,10 @@ import { disconnectorStyle } from "../helpers"
 type DisconnectorProps = {
   position: Point
   fromId: string
-  nextId: string
+  output: Output
 }
 
-const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, nextId }) => {
+const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, output }) => {
   const { zoomContainerRef } = useContext(RectsContext)
   const { transformation, setNodes } = useContext(EditorContext)
   const svgOffset = useRecoilValue(svgOffsetState)
@@ -28,8 +28,8 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, next
 
       setDragItem({
         type: ItemType.connection,
-        nextId,
-        fromId,
+        id: fromId,
+        output,
         x: e.clientX,
         y: e.clientY
       })
