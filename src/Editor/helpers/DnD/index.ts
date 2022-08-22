@@ -81,18 +81,23 @@ export const useDnD = (
       }
 
       if (inputNode && outputNode && inputNode.inputNumber > inputIdsForInputNode.length) {
-        setNodes((nodesState) =>
-          nodesState.map((el) => ({
-            ...el,
-            outputs:
-              el.id === outputNode.id
-                ? el.outputs.map((out) =>
-                    out.id === currentDragItem.output.id ? { ...out, nextNodeId: inputNode.id } : out
-                  )
-                : el.outputs,
-            state: null
-          }))
+        const alreadyConnected = outputNode.outputs.some(
+          (out) => out.id !== currentDragItem.output.id && out.nextNodeId === inputNode.id
         )
+
+        !alreadyConnected &&
+          setNodes((nodesState) =>
+            nodesState.map((el) => ({
+              ...el,
+              outputs:
+                el.id === outputNode.id
+                  ? el.outputs.map((out) =>
+                      out.id === currentDragItem.output.id ? { ...out, nextNodeId: inputNode.id } : out
+                    )
+                  : el.outputs,
+              state: null
+            }))
+          )
       }
     }
     setNewConnectionState(undefined)
