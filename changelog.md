@@ -1,5 +1,16 @@
 # Changelog
 
+### Version 0.7.54
+
+#####  Api changes
+
+- From that moment `next`, `outputPosition`, `outputNumber` node props were replaced by `outputs` prop that contains array of outputs (next node id and point position).
+- Colors for connected and disconnected points were provided to point config in `styleConfig`.
+
+#####  Visual changes
+
+- Diconnected points have received it's own style.
+
 ### Version 0.7.53
 
 #####  Refactor
