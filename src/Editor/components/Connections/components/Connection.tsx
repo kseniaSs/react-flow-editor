@@ -68,7 +68,7 @@ export const Connection: React.FC<ConnectionProps> = ({ node }) => {
             node.id === dragItem.id
           )
       ),
-    [dragItem.type]
+    [dragItem.type, node]
   )
 
   return (
