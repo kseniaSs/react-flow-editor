@@ -1,7 +1,7 @@
 import { isEqual } from "lodash"
 import React, { useContext } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
-import { NodeState, Output } from "../../../types"
+import { Node, NodeState, Output } from "../../../types"
 import { BUTTON_LEFT, CLASSES } from "../../constants"
 import { EditorContext, RectsContext } from "../../context"
 import { dragItemState, newConnectionState, svgOffsetState } from "../../ducks/store"
@@ -10,11 +10,11 @@ import { ItemType } from "../../types"
 import { buildDotId, pointStyle } from "./helpers"
 
 type PointProps = {
-  nodeId: string
+  node: Node
   output: Output
 }
 
-export const Point: React.FC<PointProps> = React.memo(({ nodeId, output }) => {
+export const Point: React.FC<PointProps> = React.memo(({ node, output }) => {
   const { setNodes, styleConfig, transformation } = useContext(EditorContext)
   const { zoomContainerRef } = useContext(RectsContext)
 
@@ -27,9 +27,9 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId, output }) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
       setNodes((nodes) =>
-        nodes.map((node) => ({
-          ...node,
-          state: node.id === nodeId ? NodeState.draggingConnector : null
+        nodes.map((nodeItem) => ({
+          ...nodeItem,
+          state: nodeItem.id === node.id ? NodeState.draggingConnector : null
         }))
       )
 
@@ -43,7 +43,7 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId, output }) => {
       setDragItem({
         type: ItemType.connection,
         output,
-        id: nodeId,
+        id: node.id,
         x: e.clientX,
         y: e.clientY
       })
@@ -52,11 +52,12 @@ export const Point: React.FC<PointProps> = React.memo(({ nodeId, output }) => {
 
   return (
     <div
-      id={buildDotId(nodeId)}
+      id={buildDotId(node.id)}
       className={CLASSES.DOT}
       style={pointStyle({
         position: output.position,
         pointConfig: styleConfig?.point,
+        node,
         dragItem,
         output
       })}
