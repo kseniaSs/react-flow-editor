@@ -22,19 +22,21 @@ export const pointStyle = ({
 
   const isSemiActive = [NodeState.connectorHovered, NodeState.selected].includes(node.state)
 
+  let border = `1px solid ${pointConfig?.disconnectedColor || DEFAULT_COLOR}`
+
+  if (isActive) {
+    border = "none"
+  } else if (isSemiActive) {
+    border = `2px solid ${pointConfig?.color || DEFAULT_COLOR}`
+  }
+
   return {
     top: `${position?.y || 0 - height / 2}px`,
     left: `${position?.x || 0 - width / 2}px`,
     width: `${width}px`,
     height: `${height}px`,
     background: `${(isActive ? pointConfig?.color : pointConfig?.disconnectedBg) || DEFAULT_COLOR}`,
-    border: `${
-      isActive
-        ? "none"
-        : isSemiActive
-        ? `2px solid ${pointConfig?.color || DEFAULT_COLOR}`
-        : `1px solid ${pointConfig?.disconnectedColor || DEFAULT_COLOR}`
-    }`
+    border
   }
 }
 
