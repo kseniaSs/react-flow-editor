@@ -59,7 +59,7 @@ const Node: React.FC<
       onMouseLeave={nodeInteractions.onMouseLeave}
     >
       {node.outputs.map((out) => (
-        <Point key={out.id} nodeId={node.id} output={out} />
+        <Point key={out.id} node={node} output={out} />
       ))}
       <NodeComponent onSizeChanged={recalculateRects} {...nodeComponentProps} />
     </div>

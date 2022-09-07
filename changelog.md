@@ -1,5 +1,10 @@
 # Changelog
 
+### Version 0.7.57
+#####  Visual changes
+
+- Selected and hovered nodes points are now have highlighted border..
+
 ### Version 0.7.54
 
 #####  Api changes
