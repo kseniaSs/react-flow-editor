@@ -1,4 +1,4 @@
-import { Node, NodeState, Output, Point, PointStyleConfig } from "../../../types"
+import { Node, NodeState, Output, Point, PointStyleConfig } from "@/types"
 import { DEFAULT_COLOR, DEFAULT_POINT_SIZE } from "../../constants"
 import { DragItemState, ItemType } from "../../types"
 

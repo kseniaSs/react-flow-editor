@@ -1,11 +1,11 @@
 import { isEqual } from "lodash"
 import React, { useCallback, useContext } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
-import { NodeState, Output, Point } from "../../../../types"
-import { CLASSES } from "../../../constants"
-import { EditorContext, RectsContext } from "../../../context"
-import { dragItemState, newConnectionState, svgOffsetState } from "../../../ducks/store"
-import { ItemType } from "../../../types"
+import { NodeState, Output, Point } from "@/types"
+import { CLASSES } from "@/Editor/constants"
+import { ItemType } from "@/Editor/types"
+import { EditorContext, RectsContext } from "@/Editor/context"
+import { dragItemState, newConnectionState, svgOffsetState } from "@/Editor/ducks/store"
 import { disconnectorStyle } from "../helpers"
 
 type DisconnectorProps = {

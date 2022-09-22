@@ -1,9 +1,9 @@
 import React, { useContext } from "react"
 import { useRecoilValue } from "recoil"
-import { DEFAULT_POINT_SIZE } from "../../../constants"
-import { EditorContext } from "../../../context"
-import { dragItemState, newConnectionState, svgOffsetState } from "../../../ducks/store"
-import { ItemType } from "../../../types"
+import { DEFAULT_POINT_SIZE } from "@/Editor/constants"
+import { EditorContext } from "@/Editor/context"
+import { dragItemState, newConnectionState, svgOffsetState } from "@/Editor/ducks/store"
+import { ItemType } from "@/Editor/types"
 import InputConnection from "./InputConnection"
 
 export const NewConnection: React.FC = () => {

@@ -1,7 +1,7 @@
 import { isEqual } from "lodash"
 import React from "react"
-import { Size } from "../../../../types"
-import { DEFAULT_COLOR } from "../../../constants"
+import { Size } from "@/types"
+import { DEFAULT_COLOR } from "@/Editor/constants"
 
 type ArrowProps = {
   color?: string

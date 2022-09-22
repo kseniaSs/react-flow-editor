@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo } from "react"
 import { isEqual, omit } from "lodash"
-import { Node as NodeType } from "../../../types"
+import { Node as NodeType } from "@/types"
 import { CLASSES } from "../../constants"
 import { useRecalculateRects } from "../../helpers"
 import { nodeStyle } from "./helpers"
