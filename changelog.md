@@ -1,5 +1,10 @@
 # Changelog
 
+### Version 0.7.60
+#####  Fix cycle connection
+
+- Fix connection connection within one node
+
 ### Version 0.7.57
 #####  Visual changes
 

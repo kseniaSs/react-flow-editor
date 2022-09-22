@@ -85,7 +85,10 @@ export const useDnD = (
           (out) => out.id !== currentDragItem.output.id && out.nextNodeId === inputNode.id
         )
 
+        const isInputEqualsOutput = outputNode.id === inputNode.id
+
         !alreadyConnected &&
+          !isInputEqualsOutput &&
           setNodes((nodesState) =>
             nodesState.map((el) => ({
               ...el,
