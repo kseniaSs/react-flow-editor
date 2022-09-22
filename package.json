@@ -26,6 +26,7 @@
   },
   "scripts": {
     "build": "vite build",
+    "dev": "yarn --cwd ./example/simple dev",
     "lint:error": "./node_modules/.bin/eslint ./src --ext .ts,.tsx --quiet",
     "lint:fix": "./node_modules/.bin/eslint ./src  --fix",
     "prettier": "./node_modules/.bin/prettier . --write",

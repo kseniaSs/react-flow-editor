@@ -9,7 +9,8 @@ export default defineConfig({
   base: "./",
   resolve: {
     alias: {
-      "@kseniass/react-flow-editor": path.resolve("../../src")
+      "@kseniass/react-flow-editor": path.resolve("../../src"),
+      "@": path.resolve("../../src")
     }
   },
   build: {
