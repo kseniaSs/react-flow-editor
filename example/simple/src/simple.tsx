@@ -43,6 +43,7 @@ const App = () => {
           setTransformation={setTransformation}
           onSelectionZoneChanged={onSelectionZoneChanged}
           onEditorRectsMounted={onEditorRectsMounted}
+          importantNodeIds={[initialNodes[0].id]}
           styleConfig={STYLED_CONFIG}
         />
       </div>

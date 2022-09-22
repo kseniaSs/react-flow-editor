@@ -90,5 +90,6 @@ export type EditorProps = {
   setTransformation: (transformation: Transformation) => void
   onSelectionZoneChanged?: (value: RectZone) => void
   onEditorRectsMounted?: (value: OnEditorRectsMountedProps) => void
+  importantNodeIds?: Array<string>
   styleConfig?: StyleConfig
 }
