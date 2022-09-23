@@ -3,7 +3,12 @@
 ### Version 0.7.60
 #####  Fix cycle connection
 
-- Fix connection connection within one node
+- Fix connection connection within one node.
+
+### Version 0.7.59
+#####  Important Node Ids
+
+- Added importantNodeIds, that's cannot be deleted.
 
 ### Version 0.7.57
 #####  Visual changes

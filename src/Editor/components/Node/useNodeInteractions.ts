@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from "react"
 import { useRecoilState, useSetRecoilState } from "recoil"
-import { Node, NodeState, Point } from "../../../types"
+import { Node, NodeState, Point } from "@/types"
 import { BUTTON_LEFT } from "../../constants"
 import { EditorContext } from "../../context"
 import { dragItemState, hoveredNodeIdState } from "../../ducks/store"

@@ -1,10 +1,11 @@
 import React, { useContext, useMemo } from "react"
 import { useRecoilValue } from "recoil"
-import { Node, Output } from "../../../../types"
-import { DEFAULT_POINT_SIZE } from "../../../constants"
-import { EditorContext } from "../../../context"
-import { dragItemState, svgOffsetState } from "../../../ducks/store"
-import { ItemType } from "../../../types"
+import { Node, Output } from "@/types"
+import { DEFAULT_POINT_SIZE } from "@/Editor/constants"
+import { EditorContext } from "@/Editor/context"
+import { dragItemState, svgOffsetState } from "@/Editor/ducks/store"
+import { ItemType } from "@/Editor/types"
+
 import ArrowDisconnector from "./ArrowDisconnector"
 import InputConnection from "./InputConnection"
 

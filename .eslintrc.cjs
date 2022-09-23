@@ -23,6 +23,7 @@ module.exports = {
   plugins: ["react", "@typescript-eslint"],
   settings: {
     "import/resolver": {
+      typescript: true,
       node: {
         extensions: [".js", ".jsx", ".ts", ".tsx"]
       }
