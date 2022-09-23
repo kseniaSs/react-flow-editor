@@ -9,7 +9,7 @@ type ArrowProps = {
 
 export const ARROW_ID = "triangle"
 
-export const Arrow: React.FC<ArrowProps> = React.memo(
+export const Arrow: React.FC<ArrowProps> =
   ({ color = DEFAULT_COLOR, width = 10, height = 10 }) => (
     <defs>
       <marker
@@ -31,6 +31,4 @@ export const Arrow: React.FC<ArrowProps> = React.memo(
         />
       </marker>
     </defs>
-  ),
-  isEqual
-)
+  )

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useMemo } from "react"
 import { isEqual, omit } from "lodash"
 import { Node as NodeType } from "../../../types"
-import { CLASSES } from "../../constants"
 import { useRecalculateRects } from "../../helpers"
 import { nodeStyle } from "./helpers"
 import { Point } from "./Point"
@@ -51,7 +50,7 @@ const Node: React.FC<
   return (
     <div
       id={node.id}
-      className={CLASSES.NODE}
+      className="node"
       onMouseDown={nodeInteractions.onDragStarted}
       onMouseUp={nodeInteractions.onMouseUp}
       style={nodeStyle(node.position)}

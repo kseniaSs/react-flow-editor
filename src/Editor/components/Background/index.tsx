@@ -1,5 +1,4 @@
 import React, { memo, FC, useContext } from "react"
-import { CLASSES } from "../../constants"
 import { EditorContext } from "../../context"
 import { BackgroundProps, BackgroundVariant } from "./types"
 import { createGridLinesPath, createGridDotsPath } from "./utils"
@@ -25,7 +24,7 @@ const Background: FC<BackgroundProps> = ({ variant = BackgroundVariant.Dots, gap
       : createGridDotsPath(size * zoom, bgColor)
 
   return (
-    <svg className={CLASSES.BACKGROUND}>
+    <svg className="react-flow__background">
       <pattern
         id={PATTERN_ID}
         x={xOffset}

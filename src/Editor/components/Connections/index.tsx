@@ -5,7 +5,6 @@ import { svgOffsetState } from "../../ducks/store"
 import { useSetRecoilState } from "recoil"
 import { computeNodeGroupsRect, connectionContainerStyle } from "./helpers"
 import { Arrow } from "./components/Arrow"
-import { CLASSES } from "../../constants"
 import { EditorContext } from "../../context"
 
 export const Container: React.FC = () => {
@@ -24,7 +23,7 @@ export const Container: React.FC = () => {
   }, [nodesRect.leftPoint, nodesRect.topPoint, nodesRect.realHeight, nodesRect.realWidth])
 
   return (
-    <svg className={CLASSES.CONNECTIONS} style={connectionContainerStyle(nodesRect)}>
+    <svg className="connections" style={connectionContainerStyle(nodesRect)}>
       <Arrow color={styleConfig?.connector?.color} />
       {nodes.map((node) => (
         <Connection key={node.id} node={node} />

@@ -19,17 +19,6 @@ export const MINIMUM_SVG_SIZE = 15000
 
 export const DISCONNECTOR_ZONE = 20
 
-export const CLASSES = {
-  ZOOM_CONTAINER: "zoom-container",
-  EDITOR: "react-flow-editor",
-  BACKGROUND: "react-flow__background",
-  DOT: "dot",
-  CONNECTIONS: "connections",
-  CONNECTION: "connection",
-  NODE: "node",
-  DISCONNECTOR: "disconnector"
-}
-
 export const LARGEST_RECT = {
   leftPoint: Infinity,
   rightPoint: -Infinity,

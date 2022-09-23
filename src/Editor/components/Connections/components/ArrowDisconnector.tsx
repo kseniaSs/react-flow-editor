@@ -1,8 +1,6 @@
-import { isEqual } from "lodash"
 import React, { useCallback, useContext } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import { NodeState, Output, Point } from "../../../../types"
-import { CLASSES } from "../../../constants"
 import { EditorContext, RectsContext } from "../../../context"
 import { dragItemState, newConnectionState, svgOffsetState } from "../../../ducks/store"
 import { ItemType } from "../../../types"
@@ -53,7 +51,7 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, outp
     [transformation, zoomContainerRef, svgOffset, setNodes]
   )
 
-  return <rect onMouseDown={onMouseDown} className={CLASSES.DISCONNECTOR} style={disconnectorStyle(position)} />
+  return <rect onMouseDown={onMouseDown} className="disconnector" style={disconnectorStyle(position)} />
 }
 
-export default React.memo(ArrowDisconnector, isEqual)
+export default ArrowDisconnector
