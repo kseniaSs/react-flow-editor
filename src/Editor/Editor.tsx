@@ -1,8 +1,9 @@
 import React from "react"
 import { RecoilRoot } from "recoil"
 import { isEqual } from "lodash"
+import type { EditorProps } from "@/types"
 import { Canvas } from "./Canvas"
-import { EditorProps } from "../types"
+
 import { EditorContext } from "./context"
 
 import "../_style.scss"

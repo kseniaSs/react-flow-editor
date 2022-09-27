@@ -1,8 +1,8 @@
 import { isEqual } from "lodash"
 import React, { useContext } from "react"
-import { Point } from "../../../../types"
-import { DEFAULT_COLOR } from "../../../constants"
-import { EditorContext } from "../../../context"
+import { Point } from "@/types"
+import { DEFAULT_COLOR } from "@/Editor/constants"
+import { EditorContext } from "@/Editor/context"
 import { ARROW_ID } from "./Arrow"
 
 type InputConnectionProps = {
@@ -19,7 +19,6 @@ const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, output
 
   // https://javascript.info/bezier-curve
   const cmd = `M ${inputPosition.x} ${inputPosition.y} C ${a1.x} ${a1.y}, ${a2.x} ${a2.y}, ${outputPosition.x} ${outputPosition.y}`
-
 
   return (
     <path

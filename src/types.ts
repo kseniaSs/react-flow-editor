@@ -32,9 +32,7 @@ export type NodeProps = NodeBase & {
   onSizeChanged: () => void
 }
 
-export type Node = NodeBase & {
-  children: React.FC<NodeProps>
-}
+export type Node = NodeBase
 
 export enum NodeState {
   dragging = "dragging",
@@ -85,6 +83,7 @@ export type StyleConfig = {
 
 export type EditorProps = {
   nodes: Node[]
+  nodeRepresentation: React.FC<NodeProps>
   setNodes: (action: SetStateAction<Node[]>) => void
   transformation: Transformation
   setTransformation: (transformation: Transformation) => void

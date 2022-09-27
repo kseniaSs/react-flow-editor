@@ -5,7 +5,7 @@ import "./simple.scss"
 import { SelectionZone } from "./types"
 import { initialNodes, STYLED_CONFIG, TIPS } from "./constants"
 import { computeSelectionZone, nodeFactory } from "./helpers"
-import { NodeAttributes } from "./parts"
+import { NodeAttributes, SimpleNode } from "./parts"
 
 const App = () => {
   const [nodes, setNodes] = React.useState<Node[]>(initialNodes)
@@ -37,6 +37,7 @@ const App = () => {
       </div>
       <div className="react-editor-container">
         <Editor
+          nodeRepresentation={SimpleNode()}
           nodes={nodes}
           setNodes={setNodes}
           transformation={transformation}

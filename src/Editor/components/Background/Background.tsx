@@ -1,4 +1,4 @@
-import React, { memo, FC, useContext } from "react"
+import React, { FC, useContext } from "react"
 import { EditorContext } from "../../context"
 import { BackgroundProps, BackgroundVariant } from "./types"
 import { createGridLinesPath, createGridDotsPath } from "./utils"
@@ -40,4 +40,4 @@ const Background: FC<BackgroundProps> = ({ variant = BackgroundVariant.Dots, gap
   )
 }
 
-export default memo(Background)
+export default Background

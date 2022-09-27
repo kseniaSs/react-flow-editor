@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useMemo, useState } from "react"
+import { useContext, useEffect, useRef, useMemo, useState } from "react"
 import { Transformation } from "../../types"
 import { DRAG_OFFSET_TRANSFORM, LARGEST_RECT } from "../constants"
 import { EditorContext } from "../context"
@@ -72,11 +72,11 @@ export const useEditorMount = () => {
 export const useRecalculateRects = () => {
   const { setNodes } = useContext(EditorContext)
 
-  return useCallback(() => {
+  return () => {
     setNodes((nodes) =>
       nodes.map((el) => ({ ...el, rectPosition: document.getElementById(el.id).getBoundingClientRect() }))
     )
-  }, [setNodes])
+  }
 }
 
 export const TransformCanvasStyle = (transformation: Transformation) => ({

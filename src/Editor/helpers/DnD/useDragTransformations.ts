@@ -1,7 +1,7 @@
 import { MutableRefObject, useContext } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import { useRecalculateRects } from ".."
-import { NodeState } from "../../../types"
+import { NodeState } from "@/types"
 import { EditorContext } from "../../context"
 import { dragItemState, newConnectionState, selectionZoneState, svgOffsetState } from "../../ducks/store"
 import { ItemType } from "../../types"

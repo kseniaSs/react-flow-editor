@@ -1,7 +1,7 @@
 import { isEqual } from "lodash"
 import React, { useContext } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
-import { Node, NodeState, Output } from "../../../types"
+import { Node, NodeState, Output } from "@/types"
 import { BUTTON_LEFT } from "../../constants"
 import { EditorContext, RectsContext } from "../../context"
 import { dragItemState, newConnectionState, svgOffsetState } from "../../ducks/store"

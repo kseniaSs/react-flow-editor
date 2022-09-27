@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo } from "react"
 import { isEqual, omit } from "lodash"
-import { Node as NodeType } from "../../../types"
+import { Node as NodeType } from "@/types"
 import { useRecalculateRects } from "../../helpers"
 import { nodeStyle } from "./helpers"
 import { Point } from "./Point"
@@ -44,8 +44,8 @@ const Node: React.FC<
     nodeComponentProps: Omit<NodeType, "children">
     recalculateRects: ReturnType<typeof useRecalculateRects>
   }
-> = React.memo(({ node, nodeInteractions, nodeComponentProps, recalculateRects }) => {
-  const NodeComponent = node.children
+> = ({ node, nodeInteractions, nodeComponentProps, recalculateRects }) => {
+  const { nodeRepresentation: NodeComponent } = useContext(EditorContext)
 
   return (
     <div
@@ -63,6 +63,6 @@ const Node: React.FC<
       <NodeComponent onSizeChanged={recalculateRects} {...nodeComponentProps} />
     </div>
   )
-}, isEqual)
+}
 
 export default React.memo(Provider, isEqual)

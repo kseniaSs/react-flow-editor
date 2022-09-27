@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { useRecoilValue } from "recoil"
 
 import { dragItemState } from "./ducks/store"
-import Background from "./components/Background"
+import Background from "./components/Background/Background"
 import { TransformCanvasStyle, useEditorMount } from "./helpers"
 import { useDnD } from "./helpers/DnD"
 import { useZoom } from "./helpers/zoom"
@@ -19,8 +19,6 @@ export const Canvas: React.FC = () => {
   const { onWheel } = useZoom(zoomContainerRef, editorContainerRef)
 
   useHotKeys()
-
-  console.log("CANVAS")
 
   return (
     <RectsContext.Provider value={rects}>
