@@ -19,7 +19,6 @@ const DEFAULT_INPUT = {
 export const initialNodes: Node[] = [
   {
     id: "Node_1",
-    children: SimpleNode({ expandable: true }),
     position: { x: 110, y: 110 },
     inputNumber: 10,
     inputPosition: DEFAULT_INPUT,
@@ -31,7 +30,6 @@ export const initialNodes: Node[] = [
   },
   {
     id: "Node_2",
-    children: SimpleNode({ expandable: true }),
     position: { x: 310, y: 310 },
     inputNumber: 10,
     inputPosition: DEFAULT_INPUT,
@@ -40,7 +38,6 @@ export const initialNodes: Node[] = [
   },
   {
     id: "Node_3",
-    children: SimpleNode({ expandable: false }),
     position: { x: 510, y: 510 },
     inputNumber: 10,
     inputPosition: DEFAULT_INPUT,

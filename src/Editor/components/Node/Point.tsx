@@ -2,7 +2,7 @@ import { isEqual } from "lodash"
 import React, { useContext } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { Node, NodeState, Output } from "@/types"
-import { BUTTON_LEFT, CLASSES } from "../../constants"
+import { BUTTON_LEFT } from "../../constants"
 import { EditorContext, RectsContext } from "../../context"
 import { dragItemState, newConnectionState, svgOffsetState } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
@@ -53,7 +53,7 @@ export const Point: React.FC<PointProps> = React.memo(({ node, output }) => {
   return (
     <div
       id={buildDotId(node.id)}
-      className={CLASSES.DOT}
+      className="dot"
       style={pointStyle({
         position: output.position,
         pointConfig: styleConfig?.point,

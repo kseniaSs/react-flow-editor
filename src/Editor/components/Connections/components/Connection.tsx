@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react"
+import React, { useContext } from "react"
 import { useRecoilValue } from "recoil"
 import { Node, Output } from "@/types"
 import { DEFAULT_POINT_SIZE } from "@/Editor/constants"
@@ -18,35 +18,19 @@ export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ outp
   const svgOffset = useRecoilValue(svgOffsetState)
   const nextNode = nodes.find((node) => node.id === output.nextNodeId)
 
-  const outputPosition = useMemo(
-    () =>
-      node.rectPosition
-        ? {
-            x:
-              -svgOffset.x +
-              node.position.x +
-              output.position.x +
-              (styleConfig?.point?.width || DEFAULT_POINT_SIZE) / 2,
-            y:
-              -svgOffset.y +
-              node.position.y +
-              output.position.y +
-              (styleConfig?.point?.height || DEFAULT_POINT_SIZE) / 2
-          }
-        : node.position,
-    [node, svgOffset, styleConfig, output]
-  )
-
-  const inputPosition = useMemo(
-    () =>
-      nextNode && {
-        x: -svgOffset.x + nextNode.position.x + (nextNode?.inputPosition?.x || 0),
-        y: -svgOffset.y + nextNode.position.y + (nextNode?.inputPosition?.y || 0)
-      },
-    [svgOffset, nextNode]
-  )
-
   if (!nextNode) return null
+
+  const outputPosition = node.rectPosition
+    ? {
+        x: -svgOffset.x + node.position.x + output.position.x + (styleConfig?.point?.width || DEFAULT_POINT_SIZE) / 2,
+        y: -svgOffset.y + node.position.y + output.position.y + (styleConfig?.point?.height || DEFAULT_POINT_SIZE) / 2
+      }
+    : node.position
+
+  const inputPosition = nextNode && {
+    x: -svgOffset.x + nextNode.position.x + (nextNode?.inputPosition?.x || 0),
+    y: -svgOffset.y + nextNode.position.y + (nextNode?.inputPosition?.y || 0)
+  }
 
   return (
     <React.Fragment key={output.id}>
@@ -59,17 +43,13 @@ export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ outp
 export const Connection: React.FC<ConnectionProps> = ({ node }) => {
   const dragItem = useRecoilValue(dragItemState)
 
-  const filteredConnections = useMemo(
-    () =>
-      node.outputs.filter(
-        (out) =>
-          !(
-            dragItem.type === ItemType.connection &&
-            out.nextNodeId === dragItem.output?.nextNodeId &&
-            node.id === dragItem.id
-          )
-      ),
-    [dragItem.type, node]
+  const filteredConnections = node.outputs.filter(
+    (out) =>
+      !(
+        dragItem.type === ItemType.connection &&
+        out.nextNodeId === dragItem.output?.nextNodeId &&
+        node.id === dragItem.id
+      )
   )
 
   return (

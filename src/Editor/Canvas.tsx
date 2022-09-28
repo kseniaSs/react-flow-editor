@@ -1,17 +1,16 @@
 import React, { useContext } from "react"
+import { useRecoilValue } from "recoil"
+
 import { dragItemState } from "./ducks/store"
-import Background from "./components/Background"
-import { CLASSES } from "./constants"
+import Background from "./components/Background/Background"
 import { TransformCanvasStyle, useEditorMount } from "./helpers"
 import { useDnD } from "./helpers/DnD"
 import { useZoom } from "./helpers/zoom"
-import { useRecoilValue } from "recoil"
-import { isEqual } from "lodash"
 import { useHotKeys } from "./helpers/hotKeys"
 import { NodesContainer } from "./components/Node"
 import { EditorContext, RectsContext } from "./context"
 
-export const Canvas: React.FC = React.memo(() => {
+export const Canvas: React.FC = () => {
   const { transformation } = useContext(EditorContext)
   const currentDragItem = useRecoilValue(dragItemState)
   const rects = useEditorMount()
@@ -29,13 +28,13 @@ export const Canvas: React.FC = React.memo(() => {
         onWheel={onWheel}
         onMouseDown={onDragStarted}
         ref={editorContainerRef}
-        className={CLASSES.EDITOR}
+        className="react-flow-editor"
       >
-        <div ref={zoomContainerRef} className={CLASSES.ZOOM_CONTAINER} style={TransformCanvasStyle(transformation)}>
+        <div ref={zoomContainerRef} className="zoom-container" style={TransformCanvasStyle(transformation)}>
           <NodesContainer />
         </div>
         <Background />
       </div>
     </RectsContext.Provider>
   )
-}, isEqual)
+}

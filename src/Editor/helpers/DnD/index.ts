@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useContext } from "react"
+import { MutableRefObject, useContext } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { BUTTON_LEFT } from "../../constants"
 import { EditorContext } from "../../context"
@@ -22,7 +22,7 @@ export const useDnD = (
 
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
   const setNewConnectionState = useSetRecoilState(newConnectionState)
-  const [autoScroll, setAutoScroll] = useRecoilState(autoScrollState)
+  const setAutoScroll = useSetRecoilState(autoScrollState)
   const setSelectionZone = useSetRecoilState(selectionZoneState)
   const hoveredNodeId = useRecoilValue(hoveredNodeIdState)
 
@@ -31,20 +31,17 @@ export const useDnD = (
 
   const dragTranformations = useDragTransformations({ expandSelectionZone, zoomContainerRef })
 
-  const onDrag = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      dragTranformations[currentDragItem.type](e)
+  const onDrag = (e: React.MouseEvent<HTMLElement>) => {
+    dragTranformations[currentDragItem.type](e)
 
-      if ([ItemType.node, ItemType.connection, ItemType.selectionZone].includes(currentDragItem.type)) {
-        checkAutoScrollEnable(e)
-      }
+    if ([ItemType.node, ItemType.connection, ItemType.selectionZone].includes(currentDragItem.type)) {
+      checkAutoScrollEnable(e)
+    }
 
-      setDragItem((dragItem) => ({ ...dragItem, x: e.clientX, y: e.clientY }))
-    },
-    [autoScroll, dragTranformations, currentDragItem, checkAutoScrollEnable, setDragItem]
-  )
+    setDragItem((dragItem) => ({ ...dragItem, x: e.clientX, y: e.clientY }))
+  }
 
-  const onDragEnded = useCallback(() => {
+  const onDragEnded = () => {
     setAutoScroll({ speed: 0, direction: null })
     if (currentDragItem.type === ItemType.connection) {
       const inputNode = nodes.find((currentElement) => hoveredNodeId === currentElement.id)
@@ -106,21 +103,18 @@ export const useDnD = (
     setNewConnectionState(undefined)
     setDragItem((dragItem) => ({ ...dragItem, type: undefined }))
     setSelectionZone(null)
-  }, [currentDragItem, nodes, hoveredNodeId, setNodes])
+  }
 
-  const onDragStarted: React.MouseEventHandler<HTMLDivElement> = useCallback(
-    (e) => {
-      if (e.button === BUTTON_LEFT && !currentDragItem.type) {
-        setDragItem({ type: e.shiftKey ? ItemType.selectionZone : ItemType.viewPort, x: e.clientX, y: e.clientY })
-        initSelectionZone(e)
-      }
+  const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    if (e.button === BUTTON_LEFT && !currentDragItem.type) {
+      setDragItem({ type: e.shiftKey ? ItemType.selectionZone : ItemType.viewPort, x: e.clientX, y: e.clientY })
+      initSelectionZone(e)
+    }
 
-      if (!currentDragItem.type && nodes.some((node) => Boolean(node.state))) {
-        setNodes((nodes) => nodes.map((node) => ({ ...node, state: null })))
-      }
-    },
-    [currentDragItem, initSelectionZone, nodes, setNodes]
-  )
+    if (!currentDragItem.type && nodes.some((node) => Boolean(node.state))) {
+      setNodes((nodes) => nodes.map((node) => ({ ...node, state: null })))
+    }
+  }
 
   return { onDrag, onDragEnded, onDragStarted }
 }

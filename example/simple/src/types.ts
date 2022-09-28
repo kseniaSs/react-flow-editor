@@ -7,4 +7,4 @@ export type SelectionZone = {
   bottom: number
 }
 
-export type SimpleNodeProps = NodeProps & { expandable: boolean }
+export type SimpleNodeProps = NodeProps
