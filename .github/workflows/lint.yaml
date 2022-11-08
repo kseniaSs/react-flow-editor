@@ -5,7 +5,7 @@ on:
   - pull_request
 
 jobs:
-  intall-and-lint:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,4 +25,36 @@ jobs:
           run_install: |
             - recursive: true
               args: [--frozen-lockfile, --strict-peer-dependencies]
-            - args: [eslint, prettier]
+
+      - name: Build react-flow-editor
+        run: cd ./packages/react-flow-editor/ && pnpm run build
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --strict-peer-dependencies]
+
+      - name: Run prettier
+        run: pnpm run prettier
+
+      - name: Run eslint
+        run: pnpm run eslint
+
+      # - name: Run typescript lint
+      #   run: pnpm run typescript
