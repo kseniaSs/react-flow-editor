@@ -7,24 +7,25 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite serve",
-    "lint": "tslint *.{ts,tsx}",
-    "refresh": "rm -rf ./node_modules && yarn"
+    "prettier": "prettier -c --config ../../.prettierrc \"src/**/*.{ts,tsx}\"",
+    "eslint": "eslint ./src --ext .ts,.tsx --quiet",
+    "lint": "tsc ./src"
   },
-  "author": "Matthias Lochbrunner",
   "bugs": {
     "url": "https://github.com/lochbrunner/react-flow-editor/issues"
   },
   "homepage": "https://github.com/lochbrunner/react-flow-editor#readme",
   "devDependencies": {
+    "@types/lodash": "^4.14.182",
     "@types/react": "17.0.30",
     "@vitejs/plugin-react": "^1.3.2",
-    "tslint": "^6.1.3",
+    "eslint": "^8.20.0",
     "typescript": "^4.0.3",
     "vite": "^2.9.13",
     "vite-plugin-html": "^3.2.0"
   },
   "dependencies": {
-    "@kseniass/react-flow-editor": "file:../../",
+    "@kseniass/react-flow-editor": "file:../react-flow-editor/",
     "lodash": "^4.17.21",
     "react": "17.0.2",
     "react-dom": "17.0.2",

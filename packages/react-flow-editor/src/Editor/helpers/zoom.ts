@@ -20,7 +20,7 @@ export const useZoom = (
       x: -transformation.dx + (editorRect?.width || 0) / 2,
       y: -transformation.dy + (editorRect?.height || 0) / 2
     }
-  }, [editorContainerRef.current, transformation])
+  }, [editorContainerRef?.current, transformation])
 
   if (zoomContainerRef?.current)
     zoomContainerRef.current.style.transformOrigin = `${zoomRefPoint.x}px ${zoomRefPoint.y}px`

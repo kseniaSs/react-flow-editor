@@ -1,5 +1,4 @@
 import { Node } from "@kseniass/react-flow-editor"
-import { SimpleNode } from "./parts"
 
 export const DEFAULT_OUTPUT = {
   x: 145,
