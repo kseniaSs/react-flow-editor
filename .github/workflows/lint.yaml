@@ -1,7 +1,6 @@
 name: lint
 
 on:
-  - push
   - pull_request
 
 jobs:
@@ -27,7 +26,7 @@ jobs:
               args: [--frozen-lockfile, --strict-peer-dependencies]
 
       - name: Build react-flow-editor
-        run: cd ./packages/react-flow-editor/ && pnpm run build
+        run: pnpm --dir ./packages/react-flow-editor run build
 
   lint:
     runs-on: ubuntu-latest
