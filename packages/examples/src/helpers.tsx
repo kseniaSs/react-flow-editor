@@ -1,6 +1,5 @@
 import { Node, Transformation } from "@kseniass/react-flow-editor"
 import { SelectionZone } from "./types"
-import { SimpleNode } from "./parts"
 import { MutableRefObject } from "react"
 import { DEFAULT_OUTPUT } from "./constants"
 
@@ -10,10 +9,10 @@ export const computeSelectionZone = (
   selectionZone: SelectionZone
 ): Partial<DOMRect> => {
   const zoomContainerRect = zoomContainerRef?.current.getBoundingClientRect()
-  const left = zoomContainerRect?.left + selectionZone?.left * transformation.zoom || 0
-  const top = zoomContainerRect?.top + selectionZone?.top * transformation.zoom || 0
-  const right = zoomContainerRect?.left + selectionZone?.right * transformation.zoom || 0
-  const bottom = zoomContainerRect?.top + selectionZone?.bottom * transformation.zoom || 0
+  const left = zoomContainerRect?.left || 0 + selectionZone?.left * transformation.zoom || 0
+  const top = zoomContainerRect?.top || 0 + selectionZone?.top * transformation.zoom || 0
+  const right = zoomContainerRect?.left || 0 + selectionZone?.right * transformation.zoom || 0
+  const bottom = zoomContainerRect?.top || 0 + selectionZone?.bottom * transformation.zoom || 0
 
   return {
     left,

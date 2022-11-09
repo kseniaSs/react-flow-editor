@@ -1,4 +1,6 @@
+/* eslint-disable no-undef */
 module.exports = {
+  root: true,
   env: {
     browser: true,
     es2021: true
@@ -22,6 +24,9 @@ module.exports = {
   },
   plugins: ["react", "@typescript-eslint"],
   settings: {
+    react: {
+      version: "17.0.2"
+    },
     "import/resolver": {
       typescript: true,
       node: {
@@ -32,6 +37,7 @@ module.exports = {
   rules: {
     "react/prop-types": "off",
     "react/display-name": "off",
+    "import/no-unresolved": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
