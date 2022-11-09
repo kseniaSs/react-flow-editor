@@ -1,4 +1,4 @@
-import { Node } from "@kseniass/react-flow-editor"
+import { Node, StyleConfig } from "@kseniass/react-flow-editor"
 
 export const DEFAULT_OUTPUT = {
   x: 145,
@@ -61,7 +61,7 @@ export const TIPS = `
   - Scroll mouse to zoom
 `
 
-export const STYLED_CONFIG = {
+export const STYLED_CONFIG: StyleConfig = {
   point: {
     width: 10,
     height: 10,
@@ -70,6 +70,7 @@ export const STYLED_CONFIG = {
     disconnectedBg: "#fafafa"
   },
   connector: {
+    width: 10,
     color: "#7d7d7d"
   }
 }

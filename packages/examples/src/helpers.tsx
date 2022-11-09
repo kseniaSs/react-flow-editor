@@ -6,13 +6,14 @@ import { DEFAULT_OUTPUT } from "./constants"
 export const computeSelectionZone = (
   zoomContainerRef: MutableRefObject<HTMLDivElement> | undefined,
   transformation: Transformation,
-  selectionZone: SelectionZone
+  selectionZone: SelectionZone | null
 ): Partial<DOMRect> => {
   const zoomContainerRect = zoomContainerRef?.current.getBoundingClientRect()
-  const left = zoomContainerRect?.left || 0 + selectionZone?.left * transformation.zoom || 0
-  const top = zoomContainerRect?.top || 0 + selectionZone?.top * transformation.zoom || 0
-  const right = zoomContainerRect?.left || 0 + selectionZone?.right * transformation.zoom || 0
-  const bottom = zoomContainerRect?.top || 0 + selectionZone?.bottom * transformation.zoom || 0
+
+  const left = (zoomContainerRect?.left || 0) + (selectionZone?.left || 0) * transformation.zoom || 0
+  const top = (zoomContainerRect?.top || 0) + (selectionZone?.top || 0) * transformation.zoom || 0
+  const right = (zoomContainerRect?.left || 0) + (selectionZone?.right || 0) * transformation.zoom || 0
+  const bottom = (zoomContainerRect?.top || 0) + (selectionZone?.bottom || 0) * transformation.zoom || 0
 
   return {
     left,
