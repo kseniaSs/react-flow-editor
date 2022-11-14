@@ -12,15 +12,6 @@ export enum Axis {
   y = "y"
 }
 
-export enum AutoScrollDirection {
-  right = "right",
-  left = "left",
-  top = "top",
-  bottom = "bottom"
-}
-
-export type AutoScrollState = { speed: number; direction: AutoScrollDirection }
-
 export type SVGOffsetState = Point & Size
 
 export type DragItemState = { type?: ItemType; output?: Output; id?: string } & Point

@@ -4,10 +4,14 @@ import { DEFAULT_POINT_SIZE } from "@/Editor/constants"
 import { EditorContext } from "@/Editor/context"
 import { dragItemState, newConnectionState, svgOffsetState } from "@/Editor/ducks/store"
 import { ItemType } from "@/Editor/types"
+import { NodesAtom } from "@/Editor/state"
+import { useStore } from "@nanostores/react"
+
 import InputConnection from "./InputConnection"
 
 export const NewConnection: React.FC = () => {
-  const { nodes, styleConfig } = useContext(EditorContext)
+  const { styleConfig } = useContext(EditorContext)
+  const nodes = useStore(NodesAtom)
 
   const newConnectionPosition = useRecoilValue(newConnectionState)
   const svgOffset = useRecoilValue(svgOffsetState)

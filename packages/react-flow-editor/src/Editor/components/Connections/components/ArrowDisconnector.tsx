@@ -5,6 +5,7 @@ import { ItemType } from "@/Editor/types"
 import { EditorContext, RectsContext } from "@/Editor/context"
 import { dragItemState, newConnectionState, svgOffsetState } from "@/Editor/ducks/store"
 import { disconnectorStyle } from "../helpers"
+import { nodeActions } from "@/Editor/state"
 
 type DisconnectorProps = {
   position: Point
@@ -14,7 +15,7 @@ type DisconnectorProps = {
 
 const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, output }) => {
   const { zoomContainerRef } = useContext(RectsContext)
-  const { transformation, setNodes } = useContext(EditorContext)
+  const { transformation } = useContext(EditorContext)
   const svgOffset = useRecoilValue(svgOffsetState)
   const setNewConnectionState = useSetRecoilState(newConnectionState)
 
@@ -41,14 +42,9 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, outp
 
       setNewConnectionState(newPos)
 
-      setNodes((nodes) =>
-        nodes.map((node) => ({
-          ...node,
-          state: node.id === fromId ? NodeState.draggingConnector : null
-        }))
-      )
+      nodeActions.changeNodeState(fromId, NodeState.draggingConnector)
     },
-    [transformation, zoomContainerRef, svgOffset, setNodes]
+    [transformation, zoomContainerRef, svgOffset]
   )
 
   return <rect onMouseDown={onMouseDown} className="disconnector" style={disconnectorStyle(position)} />

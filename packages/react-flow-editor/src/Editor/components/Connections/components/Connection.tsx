@@ -5,6 +5,8 @@ import { DEFAULT_POINT_SIZE } from "@/Editor/constants"
 import { EditorContext } from "@/Editor/context"
 import { dragItemState, svgOffsetState } from "@/Editor/ducks/store"
 import { ItemType } from "@/Editor/types"
+import { NodesAtom } from "@/Editor/state"
+import { useStore } from "@nanostores/react"
 
 import ArrowDisconnector from "./ArrowDisconnector"
 import InputConnection from "./InputConnection"
@@ -14,7 +16,9 @@ type ConnectionProps = {
 }
 
 export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ output, node }) => {
-  const { nodes, styleConfig } = useContext(EditorContext)
+  const { styleConfig } = useContext(EditorContext)
+  const nodes = useStore(NodesAtom)
+
   const svgOffset = useRecoilValue(svgOffsetState)
   const nextNode = nodes.find((node) => node.id === output.nextNodeId)
 

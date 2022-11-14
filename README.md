@@ -77,28 +77,27 @@ export type OnEditorRectsMountedProps = {
 }
 ```
 
-| Prop      | Description |
-| ----------- | ----------- |
-| `nodes`| Array of nodes to render in editor |
-| `setNodes`| Function for nodes managing |
-| `transformation`| Editor translate and scale transformation  |
-| `setTransformation`| Transformation managing function |
-| `onEditorRectsMounted`| Callback for receiving editor DOMRect and nodes container DOMRect |
-| `onSelectionZoneChanged`| Callback for receiving selection zone coordinates |
-| `styleConfig`| Config of editor parts styles |
-
+| Prop                     | Description                                                       |
+| ------------------------ | ----------------------------------------------------------------- |
+| `nodes`                  | Array of nodes to render in editor                                |
+| `setNodes`               | Function for nodes managing                                       |
+| `transformation`         | Editor translate and scale transformation                         |
+| `setTransformation`      | Transformation managing function                                  |
+| `onEditorRectsMounted`   | Callback for receiving editor DOMRect and nodes container DOMRect |
+| `onSelectionZoneChanged` | Callback for receiving selection zone coordinates                 |
+| `styleConfig`            | Config of editor parts styles                                     |
 
 ### Node
 
-| Prop      | Description |
-| ----------- | ----------- |
-| `id`| The unique identifier for the node |
-| `position`| Coordinates of the node |
-| `rectPosition`| DOMRect for the node |
-| `outputs`| Array of outputs. Each output contains data about point position (relatively to node) and connected node id.|
-| `inputPosition`| Position of input point for connectors (relatively to node) |
-| `inputNumber`| Max number of inputs |
-| `state`| Node state |
+| Prop            | Description                                                                                                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------ |
+| `id`            | The unique identifier for the node                                                                           |
+| `position`      | Coordinates of the node                                                                                      |
+| `rectPosition`  | DOMRect for the node                                                                                         |
+| `outputs`       | Array of outputs. Each output contains data about point position (relatively to node) and connected node id. |
+| `inputPosition` | Position of input point for connectors (relatively to node)                                                  |
+| `inputNumber`   | Max number of inputs                                                                                         |
+| `state`         | Node state                                                                                                   |
 
 ### Node states
 
@@ -117,11 +116,11 @@ export type OnEditorRectsMountedProps = {
 
 5. SHIFT + node mouseDown = no changes in state
 6. SHIFT + (node mouseDown -> mouseUp) = `selected`
-7. SHIFT + (node mouseDown-> mouseMove)  = `dragging`
-8. SHIFT + (node mouseDown-> mouseMove -> mouseUp)  = `selected`
+7. SHIFT + (node mouseDown-> mouseMove) = `dragging`
+8. SHIFT + (node mouseDown-> mouseMove -> mouseUp) = `selected`
 
-9. SHIFT + (node click -> node_2 click)  = `selected` both
-10. SHIFT + (node click -> node_2 click -> (node or node_2) mouseDown -> mouseMove)  = `dragging` both
+9. SHIFT + (node click -> node_2 click) = `selected` both
+10. SHIFT + (node click -> node_2 click -> (node or node_2) mouseDown -> mouseMove) = `dragging` both
 11. SHIFT + (node click -> node_2 click -> (node or node_2) mouseDown -> mouseMove -> mouseUp) = `selected` both
 
 12. DnD from node_1 point = `draggingConnector`
@@ -132,49 +131,47 @@ export type OnEditorRectsMountedProps = {
 
 ### Transfromation
 
-| Prop      | Description |
-| ----------- | ----------- |
-| `dx`| Horizontal editor offset |
-| `dy`| Vertical editor offset |
-| `zoom`| Editor zoom |
+| Prop   | Description              |
+| ------ | ------------------------ |
+| `dx`   | Horizontal editor offset |
+| `dy`   | Vertical editor offset   |
+| `zoom` | Editor zoom              |
 
 ### Selection zone
 
-| Prop      | Description |
-| ----------- | ----------- |
-| `cornerStart`| Coordinates of the start selection point |
-| `cornerEnd`| Coordinates of the end selection point |
-
+| Prop          | Description                              |
+| ------------- | ---------------------------------------- |
+| `cornerStart` | Coordinates of the start selection point |
+| `cornerEnd`   | Coordinates of the end selection point   |
 
 ### OnEditorRectsMountedProps
 
-| Prop      | Description |
-| ----------- | ----------- |
-| `zoomContainerRef`| React Ref Object of nodes container |
-| `editorContainerRef`| React Ref Object of editor |
-| `overview`| Function for applying transformation to place all the nodes into viewPort |
+| Prop                 | Description                                                               |
+| -------------------- | ------------------------------------------------------------------------- |
+| `zoomContainerRef`   | React Ref Object of nodes container                                       |
+| `editorContainerRef` | React Ref Object of editor                                                |
+| `overview`           | Function for applying transformation to place all the nodes into viewPort |
 
 ### styleConfig
 
-| Prop      | Description |
-| ----------- | ----------- |
-| `point`| Point styles |
-| `connector`| Connector styles |
+| Prop        | Description      |
+| ----------- | ---------------- |
+| `point`     | Point styles     |
+| `connector` | Connector styles |
 
 ### PointStyleConfig
 
-| Prop      | Description |
-| ----------- | ----------- |
-| `width`| Point width |
-| `height`| Point height |
-| `color`| Point color |
+| Prop     | Description  |
+| -------- | ------------ |
+| `width`  | Point width  |
+| `height` | Point height |
+| `color`  | Point color  |
 
 ### ConnectorStyleConfig
 
-| Prop      | Description |
-| ----------- | ----------- |
-| `width`| Connector width |
-| `color`| Connector color |
-
+| Prop    | Description     |
+| ------- | --------------- |
+| `width` | Connector width |
+| `color` | Connector color |
 
 ### [Changelog](./changelog.md "Changelog")

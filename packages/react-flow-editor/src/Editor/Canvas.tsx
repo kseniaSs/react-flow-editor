@@ -22,6 +22,7 @@ export const Canvas: React.FC = () => {
 
   return (
     <RectsContext.Provider value={rects}>
+      {}
       <div
         onMouseUp={onDragEnded}
         onMouseMove={currentDragItem.type && onDrag}

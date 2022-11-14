@@ -1,10 +1,13 @@
+import { useStore } from "@nanostores/react"
 import { useContext, useEffect } from "react"
 import { NodeState } from "../../types"
 import { KEY_CODE_BACK, KEY_CODE_DELETE } from "../constants"
 import { EditorContext } from "../context"
+import { NodesAtom } from "../state"
 
 export const useHotKeys = () => {
-  const { setNodes, nodes, importantNodeIds } = useContext(EditorContext)
+  const { importantNodeIds } = useContext(EditorContext)
+  const nodes = useStore(NodesAtom)
 
   useEffect(() => {
     const hotKeysHandler = (e: KeyboardEvent) => {
@@ -14,14 +17,14 @@ export const useHotKeys = () => {
           .filter((node) => importantNodeIds && !importantNodeIds.includes(node.id))
           .map((node) => node.id)
 
-        setNodes((nodes) =>
+        NodesAtom.set(
           nodes
             .filter((node) => !selectedNodesIds.includes(node.id))
             .map((node) => ({
               ...node,
               outputs: node.outputs.map((out) => ({
                 ...out,
-                nextNodeId: selectedNodesIds.includes(out.nextNodeId) ? null : out.nextNodeId
+                nextNodeId: out.nextNodeId && selectedNodesIds.includes(out.nextNodeId) ? null : out.nextNodeId
               }))
             }))
         )

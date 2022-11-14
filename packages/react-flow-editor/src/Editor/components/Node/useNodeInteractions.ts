@@ -1,35 +1,33 @@
-import React, { useCallback, useContext, useState } from "react"
+import React, { useCallback, useState } from "react"
 import { useRecoilState, useSetRecoilState } from "recoil"
+import { NodesAtom } from "@/Editor/state"
+import { useStore } from "@nanostores/react"
 import { Node, NodeState, Point } from "@/types"
 import { BUTTON_LEFT } from "../../constants"
-import { EditorContext } from "../../context"
 import { dragItemState, hoveredNodeIdState } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 import { ItemType } from "../../types"
 
 export const useNodeInteractions = (node: Node) => {
-  const { setNodes, nodes } = useContext(EditorContext)
+  const nodes = useStore(NodesAtom)
   const [dragItem, setDragItem] = useRecoilState(dragItemState)
   const setHoveredNodeId = useSetRecoilState(hoveredNodeIdState)
   const [initialClickCoords, setInitialClickCoords] = useState<Point>({ x: 0, y: 0 })
 
-  const onDragStarted: React.MouseEventHandler<HTMLDivElement> = useCallback(
-    (e) => {
-      resetEvent(e)
-      if (e.button === BUTTON_LEFT) {
-        const point = { x: e.clientX, y: e.clientY }
-        setDragItem({ type: ItemType.node, ...point, id: node.id })
+  const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    resetEvent(e)
+    if (e.button === BUTTON_LEFT) {
+      const point = { x: e.clientX, y: e.clientY }
+      setDragItem({ type: ItemType.node, ...point, id: node.id })
 
-        setInitialClickCoords(point)
-      }
-    },
-    [setNodes]
-  )
+      setInitialClickCoords(point)
+    }
+  }
 
   const onMouseUp: React.MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
       if (e.button === BUTTON_LEFT) {
-        setNodes((nodes) =>
+        NodesAtom.set(
           nodes.map((nodeItem) => {
             const isSelected =
               (nodeItem.id === node.id && initialClickCoords.x === e.clientX && initialClickCoords.y === e.clientY) ||
@@ -60,7 +58,7 @@ export const useNodeInteractions = (node: Node) => {
         setDragItem({ type: undefined, x: e.clientX, y: e.clientY })
       }
     },
-    [setNodes, initialClickCoords]
+    [initialClickCoords, nodes]
   )
 
   const onMouseEnter: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
@@ -73,7 +71,7 @@ export const useNodeInteractions = (node: Node) => {
     const needUpdateNodes = nodes.some(isNodeHovered)
 
     needUpdateNodes &&
-      setNodes((nodes) =>
+      NodesAtom.set(
         nodes.map((nodeItem) => ({
           ...nodeItem,
           state: isNodeHovered(nodeItem) ? NodeState.connectorHovered : nodeItem.state
@@ -81,7 +79,7 @@ export const useNodeInteractions = (node: Node) => {
       )
 
     setHoveredNodeId(node.id)
-  }, [setNodes, dragItem.id, nodes])
+  }, [dragItem.id, nodes])
 
   const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
     const isNodeLeavedWithConnector = (nodeItem: Node) =>
@@ -90,7 +88,7 @@ export const useNodeInteractions = (node: Node) => {
     const needUpdateNodes = nodes.some(isNodeLeavedWithConnector)
 
     needUpdateNodes &&
-      setNodes((nodes) =>
+      NodesAtom.set(
         nodes.map((nodeItem) => ({
           ...nodeItem,
           state: isNodeLeavedWithConnector(nodeItem) ? null : nodeItem.state
@@ -98,7 +96,7 @@ export const useNodeInteractions = (node: Node) => {
       )
 
     setHoveredNodeId(null)
-  }, [setNodes, dragItem.type === ItemType.connection])
+  }, [dragItem.type === ItemType.connection])
 
   return {
     onDragStarted,

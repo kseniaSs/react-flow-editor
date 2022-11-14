@@ -1,14 +1,9 @@
-import { MutableRefObject, useContext } from "react"
+import { autoScrollActions, nodeActions, NodesAtom } from "@/Editor/state"
+import { useStore } from "@nanostores/react"
+import { MutableRefObject } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { BUTTON_LEFT } from "../../constants"
-import { EditorContext } from "../../context"
-import {
-  autoScrollState,
-  dragItemState,
-  hoveredNodeIdState,
-  newConnectionState,
-  selectionZoneState
-} from "../../ducks/store"
+import { dragItemState, hoveredNodeIdState, newConnectionState, selectionZoneState } from "../../ducks/store"
 import { ItemType } from "../../types"
 import { useAutoScroll } from "../autoScroll"
 import { useSelectionZone } from "../selectionZone"
@@ -18,11 +13,9 @@ export const useDnD = (
   editorContainerRef: MutableRefObject<HTMLElement>,
   zoomContainerRef: MutableRefObject<HTMLElement>
 ) => {
-  const { nodes, setNodes } = useContext(EditorContext)
-
+  const nodes = useStore(NodesAtom)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
   const setNewConnectionState = useSetRecoilState(newConnectionState)
-  const setAutoScroll = useSetRecoilState(autoScrollState)
   const setSelectionZone = useSetRecoilState(selectionZoneState)
   const hoveredNodeId = useRecoilValue(hoveredNodeIdState)
 
@@ -42,7 +35,8 @@ export const useDnD = (
   }
 
   const onDragEnded = () => {
-    setAutoScroll({ speed: 0, direction: null })
+    autoScrollActions.toDeafult()
+
     if (currentDragItem.type === ItemType.connection) {
       const inputNode = nodes.find((currentElement) => hoveredNodeId === currentElement.id)
       const outputNode = nodes.find((node) => node.id === currentDragItem.id)
@@ -53,17 +47,12 @@ export const useDnD = (
       const isNew = currentDragItem.output?.nextNodeId === null
 
       if (!inputNode && outputNode && isNew && nodes.some((node) => Boolean(node.state))) {
-        setNodes((nodesState) =>
-          nodesState.map((el) => ({
-            ...el,
-            state: null
-          }))
-        )
+        nodeActions.clearNodesState()
       }
 
       if (!inputNode && outputNode && !isNew) {
-        setNodes((nodesState) =>
-          nodesState.map((el) => {
+        NodesAtom.set(
+          nodes.map((el) => {
             if (el.id !== outputNode.id) return el
 
             return {
@@ -86,8 +75,8 @@ export const useDnD = (
 
         !alreadyConnected &&
           !nodesAreEqual &&
-          setNodes((nodesState) =>
-            nodesState.map((el) => ({
+          NodesAtom.set(
+            nodes.map((el) => ({
               ...el,
               outputs:
                 el.id === outputNode.id
@@ -112,7 +101,7 @@ export const useDnD = (
     }
 
     if (!currentDragItem.type && nodes.some((node) => Boolean(node.state))) {
-      setNodes((nodes) => nodes.map((node) => ({ ...node, state: null })))
+      nodeActions.clearNodesState()
     }
   }
 

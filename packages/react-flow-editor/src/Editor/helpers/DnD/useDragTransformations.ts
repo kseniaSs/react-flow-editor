@@ -5,6 +5,8 @@ import { EditorContext } from "../../context"
 import { dragItemState, newConnectionState, selectionZoneState, svgOffsetState } from "../../ducks/store"
 import { ItemType } from "../../types"
 import { isNodeInSelectionZone } from "../selectionZone"
+import { NodesAtom } from "@/Editor/state"
+import { useStore } from "@nanostores/react"
 
 export const useDragTransformations = ({
   expandSelectionZone,
@@ -13,7 +15,8 @@ export const useDragTransformations = ({
   expandSelectionZone: (e: React.MouseEvent) => void
   zoomContainerRef: MutableRefObject<HTMLElement>
 }) => {
-  const { transformation, setNodes, setTransformation } = useContext(EditorContext)
+  const { transformation, setTransformation } = useContext(EditorContext)
+  const nodes = useStore(NodesAtom)
 
   const currentDragItem = useRecoilValue(dragItemState)
   const setNewConnectionState = useSetRecoilState(newConnectionState)
@@ -45,7 +48,7 @@ export const useDragTransformations = ({
       })
     },
     [ItemType.node]: (e: React.MouseEvent<HTMLElement>) => {
-      setNodes((nodes) =>
+      NodesAtom.set(
         nodes.map((el) => {
           const isDragging = el.id === currentDragItem.id
           const isShiftSelected = e.shiftKey && el.state === NodeState.selected
@@ -67,7 +70,7 @@ export const useDragTransformations = ({
     [ItemType.selectionZone]: (e: React.MouseEvent<HTMLElement>) => {
       expandSelectionZone(e)
 
-      setNodes((nodes) =>
+      NodesAtom.set(
         nodes.map((el) => ({
           ...el,
           state: isNodeInSelectionZone(el, selectionZone, transformation) ? NodeState.selected : null

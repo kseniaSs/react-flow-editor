@@ -8,6 +8,7 @@ import { dragItemState, newConnectionState, svgOffsetState } from "../../ducks/s
 import { resetEvent } from "../../helpers"
 import { ItemType } from "../../types"
 import { buildDotId, pointStyle } from "./helpers"
+import { nodeActions } from "@/Editor/state"
 
 type PointProps = {
   node: Node
@@ -15,7 +16,7 @@ type PointProps = {
 }
 
 export const Point: React.FC<PointProps> = React.memo(({ node, output }) => {
-  const { setNodes, styleConfig, transformation } = useContext(EditorContext)
+  const { styleConfig, transformation } = useContext(EditorContext)
   const { zoomContainerRef } = useContext(RectsContext)
 
   const [dragItem, setDragItem] = useRecoilState(dragItemState)
@@ -26,12 +27,7 @@ export const Point: React.FC<PointProps> = React.memo(({ node, output }) => {
   const setNode = (e: React.MouseEvent<HTMLElement>) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
-      setNodes((nodes) =>
-        nodes.map((nodeItem) => ({
-          ...nodeItem,
-          state: nodeItem.id === node.id ? NodeState.draggingConnector : null
-        }))
-      )
+      nodeActions.changeNodeState(node.id, NodeState.draggingConnector)
 
       const pos = {
         x: -svgOffset.x + (e.clientX - zoomRect.left) / transformation.zoom,

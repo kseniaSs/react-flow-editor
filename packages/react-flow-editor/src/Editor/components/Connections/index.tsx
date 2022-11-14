@@ -1,4 +1,7 @@
 import React, { useContext, useEffect } from "react"
+import { NodesAtom } from "@/Editor/state"
+import { useStore } from "@nanostores/react"
+
 import { Connection } from "./components/Connection"
 import { NewConnection } from "./components/NewConnection"
 import { svgOffsetState } from "../../ducks/store"
@@ -8,7 +11,8 @@ import { Arrow } from "./components/Arrow"
 import { EditorContext } from "../../context"
 
 export const Container: React.FC = () => {
-  const { transformation, nodes, styleConfig } = useContext(EditorContext)
+  const { transformation, styleConfig } = useContext(EditorContext)
+  const nodes = useStore(NodesAtom)
 
   const setSvgOffsetState = useSetRecoilState(svgOffsetState)
   const nodesRect = computeNodeGroupsRect(nodes, transformation)
