@@ -1,4 +1,4 @@
-import { map } from "nanostores"
+import { atom } from "nanostores"
 
 export enum AutoScrollDirection {
   right = "right",
@@ -9,4 +9,4 @@ export enum AutoScrollDirection {
 
 export type AutoScrollState = { speed: number; direction: AutoScrollDirection | null }
 
-export const AutoScrollMap = map<AutoScrollState>({ speed: 0, direction: null })
+export const AutoScrollAtom = atom<AutoScrollState>({ speed: 0, direction: null })

@@ -1,14 +1,14 @@
 import { isEqual } from "lodash"
 import React, { useContext } from "react"
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 import { Node, NodeState, Output } from "@/types"
 import { BUTTON_LEFT } from "../../constants"
 import { EditorContext, RectsContext } from "../../context"
-import { dragItemState, newConnectionState, svgOffsetState } from "../../ducks/store"
+import { dragItemState, svgOffsetState } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 import { ItemType } from "../../types"
 import { buildDotId, pointStyle } from "./helpers"
-import { nodeActions } from "@/Editor/state"
+import { NewConnectionAtom, nodeActions } from "@/Editor/state"
 
 type PointProps = {
   node: Node
@@ -20,7 +20,6 @@ export const Point: React.FC<PointProps> = React.memo(({ node, output }) => {
   const { zoomContainerRef } = useContext(RectsContext)
 
   const [dragItem, setDragItem] = useRecoilState(dragItemState)
-  const setNewConnectionState = useSetRecoilState(newConnectionState)
   const svgOffset = useRecoilValue(svgOffsetState)
   const zoomRect = zoomContainerRef?.current?.getBoundingClientRect()
 
@@ -34,7 +33,7 @@ export const Point: React.FC<PointProps> = React.memo(({ node, output }) => {
         y: -svgOffset.y + (e.clientY - zoomRect.top) / transformation.zoom
       }
 
-      setNewConnectionState(pos)
+      NewConnectionAtom.set(pos)
 
       setDragItem({
         type: ItemType.connection,

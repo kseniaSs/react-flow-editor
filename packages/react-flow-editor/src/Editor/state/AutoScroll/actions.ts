@@ -1,6 +1,6 @@
 import { action } from "nanostores"
-import { AutoScrollMap } from "./store"
+import { AutoScrollAtom } from "./store"
 
-export const toDeafult = action(AutoScrollMap, "restore", (store) => {
+export const toDeafult = action(AutoScrollAtom, "restore", (store) => {
   store.set({ speed: 0, direction: null })
 })

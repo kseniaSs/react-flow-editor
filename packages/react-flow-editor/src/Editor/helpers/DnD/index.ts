@@ -3,7 +3,7 @@ import { useStore } from "@nanostores/react"
 import { MutableRefObject } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { BUTTON_LEFT } from "../../constants"
-import { dragItemState, hoveredNodeIdState, newConnectionState, selectionZoneState } from "../../ducks/store"
+import { dragItemState, hoveredNodeIdState, selectionZoneState } from "../../ducks/store"
 import { ItemType } from "../../types"
 import { useAutoScroll } from "../autoScroll"
 import { useSelectionZone } from "../selectionZone"
@@ -15,7 +15,6 @@ export const useDnD = (
 ) => {
   const nodes = useStore(NodesAtom)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
-  const setNewConnectionState = useSetRecoilState(newConnectionState)
   const setSelectionZone = useSetRecoilState(selectionZoneState)
   const hoveredNodeId = useRecoilValue(hoveredNodeIdState)
 
@@ -89,7 +88,6 @@ export const useDnD = (
           )
       }
     }
-    setNewConnectionState(undefined)
     setDragItem((dragItem) => ({ ...dragItem, type: undefined }))
     setSelectionZone(null)
   }

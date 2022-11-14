@@ -1,11 +1,18 @@
-import { AutoScrollDirection, AutoScrollState, AutoScrollMap, NodesAtom, autoScrollActions } from "@/Editor/state"
+import {
+  AutoScrollDirection,
+  AutoScrollState,
+  AutoScrollAtom,
+  NodesAtom,
+  autoScrollActions,
+  NewConnectionAtom
+} from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 import { MutableRefObject, useCallback, useContext, useEffect } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { NodeState } from "../../types"
 import { DRAG_AUTO_SCROLL_DIST, DRAG_AUTO_SCROLL_TIME, DRAG_OFFSET_TRANSFORM } from "../constants"
 import { EditorContext } from "../context"
-import { dragItemState, newConnectionState, selectionZoneState } from "../ducks/store"
+import { dragItemState, selectionZoneState } from "../ducks/store"
 import { Axis, ItemType } from "../types"
 import { isNodeInSelectionZone } from "./selectionZone"
 
@@ -20,7 +27,7 @@ export const getSign = (axis: Axis, autoScroll: AutoScrollState): -1 | 0 | 1 => 
 }
 
 const useCheckAutoScrollEnable = (editorContainerRef: MutableRefObject<HTMLElement>) => {
-  const autoScroll = useStore(AutoScrollMap)
+  const autoScroll = useStore(AutoScrollAtom)
 
   return useCallback(
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -32,19 +39,19 @@ const useCheckAutoScrollEnable = (editorContainerRef: MutableRefObject<HTMLEleme
       const bottomOverflow = e.clientY - (editorRect.bottom - DRAG_OFFSET_TRANSFORM)
 
       if (leftOverflow > 0) {
-        AutoScrollMap.set({ speed: leftOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.left })
+        AutoScrollAtom.set({ speed: leftOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.left })
       }
 
       if (rightOverflow > 0) {
-        AutoScrollMap.set({ speed: rightOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.right })
+        AutoScrollAtom.set({ speed: rightOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.right })
       }
 
       if (topOverflow > 0) {
-        AutoScrollMap.set({ speed: topOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.top })
+        AutoScrollAtom.set({ speed: topOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.top })
       }
 
       if (bottomOverflow > 0) {
-        AutoScrollMap.set({ speed: bottomOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.bottom })
+        AutoScrollAtom.set({ speed: bottomOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.bottom })
       }
 
       if (autoScroll.direction && Math.max(leftOverflow, rightOverflow, topOverflow, bottomOverflow) <= 0) {
@@ -56,11 +63,11 @@ const useCheckAutoScrollEnable = (editorContainerRef: MutableRefObject<HTMLEleme
 }
 
 export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>) => {
-  const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
+  const newConnection = useStore(NewConnectionAtom)
   const [selectionZone, setSelectionZone] = useRecoilState(selectionZoneState)
   const nodes = useStore(NodesAtom)
   const currentDragItem = useRecoilValue(dragItemState)
-  const autoScroll = useStore(AutoScrollMap)
+  const autoScroll = useStore(AutoScrollAtom)
 
   const { transformation, setTransformation } = useContext(EditorContext)
 
@@ -85,7 +92,7 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
       }
 
       if (currentDragItem.type === ItemType.connection) {
-        setNewConnectionState({
+        NewConnectionAtom.set({
           x: newConnection.x + getSign(Axis.x, autoScroll) * delta,
           y: newConnection.y + getSign(Axis.y, autoScroll) * delta
         })
