@@ -69,16 +69,6 @@ export const useEditorMount = () => {
   )
 }
 
-export const useRecalculateRects = () => {
-  const { setNodes } = useContext(EditorContext)
-
-  return () => {
-    setNodes((nodes) =>
-      nodes.map((el) => ({ ...el, rectPosition: document.getElementById(el.id).getBoundingClientRect() }))
-    )
-  }
-}
-
 export const TransformCanvasStyle = (transformation: Transformation) => ({
   transform: `translate(${transformation.dx}px, ${transformation.dy}px) scale(${transformation.zoom})`
 })

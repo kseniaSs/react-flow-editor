@@ -1,6 +1,5 @@
 import { useContext, useCallback, MutableRefObject, useMemo } from "react"
 import { useRecoilValue } from "recoil"
-import { useRecalculateRects } from "."
 import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from "../constants"
 import { EditorContext } from "../context"
 import { dragItemState } from "../ducks/store"
@@ -11,7 +10,6 @@ export const useZoom = (
 ) => {
   const { transformation, setTransformation } = useContext(EditorContext)
   const currentDragItem = useRecoilValue(dragItemState)
-  const recalculateRects = useRecalculateRects()
 
   const zoomRefPoint = useMemo(() => {
     const editorRect = editorContainerRef?.current?.getBoundingClientRect()
@@ -36,9 +34,8 @@ export const useZoom = (
         ...transformation,
         zoom: newZoom > MAX_ZOOM ? MAX_ZOOM : newZoom < MIN_ZOOM ? MIN_ZOOM : newZoom
       })
-      recalculateRects()
     },
-    [currentDragItem, transformation, recalculateRects]
+    [currentDragItem, transformation]
   )
 
   return { onWheel }
