@@ -1,6 +1,5 @@
 import { MutableRefObject, useContext } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
-import { useRecalculateRects } from ".."
 import { NodeState } from "@/types"
 import { EditorContext } from "../../context"
 import { dragItemState, newConnectionState, selectionZoneState, svgOffsetState } from "../../ducks/store"
@@ -20,7 +19,6 @@ export const useDragTransformations = ({
   const setNewConnectionState = useSetRecoilState(newConnectionState)
   const svgOffset = useRecoilValue(svgOffsetState)
   const selectionZone = useRecoilValue(selectionZoneState)
-  const recalculateRects = useRecalculateRects()
 
   const zoomRect = zoomContainerRef?.current?.getBoundingClientRect()
 
@@ -45,8 +43,6 @@ export const useDragTransformations = ({
         dx: transformation.dx + newPos.x,
         dy: transformation.dy + newPos.y
       })
-
-      recalculateRects()
     },
     [ItemType.node]: (e: React.MouseEvent<HTMLElement>) => {
       setNodes((nodes) =>
@@ -61,7 +57,7 @@ export const useDragTransformations = ({
                   x: el.position.x + (e.clientX - currentDragItem.x) / transformation.zoom,
                   y: el.position.y + (e.clientY - currentDragItem.y) / transformation.zoom
                 },
-                rectPosition: document.getElementById(el.id).getBoundingClientRect(),
+                rectPosition: document.getElementById(el.id)?.getBoundingClientRect(),
                 state: isShiftSelected ? NodeState.selected : NodeState.dragging
               }
             : { ...el, state: null }

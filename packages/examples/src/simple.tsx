@@ -1,6 +1,6 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
-import { Editor, Node, NodeProps, OnEditorRectsMountedProps, Transformation } from "@kseniass/react-flow-editor"
+import { Editor, Node, OnEditorRectsMountedProps, Transformation } from "@kseniass/react-flow-editor"
 import "./simple.scss"
 import { SelectionZone } from "./types"
 import { initialNodes, STYLED_CONFIG, TIPS } from "./constants"
@@ -30,7 +30,7 @@ const App = () => {
       </div>
       <div className="react-editor-container">
         <Editor
-          nodeRepresentation={(_: NodeProps) => <div>Node</div>}
+          NodeComponent={(_: Node) => <div>Node</div>}
           nodes={nodes}
           setNodes={setNodes}
           transformation={transformation}

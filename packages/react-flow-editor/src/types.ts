@@ -28,12 +28,6 @@ export type SelectionZone = {
   cornerEnd: Point
 }
 
-export type NodeProps = NodeBase & {
-  onSizeChanged: () => void
-}
-
-export type Node = NodeBase
-
 export enum NodeState {
   dragging = "dragging",
   draggingConnector = "draggingConnector",
@@ -47,7 +41,7 @@ export type Output = {
   nextNodeId: string | null
 }
 
-export type NodeBase = {
+export type Node = {
   id: string
   outputs: Output[]
   position: Point
@@ -83,7 +77,7 @@ export type StyleConfig = {
 
 export type EditorProps = {
   nodes: Node[]
-  nodeRepresentation: React.FC<NodeProps>
+  NodeComponent: React.FC<Node>
   setNodes: (action: SetStateAction<Node[]>) => void
   transformation: Transformation
   setTransformation: (transformation: Transformation) => void
