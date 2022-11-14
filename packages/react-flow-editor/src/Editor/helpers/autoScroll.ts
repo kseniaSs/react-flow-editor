@@ -4,15 +4,16 @@ import {
   AutoScrollAtom,
   NodesAtom,
   autoScrollActions,
-  NewConnectionAtom
+  NewConnectionAtom,
+  SelectionZoneAtom
 } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 import { MutableRefObject, useCallback, useContext, useEffect } from "react"
-import { useRecoilState, useRecoilValue } from "recoil"
+import { useRecoilValue } from "recoil"
 import { NodeState } from "../../types"
 import { DRAG_AUTO_SCROLL_DIST, DRAG_AUTO_SCROLL_TIME, DRAG_OFFSET_TRANSFORM } from "../constants"
 import { EditorContext } from "../context"
-import { dragItemState, selectionZoneState } from "../ducks/store"
+import { dragItemState } from "../ducks/store"
 import { Axis, ItemType } from "../types"
 import { isNodeInSelectionZone } from "./selectionZone"
 
@@ -64,7 +65,7 @@ const useCheckAutoScrollEnable = (editorContainerRef: MutableRefObject<HTMLEleme
 
 export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>) => {
   const newConnection = useStore(NewConnectionAtom)
-  const [selectionZone, setSelectionZone] = useRecoilState(selectionZoneState)
+  const selectionZone = useStore(SelectionZoneAtom)
   const nodes = useStore(NodesAtom)
   const currentDragItem = useRecoilValue(dragItemState)
   const autoScroll = useStore(AutoScrollAtom)
@@ -98,14 +99,14 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
         })
       }
 
-      if (currentDragItem.type === ItemType.selectionZone) {
-        setSelectionZone((zone) => ({
-          ...zone,
+      if (currentDragItem.type === ItemType.selectionZone && selectionZone !== null) {
+        SelectionZoneAtom.set({
+          ...selectionZone,
           cornerEnd: {
-            x: zone.cornerEnd.x + getSign(Axis.x, autoScroll) * delta,
-            y: zone.cornerEnd.y + getSign(Axis.y, autoScroll) * delta
+            x: selectionZone.cornerEnd.x + getSign(Axis.x, autoScroll) * delta,
+            y: selectionZone.cornerEnd.y + getSign(Axis.y, autoScroll) * delta
           }
-        }))
+        })
 
         NodesAtom.set(
           nodes.map((el) => ({
@@ -139,7 +140,7 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
     const scrollInterval = setInterval(scroll, DRAG_AUTO_SCROLL_TIME)
 
     return () => clearInterval(scrollInterval)
-  }, [autoScroll, currentDragItem, newConnection, nodes, transformation, selectionZone, setSelectionZone])
+  }, [autoScroll, currentDragItem, newConnection, nodes, transformation, selectionZone])
 
   return useCheckAutoScrollEnable(editorContainerRef)
 }

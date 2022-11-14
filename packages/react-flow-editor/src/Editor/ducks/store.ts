@@ -1,11 +1,5 @@
 import { atom } from "recoil"
-import { SelectionZone } from "../../types"
 import { SVGOffsetState, DragItemState } from "../types"
-
-export const selectionZoneState = atom<SelectionZone | null>({
-  key: "selectionZoneState",
-  default: null
-})
 
 export const svgOffsetState = atom<SVGOffsetState>({
   key: "svgOffsetState",

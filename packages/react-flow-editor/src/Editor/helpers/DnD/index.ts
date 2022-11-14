@@ -1,9 +1,9 @@
-import { autoScrollActions, nodeActions, NodesAtom } from "@/Editor/state"
+import { autoScrollActions, nodeActions, NodesAtom, SelectionZoneAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 import { MutableRefObject } from "react"
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 import { BUTTON_LEFT } from "../../constants"
-import { dragItemState, hoveredNodeIdState, selectionZoneState } from "../../ducks/store"
+import { dragItemState, hoveredNodeIdState } from "../../ducks/store"
 import { ItemType } from "../../types"
 import { useAutoScroll } from "../autoScroll"
 import { useSelectionZone } from "../selectionZone"
@@ -15,7 +15,6 @@ export const useDnD = (
 ) => {
   const nodes = useStore(NodesAtom)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
-  const setSelectionZone = useSetRecoilState(selectionZoneState)
   const hoveredNodeId = useRecoilValue(hoveredNodeIdState)
 
   const checkAutoScrollEnable = useAutoScroll(editorContainerRef)
@@ -89,7 +88,7 @@ export const useDnD = (
       }
     }
     setDragItem((dragItem) => ({ ...dragItem, type: undefined }))
-    setSelectionZone(null)
+    SelectionZoneAtom.set(null)
   }
 
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {

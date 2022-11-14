@@ -2,10 +2,10 @@ import { MutableRefObject, useContext } from "react"
 import { useRecoilValue } from "recoil"
 import { NodeState } from "@/types"
 import { EditorContext } from "../../context"
-import { dragItemState, selectionZoneState, svgOffsetState } from "../../ducks/store"
+import { dragItemState, svgOffsetState } from "../../ducks/store"
 import { ItemType } from "../../types"
 import { isNodeInSelectionZone } from "../selectionZone"
-import { NewConnectionAtom, NodesAtom } from "@/Editor/state"
+import { NewConnectionAtom, NodesAtom, SelectionZoneAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
 export const useDragTransformations = ({
@@ -20,7 +20,7 @@ export const useDragTransformations = ({
 
   const currentDragItem = useRecoilValue(dragItemState)
   const svgOffset = useRecoilValue(svgOffsetState)
-  const selectionZone = useRecoilValue(selectionZoneState)
+  const selectionZone = useStore(SelectionZoneAtom)
 
   const zoomRect = zoomContainerRef?.current?.getBoundingClientRect()
 
