@@ -1,4 +1,4 @@
-import { MutableRefObject, SetStateAction } from "react"
+import { MutableRefObject } from "react"
 
 export type Size = {
   width: number
@@ -78,7 +78,7 @@ export type StyleConfig = {
 export type EditorProps = {
   nodes: Node[]
   NodeComponent: React.FC<Node>
-  setNodes: (action: SetStateAction<Node[]>) => void
+  onNodesChange: (nodes: Node[]) => void
   transformation: Transformation
   setTransformation: (transformation: Transformation) => void
   onSelectionZoneChanged?: (value: RectZone) => void

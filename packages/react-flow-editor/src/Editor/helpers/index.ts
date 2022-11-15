@@ -1,4 +1,7 @@
 import { useContext, useEffect, useRef, useMemo, useState } from "react"
+import { NodesAtom } from "@/Editor/state"
+import { useStore } from "@nanostores/react"
+
 import { Transformation } from "../../types"
 import { DRAG_OFFSET_TRANSFORM, LARGEST_RECT } from "../constants"
 import { EditorContext } from "../context"
@@ -9,7 +12,8 @@ export const resetEvent = (e: React.MouseEvent<HTMLElement>) => {
 }
 
 export const useEditorMount = () => {
-  const { onEditorRectsMounted, nodes, transformation, setTransformation } = useContext(EditorContext)
+  const { onEditorRectsMounted, transformation, setTransformation } = useContext(EditorContext)
+  const nodes = useStore(NodesAtom)
   const [underOverview, setUnderOverview] = useState<boolean>(false)
 
   const zoomContainerRef = useRef<HTMLDivElement | null>(null)

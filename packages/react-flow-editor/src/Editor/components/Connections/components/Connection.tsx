@@ -1,10 +1,10 @@
 import React, { useContext } from "react"
-import { useRecoilValue } from "recoil"
 import { Node, Output } from "@/types"
 import { DEFAULT_POINT_SIZE } from "@/Editor/constants"
 import { EditorContext } from "@/Editor/context"
-import { dragItemState, svgOffsetState } from "@/Editor/ducks/store"
 import { ItemType } from "@/Editor/types"
+import { DragItemAtom, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
+import { useStore } from "@nanostores/react"
 
 import ArrowDisconnector from "./ArrowDisconnector"
 import InputConnection from "./InputConnection"
@@ -14,8 +14,10 @@ type ConnectionProps = {
 }
 
 export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ output, node }) => {
-  const { nodes, styleConfig } = useContext(EditorContext)
-  const svgOffset = useRecoilValue(svgOffsetState)
+  const { styleConfig } = useContext(EditorContext)
+  const nodes = useStore(NodesAtom)
+  const svgOffset = useStore(SvgOffsetAtom)
+
   const nextNode = nodes.find((node) => node.id === output.nextNodeId)
 
   if (!nextNode) return null
@@ -41,7 +43,7 @@ export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ outp
 }
 
 export const Connection: React.FC<ConnectionProps> = ({ node }) => {
-  const dragItem = useRecoilValue(dragItemState)
+  const dragItem = useStore(DragItemAtom)
 
   const filteredConnections = node.outputs.filter(
     (out) =>

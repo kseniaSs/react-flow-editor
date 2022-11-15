@@ -1,5 +1,3 @@
-import { Output, Point, Size } from "../types"
-
 export enum ItemType {
   node = "node",
   connection = "connection",
@@ -11,19 +9,6 @@ export enum Axis {
   x = "x",
   y = "y"
 }
-
-export enum AutoScrollDirection {
-  right = "right",
-  left = "left",
-  top = "top",
-  bottom = "bottom"
-}
-
-export type AutoScrollState = { speed: number; direction: AutoScrollDirection }
-
-export type SVGOffsetState = Point & Size
-
-export type DragItemState = { type?: ItemType; output?: Output; id?: string } & Point
 
 export type NodeGroupsRect = {
   leftPoint: number

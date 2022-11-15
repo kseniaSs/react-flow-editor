@@ -5,25 +5,19 @@ import { nodeStyle } from "./helpers"
 import { Point } from "./Point"
 import { useNodeInteractions } from "./useNodeInteractions"
 import { EditorContext } from "../../context"
+import { nodeActions } from "@/Editor/state"
 
 type NodeProps = {
   node: NodeType
 }
 
 export const Provider = ({ node }: NodeProps) => {
-  const { setNodes } = useContext(EditorContext)
-
   useEffect(() => {
     const nodeElement = document.getElementById(node.id)
 
-    if (nodeElement)
-      setNodes((nodes) =>
-        nodes.map((currentNode) =>
-          currentNode.id === node.id
-            ? { ...currentNode, rectPosition: nodeElement.getBoundingClientRect() }
-            : currentNode
-        )
-      )
+    if (nodeElement) {
+      nodeActions.changeNodeRectPos(node.id, nodeElement.getBoundingClientRect())
+    }
   }, [node.id])
 
   const nodeInteractions = useNodeInteractions(node)

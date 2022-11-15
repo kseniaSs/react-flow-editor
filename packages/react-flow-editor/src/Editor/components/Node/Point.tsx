@@ -1,13 +1,13 @@
 import { isEqual } from "lodash"
 import React, { useContext } from "react"
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { Node, NodeState, Output } from "@/types"
 import { BUTTON_LEFT } from "../../constants"
 import { EditorContext, RectsContext } from "../../context"
-import { dragItemState, newConnectionState, svgOffsetState } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 import { ItemType } from "../../types"
 import { buildDotId, pointStyle } from "./helpers"
+import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom } from "@/Editor/state"
+import { useStore } from "@nanostores/react"
 
 type PointProps = {
   node: Node
@@ -15,32 +15,26 @@ type PointProps = {
 }
 
 export const Point: React.FC<PointProps> = React.memo(({ node, output }) => {
-  const { setNodes, styleConfig, transformation } = useContext(EditorContext)
+  const { styleConfig, transformation } = useContext(EditorContext)
   const { zoomContainerRef } = useContext(RectsContext)
+  const svgOffset = useStore(SvgOffsetAtom)
 
-  const [dragItem, setDragItem] = useRecoilState(dragItemState)
-  const setNewConnectionState = useSetRecoilState(newConnectionState)
-  const svgOffset = useRecoilValue(svgOffsetState)
-  const zoomRect = zoomContainerRef?.current?.getBoundingClientRect()
+  const dragItem = useStore(DragItemAtom)
+  const zoomRect = zoomContainerRef?.current.getBoundingClientRect()
 
   const setNode = (e: React.MouseEvent<HTMLElement>) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
-      setNodes((nodes) =>
-        nodes.map((nodeItem) => ({
-          ...nodeItem,
-          state: nodeItem.id === node.id ? NodeState.draggingConnector : null
-        }))
-      )
+      nodeActions.changeNodeState(node.id, NodeState.draggingConnector)
 
       const pos = {
         x: -svgOffset.x + (e.clientX - zoomRect.left) / transformation.zoom,
         y: -svgOffset.y + (e.clientY - zoomRect.top) / transformation.zoom
       }
 
-      setNewConnectionState(pos)
+      NewConnectionAtom.set(pos)
 
-      setDragItem({
+      DragItemAtom.set({
         type: ItemType.connection,
         output,
         id: node.id,

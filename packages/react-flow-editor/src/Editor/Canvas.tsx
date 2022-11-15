@@ -1,18 +1,18 @@
 import React, { useContext } from "react"
-import { useRecoilValue } from "recoil"
+import { useStore } from "@nanostores/react"
 
-import { dragItemState } from "./ducks/store"
 import Background from "./components/Background/Background"
 import { TransformCanvasStyle, useEditorMount } from "./helpers"
-import { useDnD } from "./helpers/DnD"
+import useDnD from "./helpers/DnD"
 import { useZoom } from "./helpers/zoom"
 import { useHotKeys } from "./helpers/hotKeys"
 import { NodesContainer } from "./components/Node"
 import { EditorContext, RectsContext } from "./context"
+import { DragItemAtom } from "./state"
 
 export const Canvas: React.FC = () => {
   const { transformation } = useContext(EditorContext)
-  const currentDragItem = useRecoilValue(dragItemState)
+  const dragItem = useStore(DragItemAtom)
   const rects = useEditorMount()
   const { zoomContainerRef, editorContainerRef } = rects
   const { onDrag, onDragEnded, onDragStarted } = useDnD(editorContainerRef, zoomContainerRef)
@@ -22,9 +22,10 @@ export const Canvas: React.FC = () => {
 
   return (
     <RectsContext.Provider value={rects}>
+      {}
       <div
         onMouseUp={onDragEnded}
-        onMouseMove={currentDragItem.type && onDrag}
+        onMouseMove={dragItem.type && onDrag}
         onWheel={onWheel}
         onMouseDown={onDragStarted}
         ref={editorContainerRef}

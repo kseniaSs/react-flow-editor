@@ -1,10 +1,12 @@
+import { useStore } from "@nanostores/react"
 import { MutableRefObject, useCallback, useContext, useEffect } from "react"
-import { useRecoilState, useRecoilValue } from "recoil"
 import { Node, RectZone, SelectionZone, Transformation } from "../../types"
 import { EditorContext } from "../context"
-import { dragItemState, selectionZoneState } from "../ducks/store"
+import { DragItemAtom, SelectionZoneAtom } from "../state"
 
-export const isNodeInSelectionZone = (node: Node, zone: SelectionZone, transform: Transformation): boolean => {
+export const isNodeInSelectionZone = (node: Node, zone: SelectionZone | null, transform: Transformation): boolean => {
+  if (zone === null) return false
+
   const { left, top, right, bottom } = cornersToRect(zone)
 
   const isLeftOver = left < node.position.x + (node.rectPosition?.width || 0) / transform.zoom
@@ -31,9 +33,9 @@ export const cornersToRect = (zone: SelectionZone): RectZone =>
       }
 
 export const useSelectionZone = (zoomContainerRef: MutableRefObject<HTMLElement>) => {
-  const [selectionZone, setSelectionZone] = useRecoilState(selectionZoneState)
+  const selectionZone = useStore(SelectionZoneAtom)
   const { onSelectionZoneChanged, transformation } = useContext(EditorContext)
-  const currentDragItem = useRecoilValue(dragItemState)
+  const dragItem = useStore(DragItemAtom)
 
   useEffect(() => {
     onSelectionZoneChanged(cornersToRect(selectionZone))
@@ -47,7 +49,7 @@ export const useSelectionZone = (zoomContainerRef: MutableRefObject<HTMLElement>
         const top = (e.clientY - zoomContainerRect.top) / transformation.zoom
         const point = { x: left, y: top }
 
-        setSelectionZone({ cornerStart: point, cornerEnd: point })
+        SelectionZoneAtom.set({ cornerStart: point, cornerEnd: point })
       }
     },
     [transformation.zoom, zoomContainerRef]
@@ -55,20 +57,20 @@ export const useSelectionZone = (zoomContainerRef: MutableRefObject<HTMLElement>
 
   const expandSelectionZone = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
-      setSelectionZone((zone) => {
-        const deltaX = (e.clientX - currentDragItem.x) / transformation.zoom
-        const deltaY = (e.clientY - currentDragItem.y) / transformation.zoom
+      if (selectionZone) {
+        const deltaX = (e.clientX - dragItem.x) / transformation.zoom
+        const deltaY = (e.clientY - dragItem.y) / transformation.zoom
 
-        return {
-          ...zone,
+        SelectionZoneAtom.set({
+          ...selectionZone,
           cornerEnd: {
-            x: zone.cornerEnd.x + deltaX,
-            y: zone.cornerEnd.y + deltaY
+            x: selectionZone.cornerEnd.x + deltaX,
+            y: selectionZone.cornerEnd.y + deltaY
           }
-        }
-      })
+        })
+      }
     },
-    [currentDragItem, transformation.zoom, setSelectionZone]
+    [dragItem, transformation.zoom]
   )
 
   return { initSelectionZone, expandSelectionZone }

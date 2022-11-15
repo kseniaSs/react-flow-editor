@@ -1,10 +1,10 @@
 import React, { useCallback, useContext } from "react"
-import { useRecoilValue, useSetRecoilState } from "recoil"
 import { NodeState, Output, Point } from "@/types"
 import { ItemType } from "@/Editor/types"
 import { EditorContext, RectsContext } from "@/Editor/context"
-import { dragItemState, newConnectionState, svgOffsetState } from "@/Editor/ducks/store"
 import { disconnectorStyle } from "../helpers"
+import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom } from "@/Editor/state"
+import { useStore } from "@nanostores/react"
 
 type DisconnectorProps = {
   position: Point
@@ -14,17 +14,14 @@ type DisconnectorProps = {
 
 const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, output }) => {
   const { zoomContainerRef } = useContext(RectsContext)
-  const { transformation, setNodes } = useContext(EditorContext)
-  const svgOffset = useRecoilValue(svgOffsetState)
-  const setNewConnectionState = useSetRecoilState(newConnectionState)
-
-  const setDragItem = useSetRecoilState(dragItemState)
+  const { transformation } = useContext(EditorContext)
+  const svgOffset = useStore(SvgOffsetAtom)
 
   const onMouseDown = useCallback(
     (e) => {
       e.stopPropagation()
 
-      setDragItem({
+      DragItemAtom.set({
         type: ItemType.connection,
         id: fromId,
         output,
@@ -32,23 +29,20 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, outp
         y: e.clientY
       })
 
-      const zoomRect = zoomContainerRef.current?.getBoundingClientRect()
+      const zoomRect = zoomContainerRef?.current.getBoundingClientRect()
+
+      if (!zoomRect) return
 
       const newPos = {
         x: (e.clientX - zoomRect.left) / transformation.zoom - svgOffset.x,
         y: (e.clientY - zoomRect.top) / transformation.zoom - svgOffset.y
       }
 
-      setNewConnectionState(newPos)
+      NewConnectionAtom.set(newPos)
 
-      setNodes((nodes) =>
-        nodes.map((node) => ({
-          ...node,
-          state: node.id === fromId ? NodeState.draggingConnector : null
-        }))
-      )
+      nodeActions.changeNodeState(fromId, NodeState.draggingConnector)
     },
-    [transformation, zoomContainerRef, svgOffset, setNodes]
+    [transformation, zoomContainerRef, svgOffset]
   )
 
   return <rect onMouseDown={onMouseDown} className="disconnector" style={disconnectorStyle(position)} />

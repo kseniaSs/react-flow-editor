@@ -20,7 +20,7 @@ const App = () => {
       <div className="header">Flow Editor</div>
       <div className="selection-zone" style={selectionZonePosition} />
       <div className="flow-menu">
-        <div className="button" onClick={() => setNodes((nodes) => [...nodes, nodeFactory()])}>
+        <div className="button" onClick={() => setNodes(nodes.concat([nodeFactory()]))}>
           Create new Node
         </div>
         <div className="button" onClick={() => editorRefs?.overview()}>
@@ -32,7 +32,7 @@ const App = () => {
         <Editor
           NodeComponent={(_: Node) => <div>Node</div>}
           nodes={nodes}
-          setNodes={setNodes}
+          onNodesChange={setNodes}
           transformation={transformation}
           setTransformation={setTransformation}
           onSelectionZoneChanged={setSelectionZone}
