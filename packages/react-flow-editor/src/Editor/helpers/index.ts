@@ -1,8 +1,7 @@
 import { useContext, useEffect, useRef, useMemo, useState } from "react"
-import { NodesAtom } from "@/Editor/state"
+import { NodesAtom, Transformation, TransformationAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
-import { Transformation } from "../../types"
 import { DRAG_OFFSET_TRANSFORM, LARGEST_RECT } from "../constants"
 import { EditorContext } from "../context"
 
@@ -11,18 +10,22 @@ export const resetEvent = (e: React.MouseEvent<HTMLElement>) => {
   e.preventDefault()
 }
 
-export const useEditorMount = () => {
-  const { onEditorRectsMounted, transformation, setTransformation } = useContext(EditorContext)
+export const useEditorMount = ({
+  zoomContainerRef,
+  editorContainerRef
+}: {
+  zoomContainerRef: React.RefObject<HTMLDivElement>
+  editorContainerRef: React.RefObject<HTMLDivElement>
+}) => {
+  const { onEditorRectsMounted } = useContext(EditorContext)
   const nodes = useStore(NodesAtom)
+  const transformation = useStore(TransformationAtom)
   const [underOverview, setUnderOverview] = useState<boolean>(false)
-
-  const zoomContainerRef = useRef<HTMLDivElement | null>(null)
-  const editorContainerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (underOverview) {
       if (nodes.length) {
-        const editorRect = editorContainerRef?.current?.getBoundingClientRect()
+        const editorRect = editorContainerRef.current?.getBoundingClientRect()
 
         const dimensionsRect = nodes.reduce(
           (acc, node) => {
@@ -52,7 +55,7 @@ export const useEditorMount = () => {
 
         zoomContainerRef.current.style.transformOrigin = `${dx}px ${dy}px`
 
-        setTransformation({
+        TransformationAtom.set({
           dx,
           dy,
           zoom: newZoomCorrected
@@ -66,11 +69,6 @@ export const useEditorMount = () => {
   useEffect(() => {
     onEditorRectsMounted({ zoomContainerRef, editorContainerRef, overview: () => setUnderOverview(true) })
   }, [])
-
-  return useMemo(
-    () => ({ zoomContainerRef, editorContainerRef }),
-    [zoomContainerRef.current, editorContainerRef.current]
-  )
 }
 
 export const TransformCanvasStyle = (transformation: Transformation) => ({

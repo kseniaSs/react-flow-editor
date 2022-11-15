@@ -6,13 +6,13 @@ import {
   autoScrollActions,
   NewConnectionAtom,
   SelectionZoneAtom,
-  DragItemAtom
+  DragItemAtom,
+  TransformationAtom
 } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
-import { MutableRefObject, useCallback, useContext, useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { NodeState } from "../../types"
 import { DRAG_AUTO_SCROLL_DIST, DRAG_AUTO_SCROLL_TIME, DRAG_OFFSET_TRANSFORM } from "../constants"
-import { EditorContext } from "../context"
 import { Axis, ItemType } from "../types"
 import { isNodeInSelectionZone } from "./selectionZone"
 
@@ -26,7 +26,7 @@ export const getSign = (axis: Axis, autoScroll: AutoScrollState): -1 | 0 | 1 => 
   return 0
 }
 
-const useCheckAutoScrollEnable = (editorContainerRef: MutableRefObject<HTMLElement>) => {
+const useCheckAutoScrollEnable = (editorContainerRef: React.RefObject<HTMLDivElement>) => {
   const autoScroll = useStore(AutoScrollAtom)
 
   return useCallback(
@@ -62,14 +62,13 @@ const useCheckAutoScrollEnable = (editorContainerRef: MutableRefObject<HTMLEleme
   )
 }
 
-export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>) => {
+export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement>) => {
   const newConnection = useStore(NewConnectionAtom)
   const selectionZone = useStore(SelectionZoneAtom)
   const nodes = useStore(NodesAtom)
   const dragItem = useStore(DragItemAtom)
   const autoScroll = useStore(AutoScrollAtom)
-
-  const { transformation, setTransformation } = useContext(EditorContext)
+  const transformation = useStore(TransformationAtom)
 
   useEffect(() => {
     if (!autoScroll.direction) return
@@ -81,7 +80,7 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
         const dx = transformation.dx - getSign(Axis.x, autoScroll) * delta
         const dy = transformation.dy - getSign(Axis.y, autoScroll) * delta
 
-        setTransformation({
+        TransformationAtom.set({
           ...transformation,
           dx,
           dy

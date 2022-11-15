@@ -1,15 +1,17 @@
 import { useStore } from "@nanostores/react"
-import { useContext, useCallback, MutableRefObject, useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from "../constants"
-import { EditorContext } from "../context"
-import { DragItemAtom } from "../state"
+import { DragItemAtom, TransformationAtom } from "../state"
 
-export const useZoom = (
-  zoomContainerRef?: MutableRefObject<HTMLDivElement>,
-  editorContainerRef?: MutableRefObject<HTMLElement>
-) => {
-  const { transformation, setTransformation } = useContext(EditorContext)
+export const useZoom = ({
+  zoomContainerRef,
+  editorContainerRef
+}: {
+  zoomContainerRef: React.RefObject<HTMLDivElement>
+  editorContainerRef: React.RefObject<HTMLDivElement>
+}) => {
   const currentDragItem = useStore(DragItemAtom)
+  const transformation = useStore(TransformationAtom)
 
   const zoomRefPoint = useMemo(() => {
     const editorRect = editorContainerRef?.current?.getBoundingClientRect()
@@ -30,7 +32,7 @@ export const useZoom = (
       const zoomFactor = Math.pow(ZOOM_STEP, Math.sign(event.deltaY))
       const newZoom = transformation.zoom * zoomFactor
 
-      setTransformation({
+      TransformationAtom.set({
         ...transformation,
         zoom: newZoom > MAX_ZOOM ? MAX_ZOOM : newZoom < MIN_ZOOM ? MIN_ZOOM : newZoom
       })

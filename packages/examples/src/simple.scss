@@ -64,12 +64,11 @@ body {
 }
 
 .selection-zone {
-  position: fixed;
   border: 1px solid $border-color;
   background: $menu-background-color;
   opacity: 0.8;
-  z-index: 1;
-  pointer-events: none;
+  width: 100%;
+  height: 100%;
 }
 
 .header {

@@ -7,14 +7,19 @@ import {
   SelectionZoneAtom
 } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
-import { MutableRefObject } from "react"
 import { BUTTON_LEFT } from "../../constants"
 import { ItemType } from "../../types"
 import { useAutoScroll } from "../autoScroll"
 import { useSelectionZone } from "../selectionZone"
 import { useDragTransformations } from "./useDragTransformations"
 
-export default (editorContainerRef: MutableRefObject<HTMLElement>, zoomContainerRef: MutableRefObject<HTMLElement>) => {
+export default ({
+  zoomContainerRef,
+  editorContainerRef
+}: {
+  zoomContainerRef: React.RefObject<HTMLDivElement>
+  editorContainerRef: React.RefObject<HTMLDivElement>
+}) => {
   const nodes = useStore(NodesAtom)
   const hoveredNodeId = useStore(HoveredNodeIdAtom)
   const dragItem = useStore(DragItemAtom)
@@ -25,7 +30,7 @@ export default (editorContainerRef: MutableRefObject<HTMLElement>, zoomContainer
   const dragTranformations = useDragTransformations({ expandSelectionZone, zoomContainerRef })
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
-    dragTranformations[dragItem.type!](e)
+    dragTranformations![dragItem.type!](e)
 
     if ([ItemType.node, ItemType.connection, ItemType.selectionZone].includes(dragItem.type!)) {
       checkAutoScrollEnable(e)
