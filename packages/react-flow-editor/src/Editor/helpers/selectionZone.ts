@@ -1,8 +1,7 @@
 import { useStore } from "@nanostores/react"
-import { MutableRefObject, useCallback, useContext, useEffect } from "react"
-import { Node, RectZone, SelectionZone, Transformation } from "../../types"
-import { EditorContext } from "../context"
-import { DragItemAtom, SelectionZoneAtom } from "../state"
+import { RefObject, useCallback } from "react"
+import { Node, RectZone, SelectionZone } from "../../types"
+import { DragItemAtom, SelectionZoneAtom, Transformation, TransformationAtom } from "../state"
 
 export const isNodeInSelectionZone = (node: Node, zone: SelectionZone | null, transform: Transformation): boolean => {
   if (zone === null) return false
@@ -17,7 +16,7 @@ export const isNodeInSelectionZone = (node: Node, zone: SelectionZone | null, tr
   return isLeftOver && isRightOver && isTopOver && isBottomOver
 }
 
-export const cornersToRect = (zone: SelectionZone): RectZone =>
+export const cornersToRect = (zone: SelectionZone | null): RectZone =>
   zone
     ? {
         left: Math.min(zone.cornerStart.x, zone.cornerEnd.x),
@@ -32,14 +31,10 @@ export const cornersToRect = (zone: SelectionZone): RectZone =>
         bottom: 0
       }
 
-export const useSelectionZone = (zoomContainerRef: MutableRefObject<HTMLElement>) => {
+export const useSelectionZone = (zoomContainerRef: RefObject<HTMLElement>) => {
   const selectionZone = useStore(SelectionZoneAtom)
-  const { onSelectionZoneChanged, transformation } = useContext(EditorContext)
+  const transformation = useStore(TransformationAtom)
   const dragItem = useStore(DragItemAtom)
-
-  useEffect(() => {
-    onSelectionZoneChanged(cornersToRect(selectionZone))
-  }, [selectionZone])
 
   const initSelectionZone = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {

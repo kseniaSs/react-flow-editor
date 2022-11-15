@@ -1,6 +1,5 @@
 import { createContext } from "react"
-import { EditorProps } from "@/types"
 import { MountedContexts } from "./types"
 
-export const EditorContext = createContext<EditorProps>({} as EditorProps)
+export const EditorContext = createContext<any>({} as any)
 export const RectsContext = createContext<Partial<MountedContexts>>({})

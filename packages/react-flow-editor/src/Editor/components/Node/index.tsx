@@ -1,15 +1,14 @@
-import React, { useEffect, useContext } from "react"
-import { NodesAtom } from "@/Editor/state"
+import React, { useEffect } from "react"
+import { NodesAtom, TransformationAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
 import { Container as ConnectionContainer } from "../../components/Connections"
 import Node from "./node"
 import { isEqual } from "lodash"
-import { EditorContext } from "../../context"
 
 export const NodesContainer: React.FC = React.memo(() => {
   const nodes = useStore(NodesAtom)
-  const { transformation } = useContext(EditorContext)
+  const transformation = useStore(TransformationAtom)
 
   useEffect(() => {
     if (!nodes.length) return

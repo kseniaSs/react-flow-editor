@@ -20,6 +20,6 @@ export type NodeGroupsRect = {
 }
 
 export type MountedContexts = {
-  zoomContainerRef: React.MutableRefObject<HTMLDivElement>
-  editorContainerRef: React.MutableRefObject<HTMLDivElement>
+  zoomContainerRef: React.RefObject<HTMLDivElement>
+  editorContainerRef: React.RefObject<HTMLDivElement>
 }

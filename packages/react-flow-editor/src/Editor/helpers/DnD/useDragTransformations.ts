@@ -1,19 +1,24 @@
-import { MutableRefObject, useContext } from "react"
 import { NodeState } from "@/types"
-import { EditorContext } from "../../context"
 import { ItemType } from "../../types"
 import { isNodeInSelectionZone } from "../selectionZone"
-import { DragItemAtom, NewConnectionAtom, NodesAtom, SelectionZoneAtom, SvgOffsetAtom } from "@/Editor/state"
+import {
+  DragItemAtom,
+  NewConnectionAtom,
+  NodesAtom,
+  SelectionZoneAtom,
+  SvgOffsetAtom,
+  TransformationAtom
+} from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
 export const useDragTransformations = ({
   expandSelectionZone,
   zoomContainerRef
 }: {
-  expandSelectionZone: (e: React.MouseEvent) => void
-  zoomContainerRef: MutableRefObject<HTMLElement>
+  expandSelectionZone: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
+  zoomContainerRef: React.RefObject<HTMLDivElement>
 }) => {
-  const { transformation, setTransformation } = useContext(EditorContext)
+  const transformation = useStore(TransformationAtom)
   const nodes = useStore(NodesAtom)
   const svgOffset = useStore(SvgOffsetAtom)
   const selectionZone = useStore(SelectionZoneAtom)
@@ -37,7 +42,7 @@ export const useDragTransformations = ({
         y: (e.clientY - dragItem.y) / transformation.zoom
       }
 
-      setTransformation({
+      TransformationAtom.set({
         ...transformation,
         dx: transformation.dx + newPos.x,
         dy: transformation.dy + newPos.y

@@ -17,12 +17,6 @@ export type RectZone = {
   bottom: number
 }
 
-export type Transformation = {
-  dx: number
-  dy: number
-  zoom: number
-}
-
 export type SelectionZone = {
   cornerStart: Point
   cornerEnd: Point
@@ -78,9 +72,8 @@ export type StyleConfig = {
 export type EditorProps = {
   nodes: Node[]
   NodeComponent: React.FC<Node>
+  SelectionZoneComponent?: React.FC
   onNodesChange: (nodes: Node[]) => void
-  transformation: Transformation
-  setTransformation: (transformation: Transformation) => void
   onSelectionZoneChanged?: (value: RectZone) => void
   onEditorRectsMounted?: (value: OnEditorRectsMountedProps) => void
   importantNodeIds?: Array<string>
