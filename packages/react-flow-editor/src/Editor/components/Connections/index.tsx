@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react"
-import { NodesAtom, SvgOffsetAtom, TransformationAtom } from "@/Editor/state"
+import { NodesAtom, SvgOffsetAtom, TransformationMap } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
 import { Connection } from "./components/Connection"
@@ -11,7 +11,7 @@ import { EditorContext } from "../../context"
 export const Container: React.FC = () => {
   const { styleConfig } = useContext(EditorContext)
   const nodes = useStore(NodesAtom)
-  const transformation = useStore(TransformationAtom)
+  const transformation = useStore(TransformationMap)
 
   const nodesRect = computeNodeGroupsRect(nodes, transformation)
 

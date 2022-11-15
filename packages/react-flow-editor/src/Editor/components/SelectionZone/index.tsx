@@ -1,6 +1,6 @@
 import React, { FC, MutableRefObject } from "react"
 import { cornersToRect } from "@/Editor/helpers/selectionZone"
-import { SelectionZoneAtom, Transformation, TransformationAtom } from "@/Editor/state"
+import { SelectionZoneAtom, Transformation, TransformationMap } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
 export type SelectionZone = {
@@ -35,7 +35,7 @@ type Props = {
 }
 
 export const SelectionZone: FC<Props> = ({ zoomContainerRef, children }) => {
-  const transformation = useStore(TransformationAtom)
+  const transformation = useStore(TransformationMap)
   const selectionZoneRect = cornersToRect(useStore(SelectionZoneAtom))
 
   const selectionZonePosition = computeSelectionZone(zoomContainerRef, transformation, selectionZoneRect)

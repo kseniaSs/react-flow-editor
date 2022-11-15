@@ -1,4 +1,4 @@
-import { atom } from "nanostores"
+import { map } from "nanostores"
 
 export type Transformation = {
   dx: number
@@ -6,7 +6,7 @@ export type Transformation = {
   zoom: number
 }
 
-export const TransformationAtom = atom<Transformation>({
+export const TransformationMap = map<Transformation>({
   dx: 0,
   dy: 0,
   zoom: 1

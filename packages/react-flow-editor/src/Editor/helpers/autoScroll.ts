@@ -7,7 +7,7 @@ import {
   NewConnectionAtom,
   SelectionZoneAtom,
   DragItemAtom,
-  TransformationAtom
+  TransformationMap
 } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 import { useCallback, useEffect } from "react"
@@ -68,7 +68,7 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
   const nodes = useStore(NodesAtom)
   const dragItem = useStore(DragItemAtom)
   const autoScroll = useStore(AutoScrollAtom)
-  const transformation = useStore(TransformationAtom)
+  const transformation = useStore(TransformationMap)
 
   useEffect(() => {
     if (!autoScroll.direction) return
@@ -80,7 +80,7 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
         const dx = transformation.dx - getSign(Axis.x, autoScroll) * delta
         const dy = transformation.dy - getSign(Axis.y, autoScroll) * delta
 
-        TransformationAtom.set({
+        TransformationMap.set({
           ...transformation,
           dx,
           dy

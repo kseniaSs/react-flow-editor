@@ -1,30 +1,32 @@
 import React, { useRef } from "react"
 import { useStore } from "@nanostores/react"
 
+import { ScaleComponentProps } from "@/types"
 import Background from "./components/Background/Background"
-import { TransformCanvasStyle, useEditorMount } from "./helpers"
+import { transformCanvasStyle } from "./helpers"
 import useDnD from "./helpers/DnD"
 import { useZoom } from "./helpers/zoom"
 import { useHotKeys } from "./helpers/hotKeys"
 import { NodesContainer } from "./components/Node"
 import { RectsContext } from "./context"
-import { DragItemAtom, TransformationAtom } from "./state"
+import { DragItemAtom, TransformationMap } from "./state"
 import { SelectionZone } from "./components/SelectionZone"
+import { Scale } from "./components/Scale"
 
 type Props = {
   SelectionZoneComponent?: React.FC
+  ScaleComponent?: React.FC<ScaleComponentProps>
 }
 
-export const Canvas: React.FC<Props> = ({ SelectionZoneComponent }) => {
+export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent }) => {
   const zoomContainerRef = useRef<HTMLDivElement>(null)
   const editorContainerRef = useRef<HTMLDivElement>(null)
 
   const dragItem = useStore(DragItemAtom)
-  const transformation = useStore(TransformationAtom)
+  const transformation = useStore(TransformationMap)
 
   const { onDrag, onDragEnded, onDragStarted } = useDnD({ editorContainerRef, zoomContainerRef })
   const { onWheel } = useZoom({ zoomContainerRef, editorContainerRef })
-  useEditorMount({ zoomContainerRef, editorContainerRef })
 
   useHotKeys()
 
@@ -38,7 +40,7 @@ export const Canvas: React.FC<Props> = ({ SelectionZoneComponent }) => {
         ref={editorContainerRef}
         className="react-flow-editor"
       >
-        <div ref={zoomContainerRef} className="zoom-container" style={TransformCanvasStyle(transformation)}>
+        <div ref={zoomContainerRef} className="zoom-container" style={transformCanvasStyle(transformation)}>
           <NodesContainer />
         </div>
         <Background />
@@ -47,6 +49,8 @@ export const Canvas: React.FC<Props> = ({ SelectionZoneComponent }) => {
             <SelectionZoneComponent />
           </SelectionZone>
         )}
+
+        {ScaleComponent && <Scale ScaleComponent={ScaleComponent} />}
       </div>
     </RectsContext.Provider>
   )

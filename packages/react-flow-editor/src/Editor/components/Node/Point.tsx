@@ -6,7 +6,7 @@ import { EditorContext, RectsContext } from "../../context"
 import { resetEvent } from "../../helpers"
 import { ItemType } from "../../types"
 import { buildDotId, pointStyle } from "./helpers"
-import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom, TransformationAtom } from "@/Editor/state"
+import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom, TransformationMap } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
 type PointProps = {
@@ -18,7 +18,7 @@ export const Point: React.FC<PointProps> = React.memo(({ node, output }) => {
   const { styleConfig } = useContext(EditorContext)
   const { zoomContainerRef } = useContext(RectsContext)
   const svgOffset = useStore(SvgOffsetAtom)
-  const transformation = useStore(TransformationAtom)
+  const transformation = useStore(TransformationMap)
 
   const dragItem = useStore(DragItemAtom)
   const zoomRect = zoomContainerRef?.current.getBoundingClientRect()

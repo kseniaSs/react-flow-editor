@@ -131,3 +131,22 @@ body {
     cursor: pointer;
   }
 }
+
+.scale {
+  position: fixed;
+  right: 15px;
+  top: 70px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 21px;
+}
+
+.scale-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid gray;
+  padding: 4px;
+  border-radius: 4px;
+}
