@@ -1,4 +1,4 @@
-import { Output, Point, Size } from "../types"
+import { Output, Point } from "../types"
 
 export enum ItemType {
   node = "node",
@@ -11,8 +11,6 @@ export enum Axis {
   x = "x",
   y = "y"
 }
-
-export type SVGOffsetState = Point & Size
 
 export type DragItemState = { type?: ItemType; output?: Output; id?: string } & Point
 

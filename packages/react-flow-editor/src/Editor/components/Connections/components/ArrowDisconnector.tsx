@@ -1,11 +1,12 @@
 import React, { useCallback, useContext } from "react"
-import { useRecoilValue, useSetRecoilState } from "recoil"
+import { useSetRecoilState } from "recoil"
 import { NodeState, Output, Point } from "@/types"
 import { ItemType } from "@/Editor/types"
 import { EditorContext, RectsContext } from "@/Editor/context"
-import { dragItemState, svgOffsetState } from "@/Editor/ducks/store"
+import { dragItemState } from "@/Editor/ducks/store"
 import { disconnectorStyle } from "../helpers"
-import { NewConnectionAtom, nodeActions } from "@/Editor/state"
+import { NewConnectionAtom, nodeActions, SvgOffsetAtom } from "@/Editor/state"
+import { useStore } from "@nanostores/react"
 
 type DisconnectorProps = {
   position: Point
@@ -16,7 +17,7 @@ type DisconnectorProps = {
 const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, output }) => {
   const { zoomContainerRef } = useContext(RectsContext)
   const { transformation } = useContext(EditorContext)
-  const svgOffset = useRecoilValue(svgOffsetState)
+  const svgOffset = useStore(SvgOffsetAtom)
 
   const setDragItem = useSetRecoilState(dragItemState)
 

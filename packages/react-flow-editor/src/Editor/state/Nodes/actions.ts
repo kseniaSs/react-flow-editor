@@ -3,14 +3,7 @@ import { action } from "nanostores"
 import { NodesAtom } from "./store"
 
 export const changeNodeState = action(NodesAtom, "changeNodeState", (store, nodeId: string, nodeState: NodeState) => {
-  store.set(
-    store.get().map((node) => ({
-      ...node,
-      // state: node.id === nodeId ? nodeState : null
-      // May be try this?
-      state: node.id === nodeId ? nodeState : node.state
-    }))
-  )
+  store.set(store.get().map((node) => (node.id === nodeId ? { ...node, nodeState } : node)))
 })
 
 export const changeNodeRectPos = action(

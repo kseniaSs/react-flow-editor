@@ -2,9 +2,9 @@ import React, { useContext } from "react"
 import { useRecoilValue } from "recoil"
 import { DEFAULT_POINT_SIZE } from "@/Editor/constants"
 import { EditorContext } from "@/Editor/context"
-import { dragItemState, svgOffsetState } from "@/Editor/ducks/store"
+import { dragItemState } from "@/Editor/ducks/store"
 import { ItemType } from "@/Editor/types"
-import { NewConnectionAtom, NodesAtom } from "@/Editor/state"
+import { NewConnectionAtom, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
 import InputConnection from "./InputConnection"
@@ -14,7 +14,7 @@ export const NewConnection: React.FC = () => {
   const nodes = useStore(NodesAtom)
   const newConnectionPosition = useStore(NewConnectionAtom)
 
-  const svgOffset = useRecoilValue(svgOffsetState)
+  const svgOffset = useStore(SvgOffsetAtom)
   const dragItem = useRecoilValue(dragItemState)
 
   const outputNode = nodes.find((node) => node.id === dragItem?.id)

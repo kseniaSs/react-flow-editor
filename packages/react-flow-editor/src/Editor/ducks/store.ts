@@ -1,10 +1,5 @@
 import { atom } from "recoil"
-import { SVGOffsetState, DragItemState } from "../types"
-
-export const svgOffsetState = atom<SVGOffsetState>({
-  key: "svgOffsetState",
-  default: { x: 0, y: 0, width: 0, height: 0 }
-})
+import { DragItemState } from "../types"
 
 export const hoveredNodeIdState = atom<null | string>({
   key: "hoveredNodeId",
