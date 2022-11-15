@@ -11,8 +11,8 @@ import { StoreUpdater } from "./StoreUpdater"
 const Editor: React.FC<EditorProps> = ({
   nodes,
   NodeComponent,
+  ScaleComponent,
   SelectionZoneComponent,
-  onEditorRectsMounted,
   importantNodeIds,
   onNodesChange,
   styleConfig
@@ -20,13 +20,11 @@ const Editor: React.FC<EditorProps> = ({
   <EditorContext.Provider
     value={{
       NodeComponent,
-      onNodesChange,
-      onEditorRectsMounted,
       importantNodeIds,
       styleConfig
     }}
   >
-    <Canvas SelectionZoneComponent={SelectionZoneComponent} />
+    <Canvas SelectionZoneComponent={SelectionZoneComponent} ScaleComponent={ScaleComponent} />
     <StoreUpdater nodes={nodes} onNodesChange={onNodesChange} />
   </EditorContext.Provider>
 )

@@ -69,13 +69,18 @@ export type StyleConfig = {
   connector?: ConnectorStyleConfig
 }
 
+export type ScaleComponentProps = {
+  zoomIn: () => void
+  zoomOut: () => void
+  overview: () => void
+}
+
 export type EditorProps = {
   nodes: Node[]
   NodeComponent: React.FC<Node>
   SelectionZoneComponent?: React.FC
+  ScaleComponent?: React.FC<ScaleComponentProps>
   onNodesChange: (nodes: Node[]) => void
-  onSelectionZoneChanged?: (value: RectZone) => void
-  onEditorRectsMounted?: (value: OnEditorRectsMountedProps) => void
   importantNodeIds?: Array<string>
   styleConfig?: StyleConfig
 }

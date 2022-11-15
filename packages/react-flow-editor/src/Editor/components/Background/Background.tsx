@@ -1,4 +1,4 @@
-import { TransformationAtom } from "@/Editor/state"
+import { TransformationMap } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 import React, { FC } from "react"
 import { BackgroundProps, BackgroundVariant } from "./types"
@@ -11,7 +11,7 @@ const defaultColors = {
 }
 
 const Background: FC<BackgroundProps> = ({ variant = BackgroundVariant.Dots, gap = 15, size = 0.4, color }) => {
-  const transformation = useStore(TransformationAtom)
+  const transformation = useStore(TransformationMap)
 
   const scaledGap = gap * transformation.zoom || 1
   const xOffset = transformation.dx % scaledGap

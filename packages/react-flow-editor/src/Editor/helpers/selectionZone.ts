@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/react"
 import { RefObject, useCallback } from "react"
 import { Node, RectZone, SelectionZone } from "../../types"
-import { DragItemAtom, SelectionZoneAtom, Transformation, TransformationAtom } from "../state"
+import { DragItemAtom, SelectionZoneAtom, Transformation, TransformationMap } from "../state"
 
 export const isNodeInSelectionZone = (node: Node, zone: SelectionZone | null, transform: Transformation): boolean => {
   if (zone === null) return false
@@ -33,7 +33,7 @@ export const cornersToRect = (zone: SelectionZone | null): RectZone =>
 
 export const useSelectionZone = (zoomContainerRef: RefObject<HTMLElement>) => {
   const selectionZone = useStore(SelectionZoneAtom)
-  const transformation = useStore(TransformationAtom)
+  const transformation = useStore(TransformationMap)
   const dragItem = useStore(DragItemAtom)
 
   const initSelectionZone = useCallback(

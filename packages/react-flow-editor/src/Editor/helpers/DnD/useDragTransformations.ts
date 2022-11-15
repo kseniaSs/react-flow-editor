@@ -7,7 +7,7 @@ import {
   NodesAtom,
   SelectionZoneAtom,
   SvgOffsetAtom,
-  TransformationAtom
+  TransformationMap
 } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
@@ -18,7 +18,7 @@ export const useDragTransformations = ({
   expandSelectionZone: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
   zoomContainerRef: React.RefObject<HTMLDivElement>
 }) => {
-  const transformation = useStore(TransformationAtom)
+  const transformation = useStore(TransformationMap)
   const nodes = useStore(NodesAtom)
   const svgOffset = useStore(SvgOffsetAtom)
   const selectionZone = useStore(SelectionZoneAtom)
@@ -42,7 +42,7 @@ export const useDragTransformations = ({
         y: (e.clientY - dragItem.y) / transformation.zoom
       }
 
-      TransformationAtom.set({
+      TransformationMap.set({
         ...transformation,
         dx: transformation.dx + newPos.x,
         dy: transformation.dy + newPos.y
