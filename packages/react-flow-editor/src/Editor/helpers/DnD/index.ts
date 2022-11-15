@@ -1,21 +1,18 @@
-import { autoScrollActions, nodeActions, NodesAtom, SelectionZoneAtom } from "@/Editor/state"
+import { autoScrollActions, HoveredNodeIdAtom, nodeActions, NodesAtom, SelectionZoneAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 import { MutableRefObject } from "react"
-import { useRecoilState, useRecoilValue } from "recoil"
+import { useRecoilState } from "recoil"
 import { BUTTON_LEFT } from "../../constants"
-import { dragItemState, hoveredNodeIdState } from "../../ducks/store"
+import { dragItemState } from "../../ducks/store"
 import { ItemType } from "../../types"
 import { useAutoScroll } from "../autoScroll"
 import { useSelectionZone } from "../selectionZone"
 import { useDragTransformations } from "./useDragTransformations"
 
-export const useDnD = (
-  editorContainerRef: MutableRefObject<HTMLElement>,
-  zoomContainerRef: MutableRefObject<HTMLElement>
-) => {
+export default (editorContainerRef: MutableRefObject<HTMLElement>, zoomContainerRef: MutableRefObject<HTMLElement>) => {
   const nodes = useStore(NodesAtom)
+  const hoveredNodeId = useStore(HoveredNodeIdAtom)
   const [currentDragItem, setDragItem] = useRecoilState(dragItemState)
-  const hoveredNodeId = useRecoilValue(hoveredNodeIdState)
 
   const checkAutoScrollEnable = useAutoScroll(editorContainerRef)
   const { initSelectionZone, expandSelectionZone } = useSelectionZone(zoomContainerRef)

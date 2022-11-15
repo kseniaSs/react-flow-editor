@@ -1,17 +1,16 @@
 import React, { useCallback, useState } from "react"
-import { useRecoilState, useSetRecoilState } from "recoil"
-import { NodesAtom } from "@/Editor/state"
+import { useRecoilState } from "recoil"
+import { HoveredNodeIdAtom, NodesAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 import { Node, NodeState, Point } from "@/types"
 import { BUTTON_LEFT } from "../../constants"
-import { dragItemState, hoveredNodeIdState } from "../../ducks/store"
+import { dragItemState } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 import { ItemType } from "../../types"
 
 export const useNodeInteractions = (node: Node) => {
   const nodes = useStore(NodesAtom)
   const [dragItem, setDragItem] = useRecoilState(dragItemState)
-  const setHoveredNodeId = useSetRecoilState(hoveredNodeIdState)
   const [initialClickCoords, setInitialClickCoords] = useState<Point>({ x: 0, y: 0 })
 
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
@@ -78,7 +77,7 @@ export const useNodeInteractions = (node: Node) => {
         }))
       )
 
-    setHoveredNodeId(node.id)
+    HoveredNodeIdAtom.set(node.id)
   }, [dragItem.id, nodes])
 
   const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
@@ -95,7 +94,7 @@ export const useNodeInteractions = (node: Node) => {
         }))
       )
 
-    setHoveredNodeId(null)
+    HoveredNodeIdAtom.set(null)
   }, [dragItem.type === ItemType.connection])
 
   return {
