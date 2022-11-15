@@ -1,5 +1,3 @@
-import { Output, Point } from "../types"
-
 export enum ItemType {
   node = "node",
   connection = "connection",
@@ -11,8 +9,6 @@ export enum Axis {
   x = "x",
   y = "y"
 }
-
-export type DragItemState = { type?: ItemType; output?: Output; id?: string } & Point
 
 export type NodeGroupsRect = {
   leftPoint: number

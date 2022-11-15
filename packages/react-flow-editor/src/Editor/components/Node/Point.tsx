@@ -1,14 +1,12 @@
 import { isEqual } from "lodash"
 import React, { useContext } from "react"
-import { useRecoilState } from "recoil"
 import { Node, NodeState, Output } from "@/types"
 import { BUTTON_LEFT } from "../../constants"
 import { EditorContext, RectsContext } from "../../context"
-import { dragItemState } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 import { ItemType } from "../../types"
 import { buildDotId, pointStyle } from "./helpers"
-import { NewConnectionAtom, nodeActions, SvgOffsetAtom } from "@/Editor/state"
+import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
 type PointProps = {
@@ -21,8 +19,8 @@ export const Point: React.FC<PointProps> = React.memo(({ node, output }) => {
   const { zoomContainerRef } = useContext(RectsContext)
   const svgOffset = useStore(SvgOffsetAtom)
 
-  const [dragItem, setDragItem] = useRecoilState(dragItemState)
-  const zoomRect = zoomContainerRef?.current?.getBoundingClientRect()
+  const dragItem = useStore(DragItemAtom)
+  const zoomRect = zoomContainerRef?.current.getBoundingClientRect()
 
   const setNode = (e: React.MouseEvent<HTMLElement>) => {
     resetEvent(e)
@@ -36,7 +34,7 @@ export const Point: React.FC<PointProps> = React.memo(({ node, output }) => {
 
       NewConnectionAtom.set(pos)
 
-      setDragItem({
+      DragItemAtom.set({
         type: ItemType.connection,
         output,
         id: node.id,

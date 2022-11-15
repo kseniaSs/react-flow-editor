@@ -1,5 +1,4 @@
 import React, { memo } from "react"
-import { RecoilRoot } from "recoil"
 import { isEqual } from "lodash"
 import type { EditorProps } from "@/types"
 import { Canvas } from "./Canvas"
@@ -33,10 +32,8 @@ const Editor: React.FC<EditorProps> = ({
       styleConfig
     }}
   >
-    <RecoilRoot>
-      <Canvas />
-      <StoreUpdater nodes={nodes} onNodesChange={onNodesChange} />
-    </RecoilRoot>
+    <Canvas />
+    <StoreUpdater nodes={nodes} onNodesChange={onNodesChange} />
   </EditorContext.Provider>
 )
 export default memo(Editor, isEqual)

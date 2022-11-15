@@ -35,8 +35,7 @@
     "lodash": "^4.17.21",
     "nanostores": "^0.7.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "recoil": "^0.7.4"
+    "react-dom": "17.0.2"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0",

@@ -68,7 +68,6 @@ importers:
       prettier: ^2.7.1
       react: 17.0.2
       react-dom: 17.0.2
-      recoil: ^0.7.4
       sass: ^1.53.0
       typescript: ^4.0.2
       vite: ^2.9.13
@@ -81,7 +80,6 @@ importers:
       nanostores: 0.7.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      recoil: 0.7.6_sfoxds7t5ydpegc3knd667wn6m
     devDependencies:
       '@types/lodash': 4.14.188
       '@types/react': 17.0.30
@@ -3395,10 +3393,10 @@ packages:
       react: ^16.8.0 || ^17.0.0
       react-dom: ^16.8.0 || ^17.0.0
     dependencies:
+      '@nanostores/react': 0.4.0_unofnab3roj6yv6ovijwz3t42y
       lodash: 4.17.21
+      nanostores: 0.7.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       recoil: 0.7.6_sfoxds7t5ydpegc3knd667wn6m
-    transitivePeerDependencies:
-      - react-native
     dev: false

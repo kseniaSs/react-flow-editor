@@ -1,11 +1,9 @@
 import React, { useCallback, useContext } from "react"
-import { useSetRecoilState } from "recoil"
 import { NodeState, Output, Point } from "@/types"
 import { ItemType } from "@/Editor/types"
 import { EditorContext, RectsContext } from "@/Editor/context"
-import { dragItemState } from "@/Editor/ducks/store"
 import { disconnectorStyle } from "../helpers"
-import { NewConnectionAtom, nodeActions, SvgOffsetAtom } from "@/Editor/state"
+import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
 type DisconnectorProps = {
@@ -19,13 +17,11 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, outp
   const { transformation } = useContext(EditorContext)
   const svgOffset = useStore(SvgOffsetAtom)
 
-  const setDragItem = useSetRecoilState(dragItemState)
-
   const onMouseDown = useCallback(
     (e) => {
       e.stopPropagation()
 
-      setDragItem({
+      DragItemAtom.set({
         type: ItemType.connection,
         id: fromId,
         output,
@@ -33,7 +29,9 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, outp
         y: e.clientY
       })
 
-      const zoomRect = zoomContainerRef.current?.getBoundingClientRect()
+      const zoomRect = zoomContainerRef?.current.getBoundingClientRect()
+
+      if (!zoomRect) return
 
       const newPos = {
         x: (e.clientX - zoomRect.left) / transformation.zoom - svgOffset.x,

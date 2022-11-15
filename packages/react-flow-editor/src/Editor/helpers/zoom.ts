@@ -1,15 +1,15 @@
+import { useStore } from "@nanostores/react"
 import { useContext, useCallback, MutableRefObject, useMemo } from "react"
-import { useRecoilValue } from "recoil"
 import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from "../constants"
 import { EditorContext } from "../context"
-import { dragItemState } from "../ducks/store"
+import { DragItemAtom } from "../state"
 
 export const useZoom = (
   zoomContainerRef?: MutableRefObject<HTMLDivElement>,
   editorContainerRef?: MutableRefObject<HTMLElement>
 ) => {
   const { transformation, setTransformation } = useContext(EditorContext)
-  const currentDragItem = useRecoilValue(dragItemState)
+  const currentDragItem = useStore(DragItemAtom)
 
   const zoomRefPoint = useMemo(() => {
     const editorRect = editorContainerRef?.current?.getBoundingClientRect()

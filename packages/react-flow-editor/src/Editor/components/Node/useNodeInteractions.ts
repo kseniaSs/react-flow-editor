@@ -1,23 +1,21 @@
 import React, { useCallback, useState } from "react"
-import { useRecoilState } from "recoil"
-import { HoveredNodeIdAtom, NodesAtom } from "@/Editor/state"
+import { DragItemAtom, HoveredNodeIdAtom, NodesAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 import { Node, NodeState, Point } from "@/types"
 import { BUTTON_LEFT } from "../../constants"
-import { dragItemState } from "../../ducks/store"
 import { resetEvent } from "../../helpers"
 import { ItemType } from "../../types"
 
 export const useNodeInteractions = (node: Node) => {
   const nodes = useStore(NodesAtom)
-  const [dragItem, setDragItem] = useRecoilState(dragItemState)
+  const dragItem = useStore(DragItemAtom)
   const [initialClickCoords, setInitialClickCoords] = useState<Point>({ x: 0, y: 0 })
 
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
       const point = { x: e.clientX, y: e.clientY }
-      setDragItem({ type: ItemType.node, ...point, id: node.id })
+      DragItemAtom.set({ type: ItemType.node, ...point, id: node.id })
 
       setInitialClickCoords(point)
     }
@@ -54,7 +52,7 @@ export const useNodeInteractions = (node: Node) => {
           })
         )
 
-        setDragItem({ type: undefined, x: e.clientX, y: e.clientY })
+        DragItemAtom.set({ type: undefined, x: e.clientX, y: e.clientY })
       }
     },
     [initialClickCoords, nodes]

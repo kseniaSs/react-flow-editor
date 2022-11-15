@@ -5,15 +5,14 @@ import {
   NodesAtom,
   autoScrollActions,
   NewConnectionAtom,
-  SelectionZoneAtom
+  SelectionZoneAtom,
+  DragItemAtom
 } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 import { MutableRefObject, useCallback, useContext, useEffect } from "react"
-import { useRecoilValue } from "recoil"
 import { NodeState } from "../../types"
 import { DRAG_AUTO_SCROLL_DIST, DRAG_AUTO_SCROLL_TIME, DRAG_OFFSET_TRANSFORM } from "../constants"
 import { EditorContext } from "../context"
-import { dragItemState } from "../ducks/store"
 import { Axis, ItemType } from "../types"
 import { isNodeInSelectionZone } from "./selectionZone"
 
@@ -67,7 +66,7 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
   const newConnection = useStore(NewConnectionAtom)
   const selectionZone = useStore(SelectionZoneAtom)
   const nodes = useStore(NodesAtom)
-  const currentDragItem = useRecoilValue(dragItemState)
+  const dragItem = useStore(DragItemAtom)
   const autoScroll = useStore(AutoScrollAtom)
 
   const { transformation, setTransformation } = useContext(EditorContext)
@@ -78,10 +77,7 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
     const delta = DRAG_AUTO_SCROLL_DIST * autoScroll.speed * transformation.zoom
 
     const scroll = () => {
-      if (
-        currentDragItem.type &&
-        [ItemType.node, ItemType.connection, ItemType.selectionZone].includes(currentDragItem.type)
-      ) {
+      if (dragItem.type && [ItemType.node, ItemType.connection, ItemType.selectionZone].includes(dragItem.type)) {
         const dx = transformation.dx - getSign(Axis.x, autoScroll) * delta
         const dy = transformation.dy - getSign(Axis.y, autoScroll) * delta
 
@@ -92,14 +88,14 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
         })
       }
 
-      if (currentDragItem.type === ItemType.connection) {
+      if (dragItem.type === ItemType.connection) {
         NewConnectionAtom.set({
           x: newConnection.x + getSign(Axis.x, autoScroll) * delta,
           y: newConnection.y + getSign(Axis.y, autoScroll) * delta
         })
       }
 
-      if (currentDragItem.type === ItemType.selectionZone && selectionZone !== null) {
+      if (dragItem.type === ItemType.selectionZone && selectionZone !== null) {
         SelectionZoneAtom.set({
           ...selectionZone,
           cornerEnd: {
@@ -116,7 +112,7 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
         )
       }
 
-      if (currentDragItem.type === ItemType.node) {
+      if (dragItem.type === ItemType.node) {
         const draggingNodesIds = nodes
           .filter((node) => node.state && [NodeState.dragging, NodeState.selected].includes(node.state))
           .map((node) => node.id)
@@ -140,7 +136,7 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
     const scrollInterval = setInterval(scroll, DRAG_AUTO_SCROLL_TIME)
 
     return () => clearInterval(scrollInterval)
-  }, [autoScroll, currentDragItem, newConnection, nodes, transformation, selectionZone])
+  }, [autoScroll, dragItem, newConnection, nodes, transformation, selectionZone])
 
   return useCheckAutoScrollEnable(editorContainerRef)
 }

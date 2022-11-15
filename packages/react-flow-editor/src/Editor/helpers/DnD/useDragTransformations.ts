@@ -1,11 +1,9 @@
 import { MutableRefObject, useContext } from "react"
-import { useRecoilValue } from "recoil"
 import { NodeState } from "@/types"
 import { EditorContext } from "../../context"
-import { dragItemState } from "../../ducks/store"
 import { ItemType } from "../../types"
 import { isNodeInSelectionZone } from "../selectionZone"
-import { NewConnectionAtom, NodesAtom, SelectionZoneAtom, SvgOffsetAtom } from "@/Editor/state"
+import { DragItemAtom, NewConnectionAtom, NodesAtom, SelectionZoneAtom, SvgOffsetAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
 export const useDragTransformations = ({
@@ -19,8 +17,7 @@ export const useDragTransformations = ({
   const nodes = useStore(NodesAtom)
   const svgOffset = useStore(SvgOffsetAtom)
   const selectionZone = useStore(SelectionZoneAtom)
-
-  const currentDragItem = useRecoilValue(dragItemState)
+  const dragItem = useStore(DragItemAtom)
 
   const zoomRect = zoomContainerRef?.current?.getBoundingClientRect()
 
@@ -36,8 +33,8 @@ export const useDragTransformations = ({
 
     [ItemType.viewPort]: (e: React.MouseEvent<HTMLElement>) => {
       const newPos = {
-        x: (e.clientX - currentDragItem.x) / transformation.zoom,
-        y: (e.clientY - currentDragItem.y) / transformation.zoom
+        x: (e.clientX - dragItem.x) / transformation.zoom,
+        y: (e.clientY - dragItem.y) / transformation.zoom
       }
 
       setTransformation({
@@ -49,15 +46,15 @@ export const useDragTransformations = ({
     [ItemType.node]: (e: React.MouseEvent<HTMLElement>) => {
       NodesAtom.set(
         nodes.map((el) => {
-          const isDragging = el.id === currentDragItem.id
+          const isDragging = el.id === dragItem.id
           const isShiftSelected = e.shiftKey && el.state === NodeState.selected
 
           return isDragging || isShiftSelected
             ? {
                 ...el,
                 position: {
-                  x: el.position.x + (e.clientX - currentDragItem.x) / transformation.zoom,
-                  y: el.position.y + (e.clientY - currentDragItem.y) / transformation.zoom
+                  x: el.position.x + (e.clientX - dragItem.x) / transformation.zoom,
+                  y: el.position.y + (e.clientY - dragItem.y) / transformation.zoom
                 },
                 rectPosition: document.getElementById(el.id)?.getBoundingClientRect(),
                 state: isShiftSelected ? NodeState.selected : NodeState.dragging

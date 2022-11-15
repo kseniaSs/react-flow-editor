@@ -1,11 +1,9 @@
 import React, { useContext } from "react"
-import { useRecoilValue } from "recoil"
 import { Node, Output } from "@/types"
 import { DEFAULT_POINT_SIZE } from "@/Editor/constants"
 import { EditorContext } from "@/Editor/context"
-import { dragItemState } from "@/Editor/ducks/store"
 import { ItemType } from "@/Editor/types"
-import { NodesAtom, SvgOffsetAtom } from "@/Editor/state"
+import { DragItemAtom, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
 import ArrowDisconnector from "./ArrowDisconnector"
@@ -45,7 +43,7 @@ export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ outp
 }
 
 export const Connection: React.FC<ConnectionProps> = ({ node }) => {
-  const dragItem = useRecoilValue(dragItemState)
+  const dragItem = useStore(DragItemAtom)
 
   const filteredConnections = node.outputs.filter(
     (out) =>
