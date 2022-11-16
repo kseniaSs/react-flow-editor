@@ -14,6 +14,7 @@ import { useCallback, useEffect } from "react"
 import { NodeState } from "../../types"
 import { DRAG_AUTO_SCROLL_DIST, DRAG_AUTO_SCROLL_TIME, DRAG_OFFSET_TRANSFORM } from "../constants"
 import { Axis, ItemType } from "../types"
+import { getRectFromRef } from "./getRectFromRef"
 import { isNodeInSelectionZone } from "./selectionZone"
 
 export const getSign = (axis: Axis, autoScroll: AutoScrollState): -1 | 0 | 1 => {
@@ -31,7 +32,7 @@ const useCheckAutoScrollEnable = (editorContainerRef: React.RefObject<HTMLDivEle
 
   return useCallback(
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      const editorRect = editorContainerRef.current?.getBoundingClientRect()
+      const editorRect = getRectFromRef(editorContainerRef)
 
       const leftOverflow = editorRect.left + DRAG_OFFSET_TRANSFORM - e.clientX
       const rightOverflow = e.clientX - (editorRect.right - DRAG_OFFSET_TRANSFORM)

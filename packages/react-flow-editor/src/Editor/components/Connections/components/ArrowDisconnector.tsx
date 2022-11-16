@@ -5,6 +5,7 @@ import { EditorContext, RectsContext } from "@/Editor/context"
 import { disconnectorStyle } from "../helpers"
 import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
+import { getRectFromRef } from "@/Editor/helpers/getRectFromRef"
 
 type DisconnectorProps = {
   position: Point
@@ -29,9 +30,7 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, outp
         y: e.clientY
       })
 
-      const zoomRect = zoomContainerRef?.current.getBoundingClientRect()
-
-      if (!zoomRect) return
+      const zoomRect = getRectFromRef(zoomContainerRef)
 
       const newPos = {
         x: (e.clientX - zoomRect.left) / transformation.zoom - svgOffset.x,

@@ -46,9 +46,6 @@ export default ({
       const inputNode = nodes.find((currentElement) => hoveredNodeId === currentElement.id)!
       const outputNode = nodes.find((node) => node.id === dragItem.id)
 
-      const inputIdsForInputNode = nodes.filter((node) =>
-        node.outputs.map((out) => out.nextNodeId).includes(inputNode.id)
-      )
       const isNew = dragItem.output?.nextNodeId === null
 
       if (!inputNode && outputNode && isNew && nodes.some((node) => Boolean(node.state))) {
@@ -68,6 +65,10 @@ export default ({
           })
         )
       }
+
+      const inputIdsForInputNode = nodes.filter((node) =>
+        node.outputs.map((out) => out.nextNodeId).includes(inputNode.id)
+      )
 
       if (inputNode && outputNode && inputNode.inputNumber > inputIdsForInputNode.length) {
         const alreadyConnected = outputNode.outputs.some(

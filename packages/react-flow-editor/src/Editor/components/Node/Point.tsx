@@ -8,6 +8,7 @@ import { ItemType } from "../../types"
 import { buildDotId, pointStyle } from "./helpers"
 import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom, TransformationMap } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
+import { getRectFromRef } from "@/Editor/helpers/getRectFromRef"
 
 type PointProps = {
   node: Node
@@ -21,7 +22,7 @@ export const Point: React.FC<PointProps> = React.memo(({ node, output }) => {
   const transformation = useStore(TransformationMap)
 
   const dragItem = useStore(DragItemAtom)
-  const zoomRect = zoomContainerRef?.current.getBoundingClientRect()
+  const zoomRect = getRectFromRef(zoomContainerRef)
 
   const setNode = (e: React.MouseEvent<HTMLElement>) => {
     resetEvent(e)

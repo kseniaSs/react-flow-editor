@@ -10,6 +10,7 @@ import {
   TransformationMap
 } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
+import { getRectFromRef } from "../getRectFromRef"
 
 export const useDragTransformations = ({
   expandSelectionZone,
@@ -24,7 +25,7 @@ export const useDragTransformations = ({
   const selectionZone = useStore(SelectionZoneAtom)
   const dragItem = useStore(DragItemAtom)
 
-  const zoomRect = zoomContainerRef?.current?.getBoundingClientRect()
+  const zoomRect = getRectFromRef(zoomContainerRef)
 
   return {
     [ItemType.connection]: (e: React.MouseEvent<HTMLElement>) => {

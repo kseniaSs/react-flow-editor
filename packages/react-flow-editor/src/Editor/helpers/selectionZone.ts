@@ -2,6 +2,7 @@ import { useStore } from "@nanostores/react"
 import { RefObject, useCallback } from "react"
 import { Node, RectZone, SelectionZone } from "../../types"
 import { DragItemAtom, SelectionZoneAtom, Transformation, TransformationMap } from "../state"
+import { getRectFromRef } from "./getRectFromRef"
 
 export const isNodeInSelectionZone = (node: Node, zone: SelectionZone | null, transform: Transformation): boolean => {
   if (zone === null) return false
@@ -38,8 +39,9 @@ export const useSelectionZone = (zoomContainerRef: RefObject<HTMLElement>) => {
 
   const initSelectionZone = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
-      if (e.shiftKey && zoomContainerRef.current) {
-        const zoomContainerRect = zoomContainerRef.current.getBoundingClientRect()
+      if (e.shiftKey) {
+        const zoomContainerRect = getRectFromRef(zoomContainerRef)
+
         const left = (e.clientX - zoomContainerRect.left) / transformation.zoom
         const top = (e.clientY - zoomContainerRect.top) / transformation.zoom
         const point = { x: left, y: top }

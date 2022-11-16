@@ -1,6 +1,7 @@
+import { DragItemState } from "@/Editor/state"
 import { Node, NodeState, Output, Point, PointStyleConfig } from "@/types"
 import { DEFAULT_COLOR, DEFAULT_POINT_SIZE } from "../../constants"
-import { DragItemState, ItemType } from "../../types"
+import { ItemType } from "../../types"
 
 export const pointStyle = ({
   position,
@@ -18,9 +19,9 @@ export const pointStyle = ({
   const height = pointConfig?.height || DEFAULT_POINT_SIZE
   const width = pointConfig?.width || DEFAULT_POINT_SIZE
   const isActive =
-    Boolean(output.nextNodeId) || (dragItem.type === ItemType.connection && dragItem.output.id === output.id)
+    Boolean(output.nextNodeId) || (dragItem.type === ItemType.connection && dragItem.output?.id === output.id)
 
-  const isSemiActive = [NodeState.connectorHovered, NodeState.selected].includes(node.state)
+  const isSemiActive = node.state && [NodeState.connectorHovered, NodeState.selected].includes(node.state)
 
   let border = `1px solid ${pointConfig?.disconnectedColor || DEFAULT_COLOR}`
 
