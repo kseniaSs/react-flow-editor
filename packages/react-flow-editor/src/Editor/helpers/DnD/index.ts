@@ -29,7 +29,9 @@ export default ({
   const dragTranformations = useDragTransformations({ expandSelectionZone, zoomContainerRef })
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
-    dragTranformations![dragItem.type!](e)
+    if (!dragItem.type) return
+
+    dragTranformations[dragItem.type](e)
 
     if ([DragItemType.node, DragItemType.connection, DragItemType.selectionZone].includes(dragItem.type)) {
       checkAutoScrollEnable(e)
