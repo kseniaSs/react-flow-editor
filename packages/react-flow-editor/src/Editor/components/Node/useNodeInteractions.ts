@@ -4,7 +4,7 @@ import { useStore } from "@nanostores/react"
 import { Node, NodeState, Point } from "@/types"
 import { BUTTON_LEFT } from "../../constants"
 import { resetEvent } from "../../helpers"
-import { ItemType } from "../../types"
+import { DragItemType } from "../../types"
 
 export const useNodeInteractions = (node: Node) => {
   const nodes = useStore(NodesAtom)
@@ -15,7 +15,7 @@ export const useNodeInteractions = (node: Node) => {
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
       const point = { x: e.clientX, y: e.clientY }
-      DragItemAtom.set({ type: ItemType.node, ...point, id: node.id })
+      DragItemAtom.set({ type: DragItemType.node, ...point, id: node.id })
 
       setInitialClickCoords(point)
     }
@@ -61,7 +61,7 @@ export const useNodeInteractions = (node: Node) => {
   const onMouseEnter: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
     const isNodeHovered = (nodeItem: Node) =>
       nodeItem.id === node.id &&
-      dragItem.type === ItemType.connection &&
+      dragItem.type === DragItemType.connection &&
       dragItem.id !== node.id &&
       nodeItem.state !== NodeState.connectorHovered
 
@@ -80,7 +80,9 @@ export const useNodeInteractions = (node: Node) => {
 
   const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
     const isNodeLeavedWithConnector = (nodeItem: Node) =>
-      nodeItem.id === node.id && dragItem.type === ItemType.connection && nodeItem.state !== NodeState.draggingConnector
+      nodeItem.id === node.id &&
+      dragItem.type === DragItemType.connection &&
+      nodeItem.state !== NodeState.draggingConnector
 
     const needUpdateNodes = nodes.some(isNodeLeavedWithConnector)
 
@@ -93,7 +95,7 @@ export const useNodeInteractions = (node: Node) => {
       )
 
     HoveredNodeIdAtom.set(null)
-  }, [dragItem.type === ItemType.connection])
+  }, [dragItem.type === DragItemType.connection])
 
   return {
     onDragStarted,

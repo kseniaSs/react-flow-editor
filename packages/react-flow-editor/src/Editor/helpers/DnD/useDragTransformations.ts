@@ -1,5 +1,5 @@
 import { NodeState } from "@/types"
-import { ItemType } from "../../types"
+import { DragItemType } from "../../types"
 import { isNodeInSelectionZone } from "../selectionZone"
 import {
   DragItemAtom,
@@ -28,7 +28,7 @@ export const useDragTransformations = ({
   const zoomRect = getRectFromRef(zoomContainerRef)
 
   return {
-    [ItemType.connection]: (e: React.MouseEvent<HTMLElement>) => {
+    [DragItemType.connection]: (e: React.MouseEvent<HTMLElement>) => {
       const newPos = {
         x: (e.clientX - zoomRect.left) / transformation.zoom - svgOffset.x,
         y: (e.clientY - zoomRect.top) / transformation.zoom - svgOffset.y
@@ -37,7 +37,7 @@ export const useDragTransformations = ({
       NewConnectionAtom.set(newPos)
     },
 
-    [ItemType.viewPort]: (e: React.MouseEvent<HTMLElement>) => {
+    [DragItemType.viewPort]: (e: React.MouseEvent<HTMLElement>) => {
       const newPos = {
         x: (e.clientX - dragItem.x) / transformation.zoom,
         y: (e.clientY - dragItem.y) / transformation.zoom
@@ -49,7 +49,7 @@ export const useDragTransformations = ({
         dy: transformation.dy + newPos.y
       })
     },
-    [ItemType.node]: (e: React.MouseEvent<HTMLElement>) => {
+    [DragItemType.node]: (e: React.MouseEvent<HTMLElement>) => {
       NodesAtom.set(
         nodes.map((el) => {
           const isDragging = el.id === dragItem.id
@@ -69,7 +69,7 @@ export const useDragTransformations = ({
         })
       )
     },
-    [ItemType.selectionZone]: (e: React.MouseEvent<HTMLElement>) => {
+    [DragItemType.selectionZone]: (e: React.MouseEvent<HTMLElement>) => {
       expandSelectionZone(e)
 
       NodesAtom.set(

@@ -13,9 +13,8 @@ import { useStore } from "@nanostores/react"
 import { useCallback, useEffect } from "react"
 import { NodeState } from "../../types"
 import { DRAG_AUTO_SCROLL_DIST, DRAG_AUTO_SCROLL_TIME, DRAG_OFFSET_TRANSFORM } from "../constants"
-import { Axis, ItemType } from "../types"
+import { Axis, DragItemType } from "../types"
 import { getRectFromRef } from "./getRectFromRef"
-import { isNodeInSelectionZone } from "./selectionZone"
 
 export const getSign = (axis: Axis, autoScroll: AutoScrollState): -1 | 0 | 1 => {
   if (axis === Axis.x && autoScroll.direction === AutoScrollDirection.left) return -1
@@ -77,7 +76,9 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
     const delta = DRAG_AUTO_SCROLL_DIST * autoScroll.speed * transformation.zoom
 
     const scroll = () => {
-      if (dragItem.type && [ItemType.node, ItemType.connection, ItemType.selectionZone].includes(dragItem.type)) {
+      if (!dragItem.type) return
+
+      if ([DragItemType.node, DragItemType.connection, DragItemType.selectionZone].includes(dragItem.type)) {
         const dx = transformation.dx - getSign(Axis.x, autoScroll) * delta
         const dy = transformation.dy - getSign(Axis.y, autoScroll) * delta
 
@@ -88,14 +89,14 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
         })
       }
 
-      if (dragItem.type === ItemType.connection) {
+      if (dragItem.type === DragItemType.connection) {
         NewConnectionAtom.set({
           x: newConnection.x + getSign(Axis.x, autoScroll) * delta,
           y: newConnection.y + getSign(Axis.y, autoScroll) * delta
         })
       }
 
-      if (dragItem.type === ItemType.selectionZone && selectionZone !== null) {
+      if (dragItem.type === DragItemType.selectionZone && selectionZone !== null) {
         SelectionZoneAtom.set({
           ...selectionZone,
           cornerEnd: {
@@ -103,16 +104,9 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
             y: selectionZone.cornerEnd.y + getSign(Axis.y, autoScroll) * delta
           }
         })
-
-        NodesAtom.set(
-          nodes.map((el) => ({
-            ...el,
-            state: isNodeInSelectionZone(el, selectionZone!, transformation) ? NodeState.selected : null
-          }))
-        )
       }
 
-      if (dragItem.type === ItemType.node) {
+      if (dragItem.type === DragItemType.node) {
         const draggingNodesIds = nodes
           .filter((node) => node.state && [NodeState.dragging, NodeState.selected].includes(node.state))
           .map((node) => node.id)

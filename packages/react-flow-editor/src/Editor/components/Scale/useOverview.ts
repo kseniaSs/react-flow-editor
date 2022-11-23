@@ -57,6 +57,11 @@ export const useOverview = () => {
     }
   }, [underOverview, nodes, transformation, editorContainerRef])
 
+  /** Overview on mount */
+  useEffect(() => {
+    setUnderOverview(true)
+  }, [])
+
   const overview = () => setUnderOverview(true)
 
   return overview

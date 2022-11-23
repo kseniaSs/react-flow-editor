@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { Node, Output } from "@/types"
 import { DEFAULT_POINT_SIZE } from "@/Editor/constants"
 import { EditorContext } from "@/Editor/context"
-import { ItemType } from "@/Editor/types"
+import { DragItemType } from "@/Editor/types"
 import { DragItemAtom, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
@@ -48,7 +48,7 @@ export const Connection: React.FC<ConnectionProps> = ({ node }) => {
   const filteredConnections = node.outputs.filter(
     (out) =>
       !(
-        dragItem.type === ItemType.connection &&
+        dragItem.type === DragItemType.connection &&
         out.nextNodeId === dragItem.output?.nextNodeId &&
         node.id === dragItem.id
       )

@@ -27,11 +27,13 @@ const ScaleComponent: React.FC<ScaleComponentProps> = ({ zoomIn, zoomOut, overvi
 const App = () => {
   const [nodes, setNodes] = React.useState<Node[]>(initialNodes)
 
+  const createNode = (nodeName?: string) => setNodes((nodes) => nodes.concat([nodeFactory(nodeName)]))
+
   return (
     <div className="editor-root">
       <div className="header">Flow Editor</div>
       <div className="flow-menu">
-        <div className="button" onClick={() => setNodes(nodes.concat([nodeFactory()]))}>
+        <div className="button" onClick={() => createNode()}>
           Create new Node
         </div>
         <NodeAttributes nodes={nodes} />

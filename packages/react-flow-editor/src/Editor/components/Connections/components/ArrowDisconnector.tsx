@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from "react"
 import { NodeState, Output, Point } from "@/types"
-import { ItemType } from "@/Editor/types"
+import { DragItemType } from "@/Editor/types"
 import { EditorContext, RectsContext } from "@/Editor/context"
 import { disconnectorStyle } from "../helpers"
 import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom } from "@/Editor/state"
@@ -23,7 +23,7 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, outp
       e.stopPropagation()
 
       DragItemAtom.set({
-        type: ItemType.connection,
+        type: DragItemType.connection,
         id: fromId,
         output,
         x: e.clientX,
