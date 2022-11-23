@@ -4,7 +4,7 @@ import { Node, NodeState, Output } from "@/types"
 import { BUTTON_LEFT } from "../../constants"
 import { EditorContext, RectsContext } from "../../context"
 import { resetEvent } from "../../helpers"
-import { ItemType } from "../../types"
+import { DragItemType } from "../../types"
 import { buildDotId, pointStyle } from "./helpers"
 import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom, TransformationMap } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
@@ -37,7 +37,7 @@ export const Point: React.FC<PointProps> = React.memo(({ node, output }) => {
       NewConnectionAtom.set(pos)
 
       DragItemAtom.set({
-        type: ItemType.connection,
+        type: DragItemType.connection,
         output,
         id: node.id,
         x: e.clientX,

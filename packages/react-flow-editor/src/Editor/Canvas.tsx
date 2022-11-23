@@ -9,7 +9,7 @@ import { useZoom } from "./helpers/zoom"
 import { useHotKeys } from "./helpers/hotKeys"
 import { NodesContainer } from "./components/Node"
 import { RectsContext } from "./context"
-import { DragItemAtom, TransformationMap } from "./state"
+import { TransformationMap } from "./state"
 import { SelectionZone } from "./components/SelectionZone"
 import { Scale } from "./components/Scale"
 
@@ -22,7 +22,6 @@ export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent
   const zoomContainerRef = useRef<HTMLDivElement>(null)
   const editorContainerRef = useRef<HTMLDivElement>(null)
 
-  const dragItem = useStore(DragItemAtom)
   const transformation = useStore(TransformationMap)
 
   const { onDrag, onDragEnded, onDragStarted } = useDnD({ editorContainerRef, zoomContainerRef })
@@ -34,7 +33,7 @@ export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent
     <RectsContext.Provider value={{ zoomContainerRef, editorContainerRef }}>
       <div
         onMouseUp={onDragEnded}
-        onMouseMove={dragItem.type && onDrag}
+        onMouseMove={onDrag}
         onWheel={onWheel}
         onMouseDown={onDragStarted}
         ref={editorContainerRef}

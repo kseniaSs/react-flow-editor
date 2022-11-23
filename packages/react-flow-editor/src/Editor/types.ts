@@ -1,4 +1,4 @@
-export enum ItemType {
+export enum DragItemType {
   node = "node",
   connection = "connection",
   viewPort = "viewPort",

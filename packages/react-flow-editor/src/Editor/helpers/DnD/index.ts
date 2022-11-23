@@ -8,7 +8,7 @@ import {
 } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 import { BUTTON_LEFT } from "../../constants"
-import { ItemType } from "../../types"
+import { DragItemType } from "../../types"
 import { useAutoScroll } from "../autoScroll"
 import { useSelectionZone } from "../selectionZone"
 import { useDragTransformations } from "./useDragTransformations"
@@ -26,13 +26,14 @@ export default ({
 
   const checkAutoScrollEnable = useAutoScroll(editorContainerRef)
   const { initSelectionZone, expandSelectionZone } = useSelectionZone(zoomContainerRef)
-
   const dragTranformations = useDragTransformations({ expandSelectionZone, zoomContainerRef })
 
   const onDrag = (e: React.MouseEvent<HTMLElement>) => {
-    dragTranformations![dragItem.type!](e)
+    if (!dragItem.type) return
 
-    if ([ItemType.node, ItemType.connection, ItemType.selectionZone].includes(dragItem.type!)) {
+    dragTranformations[dragItem.type](e)
+
+    if ([DragItemType.node, DragItemType.connection, DragItemType.selectionZone].includes(dragItem.type)) {
       checkAutoScrollEnable(e)
     }
 
@@ -42,7 +43,7 @@ export default ({
   const onDragEnded = () => {
     autoScrollActions.toDeafult()
 
-    if (dragItem.type === ItemType.connection) {
+    if (dragItem.type === DragItemType.connection) {
       const inputNode = nodes.find((currentElement) => hoveredNodeId === currentElement.id)!
       const outputNode = nodes.find((node) => node.id === dragItem.id)
 
@@ -67,7 +68,7 @@ export default ({
       }
 
       const inputIdsForInputNode = nodes.filter((node) =>
-        node.outputs.map((out) => out.nextNodeId).includes(inputNode.id)
+        node.outputs.map((out) => out.nextNodeId).includes(inputNode?.id)
       )
 
       if (inputNode && outputNode && inputNode.inputNumber > inputIdsForInputNode.length) {
@@ -93,13 +94,19 @@ export default ({
           )
       }
     }
+
     DragItemAtom.set({ ...dragItem, type: undefined })
     SelectionZoneAtom.set(null)
   }
 
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
     if (e.button === BUTTON_LEFT && !dragItem.type) {
-      DragItemAtom.set({ type: e.shiftKey ? ItemType.selectionZone : ItemType.viewPort, x: e.clientX, y: e.clientY })
+      if (e.shiftKey) {
+        DragItemAtom.set({ type: DragItemType.selectionZone, x: e.clientX, y: e.clientY })
+      } else {
+        DragItemAtom.set({ type: DragItemType.viewPort, x: e.clientX, y: e.clientY })
+      }
+
       initSelectionZone(e)
     }
 

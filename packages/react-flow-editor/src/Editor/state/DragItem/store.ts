@@ -1,8 +1,8 @@
-import { ItemType } from "@/Editor/types"
+import { DragItemType } from "@/Editor/types"
 import { Output, Point } from "@/types"
 import { atom } from "nanostores"
 
-export type DragItemState = { type?: ItemType; output?: Output; id?: string } & Point
+export type DragItemState = { type?: DragItemType; output?: Output; id?: string } & Point
 
 export const DragItemAtom = atom<DragItemState>({
   type: undefined,

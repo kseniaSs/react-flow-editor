@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import { DEFAULT_POINT_SIZE } from "@/Editor/constants"
 import { EditorContext } from "@/Editor/context"
-import { ItemType } from "@/Editor/types"
+import { DragItemType } from "@/Editor/types"
 import { DragItemAtom, NewConnectionAtom, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 
@@ -17,7 +17,7 @@ export const NewConnection: React.FC = () => {
 
   const outputNode = nodes.find((node) => node.id === dragItem?.id)
 
-  if (!outputNode || dragItem.type !== ItemType.connection) return null
+  if (!outputNode || dragItem.type !== DragItemType.connection) return null
 
   const outputPosition = outputNode.rectPosition
     ? {

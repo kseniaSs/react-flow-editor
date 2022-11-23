@@ -6,7 +6,9 @@ type Props = {
   nodes: Node[]
   onNodesChange?: (nodes: Node[]) => void
 }
-
+/**
+ * Used for sync props with inner store
+ */
 export const StoreUpdater: FC<Props> = ({ nodes, onNodesChange }) => {
   useEffect(() => {
     NodesAtom.set(nodes)
