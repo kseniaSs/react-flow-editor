@@ -3,7 +3,6 @@ import { DragItemAtom, HoveredNodeIdAtom, NodesAtom } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 import { Node, NodeState, Point } from "@/types"
 import { BUTTON_LEFT } from "../../constants"
-import { resetEvent } from "../../helpers"
 import { DragItemType } from "../../types"
 
 export const useNodeInteractions = (node: Node) => {
@@ -12,7 +11,6 @@ export const useNodeInteractions = (node: Node) => {
   const [initialClickCoords, setInitialClickCoords] = useState<Point>({ x: 0, y: 0 })
 
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    resetEvent(e)
     if (e.button === BUTTON_LEFT) {
       const point = { x: e.clientX, y: e.clientY }
       DragItemAtom.set({ type: DragItemType.node, ...point, id: node.id })

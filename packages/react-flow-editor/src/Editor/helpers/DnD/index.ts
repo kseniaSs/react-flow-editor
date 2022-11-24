@@ -100,6 +100,10 @@ export default ({
   }
 
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    // To remove e.stopPropagation on node
+    const isTargetNotCanvas = e.target !== zoomContainerRef.current
+
+    if (isTargetNotCanvas) return
     if (e.button === BUTTON_LEFT && !dragItem.type) {
       if (e.shiftKey) {
         DragItemAtom.set({ type: DragItemType.selectionZone, x: e.clientX, y: e.clientY })
