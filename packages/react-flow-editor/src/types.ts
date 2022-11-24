@@ -54,7 +54,6 @@ export type Node = {
 export type OnEditorRectsMountedProps = {
   zoomContainerRef: MutableRefObject<HTMLDivElement>
   editorContainerRef: MutableRefObject<HTMLDivElement>
-  overview: () => void
 }
 
 export type PointStyleConfig = {
@@ -84,8 +83,24 @@ export type ScaleComponentProps = {
 export type EditorProps = {
   nodes: Node[]
   onNodesChange: (nodes: Node[]) => void
+  /**
+   *
+   * @deprecated
+   * Will be removed
+   */
   transformation: Transformation
+  /**
+   *
+   * @deprecated
+   * Will be removed
+   */
   onTransfromationChange?: (tansformation: Transformation) => void
+  /**
+   *
+   * @deprecated
+   * Will be removed
+   */
+  onEditorRectsMounted?: (value: OnEditorRectsMountedProps) => void
   NodeComponent: React.FC<Node>
   SelectionZoneComponent?: React.FC
   ScaleComponent?: React.FC<ScaleComponentProps>

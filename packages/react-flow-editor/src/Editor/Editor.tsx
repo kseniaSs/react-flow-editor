@@ -17,12 +17,14 @@ const Editor: React.FC<EditorProps> = ({
   onNodesChange,
   transformation,
   onTransfromationChange,
+  onEditorRectsMounted,
   styleConfig
 }) => (
   <EditorContext.Provider
     value={{
       NodeComponent,
       importantNodeIds,
+      onEditorRectsMounted,
       styleConfig
     }}
   >
