@@ -3,7 +3,7 @@ import { useStore } from "@nanostores/react"
 
 import { ScaleComponentProps } from "@/types"
 import Background from "./components/Background/Background"
-import { transformCanvasStyle } from "./helpers"
+import { transformCanvasStyle, useEditorRectsMounted } from "./helpers"
 import useDnD from "./helpers/DnD"
 import { useZoom } from "./helpers/zoom"
 import { useHotKeys } from "./helpers/hotKeys"
@@ -26,6 +26,7 @@ export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent
 
   const { onDrag, onDragEnded, onDragStarted } = useDnD({ editorContainerRef, zoomContainerRef })
   const { onWheel } = useZoom({ zoomContainerRef, editorContainerRef })
+  useEditorRectsMounted({ zoomContainerRef, editorContainerRef })
 
   useHotKeys()
 

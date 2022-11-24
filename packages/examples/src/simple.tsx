@@ -1,6 +1,6 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
-import { Editor, Node, ScaleComponentProps } from "@kseniass/react-flow-editor"
+import { Editor, Node, ScaleComponentProps, Transformation } from "@kseniass/react-flow-editor"
 import "./simple.scss"
 import { initialNodes, STYLED_CONFIG, TIPS } from "./constants"
 import { nodeFactory } from "./helpers"
@@ -26,6 +26,7 @@ const ScaleComponent: React.FC<ScaleComponentProps> = ({ zoomIn, zoomOut, overvi
 
 const App = () => {
   const [nodes, setNodes] = React.useState<Node[]>(initialNodes)
+  const [transformation, setTransformation] = React.useState<Transformation>({ dx: 0, dy: 0, zoom: 1 })
 
   const createNode = (nodeName?: string) => setNodes((nodes) => nodes.concat([nodeFactory(nodeName)]))
 
@@ -45,6 +46,8 @@ const App = () => {
           ScaleComponent={ScaleComponent}
           nodes={nodes}
           onNodesChange={setNodes}
+          transformation={transformation}
+          onTransfromationChange={setTransformation}
           importantNodeIds={[initialNodes[0].id]}
           styleConfig={STYLED_CONFIG}
         />

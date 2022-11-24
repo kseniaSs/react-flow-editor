@@ -15,17 +15,26 @@ const Editor: React.FC<EditorProps> = ({
   SelectionZoneComponent,
   importantNodeIds,
   onNodesChange,
+  transformation,
+  onTransfromationChange,
+  onEditorRectsMounted,
   styleConfig
 }) => (
   <EditorContext.Provider
     value={{
       NodeComponent,
       importantNodeIds,
+      onEditorRectsMounted,
       styleConfig
     }}
   >
     <Canvas SelectionZoneComponent={SelectionZoneComponent} ScaleComponent={ScaleComponent} />
-    <StoreUpdater nodes={nodes} onNodesChange={onNodesChange} />
+    <StoreUpdater
+      nodes={nodes}
+      onNodesChange={onNodesChange}
+      transformation={transformation}
+      onTransfromationChange={onTransfromationChange}
+    />
   </EditorContext.Provider>
 )
 export default memo(Editor, isEqual)
