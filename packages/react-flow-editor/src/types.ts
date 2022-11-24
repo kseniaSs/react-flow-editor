@@ -35,6 +35,12 @@ export type Output = {
   nextNodeId: string | null
 }
 
+export type Transformation = {
+  dx: number
+  dy: number
+  zoom: number
+}
+
 export type Node = {
   id: string
   outputs: Output[]
@@ -77,10 +83,12 @@ export type ScaleComponentProps = {
 
 export type EditorProps = {
   nodes: Node[]
+  onNodesChange: (nodes: Node[]) => void
+  transformation: Transformation
+  onTransfromationChange?: (tansformation: Transformation) => void
   NodeComponent: React.FC<Node>
   SelectionZoneComponent?: React.FC
   ScaleComponent?: React.FC<ScaleComponentProps>
-  onNodesChange: (nodes: Node[]) => void
   importantNodeIds?: Array<string>
   styleConfig?: StyleConfig
 }
