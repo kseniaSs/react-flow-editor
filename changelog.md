@@ -2,6 +2,12 @@
 
 ### Version 1.0.0
 
+##### style fixes
+
+- remove styleConfig, replace it with connectorStyleConfig.
+
+### Version 1.0.0
+
 ##### Global refactor
 
 - New API break everything.

@@ -13,7 +13,7 @@ type InputConnectionProps = {
 }
 
 const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition }) => {
-  const { styleConfig } = useContext(EditorContext)
+  const { connectorStyleConfig } = useContext(EditorContext)
 
   const dx = Math.max(Math.abs(inputPosition.x - outputPosition.x) / 1.5, 100)
   const a1 = { x: inputPosition.x - dx, y: inputPosition.y }
@@ -28,7 +28,7 @@ const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, output
       d={cmd}
       markerStart={`url(#${ARROW_ID})`}
       fill="transparent"
-      stroke={styleConfig?.connector?.color || DEFAULT_COLOR}
+      stroke={connectorStyleConfig.color || DEFAULT_COLOR}
     />
   )
 }
