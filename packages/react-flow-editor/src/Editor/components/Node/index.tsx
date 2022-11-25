@@ -1,20 +1,14 @@
-import React, { useEffect, useContext } from "react"
-import { Container as ConnectionContainer } from "../../components/Connections"
-import { useRecalculateRects } from "../../helpers"
-import Node from "./node"
+import React from "react"
+import { useStore } from "@nanostores/react"
 import { isEqual } from "lodash"
-import { EditorContext } from "../../context"
+
+import { NodesAtom } from "@/Editor/state"
+
+import { Container as ConnectionContainer } from "../../components/Connections"
+import Node from "./node"
 
 export const NodesContainer: React.FC = React.memo(() => {
-  const { nodes, transformation } = useContext(EditorContext)
-
-  const recalculateRects = useRecalculateRects()
-
-  useEffect(() => {
-    if (!nodes.length) return
-
-    recalculateRects()
-  }, [transformation.zoom])
+  const nodes = useStore(NodesAtom)
 
   return (
     <>

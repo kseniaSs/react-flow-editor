@@ -1,35 +1,31 @@
-import React, { useCallback, useContext, useState } from "react"
-import { useRecoilState, useSetRecoilState } from "recoil"
+import React, { useCallback, useState } from "react"
+import { useStore } from "@nanostores/react"
+
+import { DragItemAtom, HoveredNodeIdAtom, NodesAtom } from "@/Editor/state"
 import { Node, NodeState, Point } from "@/types"
+
 import { BUTTON_LEFT } from "../../constants"
-import { EditorContext } from "../../context"
-import { dragItemState, hoveredNodeIdState } from "../../ducks/store"
-import { resetEvent } from "../../helpers"
-import { ItemType } from "../../types"
+import { DragItemType } from "../../types"
 
 export const useNodeInteractions = (node: Node) => {
-  const { setNodes, nodes } = useContext(EditorContext)
-  const [dragItem, setDragItem] = useRecoilState(dragItemState)
-  const setHoveredNodeId = useSetRecoilState(hoveredNodeIdState)
+  const nodes = useStore(NodesAtom)
+  const dragItem = useStore(DragItemAtom)
   const [initialClickCoords, setInitialClickCoords] = useState<Point>({ x: 0, y: 0 })
 
-  const onDragStarted: React.MouseEventHandler<HTMLDivElement> = useCallback(
-    (e) => {
-      resetEvent(e)
-      if (e.button === BUTTON_LEFT) {
-        const point = { x: e.clientX, y: e.clientY }
-        setDragItem({ type: ItemType.node, ...point, id: node.id })
+  const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    if (e.button === BUTTON_LEFT) {
+      e.stopPropagation()
+      const point = { x: e.clientX, y: e.clientY }
+      DragItemAtom.set({ type: DragItemType.node, ...point, id: node.id })
 
-        setInitialClickCoords(point)
-      }
-    },
-    [setNodes]
-  )
+      setInitialClickCoords(point)
+    }
+  }
 
   const onMouseUp: React.MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
       if (e.button === BUTTON_LEFT) {
-        setNodes((nodes) =>
+        NodesAtom.set(
           nodes.map((nodeItem) => {
             const isSelected =
               (nodeItem.id === node.id && initialClickCoords.x === e.clientX && initialClickCoords.y === e.clientY) ||
@@ -57,48 +53,34 @@ export const useNodeInteractions = (node: Node) => {
           })
         )
 
-        setDragItem({ type: undefined, x: e.clientX, y: e.clientY })
+        DragItemAtom.set({ type: undefined, x: e.clientX, y: e.clientY })
       }
     },
-    [setNodes, initialClickCoords]
+    [initialClickCoords, nodes]
   )
 
   const onMouseEnter: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
-    const isNodeHovered = (nodeItem: Node) =>
-      nodeItem.id === node.id &&
-      dragItem.type === ItemType.connection &&
-      dragItem.id !== node.id &&
-      nodeItem.state !== NodeState.connectorHovered
-
-    const needUpdateNodes = nodes.some(isNodeHovered)
-
-    needUpdateNodes &&
-      setNodes((nodes) =>
-        nodes.map((nodeItem) => ({
-          ...nodeItem,
-          state: isNodeHovered(nodeItem) ? NodeState.connectorHovered : nodeItem.state
-        }))
-      )
-
-    setHoveredNodeId(node.id)
-  }, [setNodes, dragItem.id, nodes])
+    HoveredNodeIdAtom.set(node.id)
+  }, [dragItem.id, nodes])
 
   const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
     const isNodeLeavedWithConnector = (nodeItem: Node) =>
-      nodeItem.id === node.id && dragItem.type === ItemType.connection && nodeItem.state !== NodeState.draggingConnector
+      nodeItem.id === node.id &&
+      dragItem.type === DragItemType.connection &&
+      nodeItem.state !== NodeState.draggingConnector
 
     const needUpdateNodes = nodes.some(isNodeLeavedWithConnector)
 
     needUpdateNodes &&
-      setNodes((nodes) =>
+      NodesAtom.set(
         nodes.map((nodeItem) => ({
           ...nodeItem,
           state: isNodeLeavedWithConnector(nodeItem) ? null : nodeItem.state
         }))
       )
 
-    setHoveredNodeId(null)
-  }, [setNodes, dragItem.type === ItemType.connection])
+    HoveredNodeIdAtom.set(null)
+  }, [dragItem.type === DragItemType.connection])
 
   return {
     onDragStarted,

@@ -1,17 +1,19 @@
-import { useContext, useCallback, MutableRefObject, useMemo } from "react"
-import { useRecoilValue } from "recoil"
-import { useRecalculateRects } from "."
-import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from "../constants"
-import { EditorContext } from "../context"
-import { dragItemState } from "../ducks/store"
+import { useStore } from "@nanostores/react"
+import { useCallback, useMemo } from "react"
 
-export const useZoom = (
-  zoomContainerRef?: MutableRefObject<HTMLDivElement>,
-  editorContainerRef?: MutableRefObject<HTMLElement>
-) => {
-  const { transformation, setTransformation } = useContext(EditorContext)
-  const currentDragItem = useRecoilValue(dragItemState)
-  const recalculateRects = useRecalculateRects()
+import { ZOOM_STEP } from "../constants"
+import { DragItemAtom, TransformationMap } from "../state"
+import { clampZoom } from "./clampZoom"
+
+export const useZoom = ({
+  zoomContainerRef,
+  editorContainerRef
+}: {
+  zoomContainerRef: React.RefObject<HTMLDivElement>
+  editorContainerRef: React.RefObject<HTMLDivElement>
+}) => {
+  const currentDragItem = useStore(DragItemAtom)
+  const transformation = useStore(TransformationMap)
 
   const zoomRefPoint = useMemo(() => {
     const editorRect = editorContainerRef?.current?.getBoundingClientRect()
@@ -29,16 +31,11 @@ export const useZoom = (
     (event) => {
       if (currentDragItem.type) return
 
-      const zoomFactor = Math.pow(ZOOM_STEP, Math.sign(event.deltaY))
-      const newZoom = transformation.zoom * zoomFactor
+      const zoomFactor = Math.pow(ZOOM_STEP + 1, Math.sign(event.deltaY))
 
-      setTransformation({
-        ...transformation,
-        zoom: newZoom > MAX_ZOOM ? MAX_ZOOM : newZoom < MIN_ZOOM ? MIN_ZOOM : newZoom
-      })
-      recalculateRects()
+      TransformationMap.setKey("zoom", clampZoom(transformation.zoom * zoomFactor))
     },
-    [currentDragItem, transformation, recalculateRects]
+    [currentDragItem, transformation]
   )
 
   return { onWheel }

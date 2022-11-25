@@ -1,4 +1,4 @@
-import { MutableRefObject, SetStateAction } from "react"
+import { MutableRefObject } from "react"
 
 export type Size = {
   width: number
@@ -17,27 +17,14 @@ export type RectZone = {
   bottom: number
 }
 
-export type Transformation = {
-  dx: number
-  dy: number
-  zoom: number
-}
-
 export type SelectionZone = {
   cornerStart: Point
   cornerEnd: Point
 }
 
-export type NodeProps = NodeBase & {
-  onSizeChanged: () => void
-}
-
-export type Node = NodeBase
-
 export enum NodeState {
   dragging = "dragging",
   draggingConnector = "draggingConnector",
-  connectorHovered = "connectorHovered",
   selected = "selected"
 }
 
@@ -47,7 +34,13 @@ export type Output = {
   nextNodeId: string | null
 }
 
-export type NodeBase = {
+export type Transformation = {
+  dx: number
+  dy: number
+  zoom: number
+}
+
+export type Node = {
   id: string
   outputs: Output[]
   position: Point
@@ -60,15 +53,6 @@ export type NodeBase = {
 export type OnEditorRectsMountedProps = {
   zoomContainerRef: MutableRefObject<HTMLDivElement>
   editorContainerRef: MutableRefObject<HTMLDivElement>
-  overview: () => void
-}
-
-export type PointStyleConfig = {
-  width: number
-  height: number
-  color: string
-  disconnectedColor: string
-  disconnectedBg: string
 }
 
 export type ConnectorStyleConfig = {
@@ -76,19 +60,42 @@ export type ConnectorStyleConfig = {
   width: number
 }
 
-export type StyleConfig = {
-  point?: PointStyleConfig
-  connector?: ConnectorStyleConfig
+export type ScaleComponentProps = {
+  zoomIn: () => void
+  zoomOut: () => void
+  overview: () => void
+}
+
+export type OutputComponentProps = {
+  active: boolean
+  nodeState: NodeState | null
 }
 
 export type EditorProps = {
   nodes: Node[]
-  nodeRepresentation: React.FC<NodeProps>
-  setNodes: (action: SetStateAction<Node[]>) => void
+  onNodesChange: (nodes: Node[]) => void
+  /**
+   *
+   * @deprecated
+   * Will be removed
+   */
   transformation: Transformation
-  setTransformation: (transformation: Transformation) => void
-  onSelectionZoneChanged?: (value: RectZone) => void
+  /**
+   *
+   * @deprecated
+   * Will be removed
+   */
+  onTransfromationChange?: (tansformation: Transformation) => void
+  /**
+   *
+   * @deprecated
+   * Will be removed
+   */
   onEditorRectsMounted?: (value: OnEditorRectsMountedProps) => void
+  NodeComponent: React.FC<Node>
+  SelectionZoneComponent?: React.FC
+  ScaleComponent?: React.FC<ScaleComponentProps>
+  OutputComponent?: React.FC<OutputComponentProps>
   importantNodeIds?: Array<string>
-  styleConfig?: StyleConfig
+  connectorStyleConfig?: ConnectorStyleConfig
 }

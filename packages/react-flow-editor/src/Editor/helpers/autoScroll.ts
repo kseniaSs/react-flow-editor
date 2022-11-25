@@ -1,13 +1,24 @@
-import { MutableRefObject, useCallback, useContext, useEffect } from "react"
-import { useRecoilState, useRecoilValue } from "recoil"
+import { useStore } from "@nanostores/react"
+import { useCallback, useEffect } from "react"
+
+import {
+  AutoScrollDirection,
+  AutoScrollState,
+  AutoScrollAtom,
+  NodesAtom,
+  autoScrollActions,
+  NewConnectionAtom,
+  SelectionZoneAtom,
+  DragItemAtom,
+  TransformationMap
+} from "@/Editor/state"
+
 import { NodeState } from "../../types"
 import { DRAG_AUTO_SCROLL_DIST, DRAG_AUTO_SCROLL_TIME, DRAG_OFFSET_TRANSFORM } from "../constants"
-import { EditorContext } from "../context"
-import { autoScrollState, dragItemState, newConnectionState, selectionZoneState } from "../ducks/store"
-import { AutoScrollDirection, Axis, ItemType } from "../types"
-import { isNodeInSelectionZone } from "./selectionZone"
+import { Axis, DragItemType } from "../types"
+import { getRectFromRef } from "./getRectFromRef"
 
-export const getSign = (axis: Axis, autoScroll): -1 | 0 | 1 => {
+export const getSign = (axis: Axis, autoScroll: AutoScrollState): -1 | 0 | 1 => {
   if (axis === Axis.x && autoScroll.direction === AutoScrollDirection.left) return -1
   if (axis === Axis.x && autoScroll.direction === AutoScrollDirection.right) return 1
 
@@ -17,12 +28,12 @@ export const getSign = (axis: Axis, autoScroll): -1 | 0 | 1 => {
   return 0
 }
 
-const useCheckAutoScrollEnable = (editorContainerRef: MutableRefObject<HTMLElement>) => {
-  const [autoScroll, setAutoScroll] = useRecoilState(autoScrollState)
+const useCheckAutoScrollEnable = (editorContainerRef: React.RefObject<HTMLDivElement>) => {
+  const autoScroll = useStore(AutoScrollAtom)
 
   return useCallback(
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      const editorRect = editorContainerRef.current?.getBoundingClientRect()
+      const editorRect = getRectFromRef(editorContainerRef)
 
       const leftOverflow = editorRect.left + DRAG_OFFSET_TRANSFORM - e.clientX
       const rightOverflow = e.clientX - (editorRect.right - DRAG_OFFSET_TRANSFORM)
@@ -30,36 +41,36 @@ const useCheckAutoScrollEnable = (editorContainerRef: MutableRefObject<HTMLEleme
       const bottomOverflow = e.clientY - (editorRect.bottom - DRAG_OFFSET_TRANSFORM)
 
       if (leftOverflow > 0) {
-        setAutoScroll({ speed: leftOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.left })
+        AutoScrollAtom.set({ speed: leftOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.left })
       }
 
       if (rightOverflow > 0) {
-        setAutoScroll({ speed: rightOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.right })
+        AutoScrollAtom.set({ speed: rightOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.right })
       }
 
       if (topOverflow > 0) {
-        setAutoScroll({ speed: topOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.top })
+        AutoScrollAtom.set({ speed: topOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.top })
       }
 
       if (bottomOverflow > 0) {
-        setAutoScroll({ speed: bottomOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.bottom })
+        AutoScrollAtom.set({ speed: bottomOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.bottom })
       }
 
       if (autoScroll.direction && Math.max(leftOverflow, rightOverflow, topOverflow, bottomOverflow) <= 0) {
-        setAutoScroll({ speed: 0, direction: null })
+        autoScrollActions.toDeafult()
       }
     },
     [autoScroll, editorContainerRef]
   )
 }
 
-export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>) => {
-  const [newConnection, setNewConnectionState] = useRecoilState(newConnectionState)
-  const [selectionZone, setSelectionZone] = useRecoilState(selectionZoneState)
-  const currentDragItem = useRecoilValue(dragItemState)
-  const autoScroll = useRecoilValue(autoScrollState)
-
-  const { nodes, transformation, setNodes, setTransformation } = useContext(EditorContext)
+export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement>) => {
+  const newConnection = useStore(NewConnectionAtom)
+  const selectionZone = useStore(SelectionZoneAtom)
+  const nodes = useStore(NodesAtom)
+  const dragItem = useStore(DragItemAtom)
+  const autoScroll = useStore(AutoScrollAtom)
+  const transformation = useStore(TransformationMap)
 
   useEffect(() => {
     if (!autoScroll.direction) return
@@ -67,47 +78,42 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
     const delta = DRAG_AUTO_SCROLL_DIST * autoScroll.speed * transformation.zoom
 
     const scroll = () => {
-      if ([ItemType.node, ItemType.connection, ItemType.selectionZone].includes(currentDragItem.type)) {
+      if (!dragItem.type) return
+
+      if ([DragItemType.node, DragItemType.connection, DragItemType.selectionZone].includes(dragItem.type)) {
         const dx = transformation.dx - getSign(Axis.x, autoScroll) * delta
         const dy = transformation.dy - getSign(Axis.y, autoScroll) * delta
 
-        setTransformation({
+        TransformationMap.set({
           ...transformation,
           dx,
           dy
         })
       }
 
-      if (currentDragItem.type === ItemType.connection) {
-        setNewConnectionState({
+      if (dragItem.type === DragItemType.connection) {
+        NewConnectionAtom.set({
           x: newConnection.x + getSign(Axis.x, autoScroll) * delta,
           y: newConnection.y + getSign(Axis.y, autoScroll) * delta
         })
       }
 
-      if (currentDragItem.type === ItemType.selectionZone) {
-        setSelectionZone((zone) => ({
-          ...zone,
+      if (dragItem.type === DragItemType.selectionZone && selectionZone !== null) {
+        SelectionZoneAtom.set({
+          ...selectionZone,
           cornerEnd: {
-            x: zone.cornerEnd.x + getSign(Axis.x, autoScroll) * delta,
-            y: zone.cornerEnd.y + getSign(Axis.y, autoScroll) * delta
+            x: selectionZone.cornerEnd.x + getSign(Axis.x, autoScroll) * delta,
+            y: selectionZone.cornerEnd.y + getSign(Axis.y, autoScroll) * delta
           }
-        }))
-
-        setNodes((nodes) =>
-          nodes.map((el) => ({
-            ...el,
-            state: isNodeInSelectionZone(el, selectionZone, transformation) ? NodeState.selected : null
-          }))
-        )
+        })
       }
 
-      if (currentDragItem.type === ItemType.node) {
+      if (dragItem.type === DragItemType.node) {
         const draggingNodesIds = nodes
-          .filter((node) => [NodeState.dragging, NodeState.selected].includes(node.state))
+          .filter((node) => node.state && [NodeState.dragging, NodeState.selected].includes(node.state))
           .map((node) => node.id)
 
-        setNodes((nodes) =>
+        NodesAtom.set(
           nodes.map((el) =>
             draggingNodesIds.includes(el.id)
               ? {
@@ -126,7 +132,7 @@ export const useAutoScroll = (editorContainerRef: MutableRefObject<HTMLElement>)
     const scrollInterval = setInterval(scroll, DRAG_AUTO_SCROLL_TIME)
 
     return () => clearInterval(scrollInterval)
-  }, [autoScroll, currentDragItem, newConnection, nodes, transformation, selectionZone, setNodes, setSelectionZone])
+  }, [autoScroll, dragItem, newConnection, nodes, transformation, selectionZone])
 
   return useCheckAutoScrollEnable(editorContainerRef)
 }

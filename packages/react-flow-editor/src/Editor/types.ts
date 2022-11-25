@@ -1,6 +1,4 @@
-import { Output, Point, Size } from "../types"
-
-export enum ItemType {
+export enum DragItemType {
   node = "node",
   connection = "connection",
   viewPort = "viewPort",
@@ -12,19 +10,6 @@ export enum Axis {
   y = "y"
 }
 
-export enum AutoScrollDirection {
-  right = "right",
-  left = "left",
-  top = "top",
-  bottom = "bottom"
-}
-
-export type AutoScrollState = { speed: number; direction: AutoScrollDirection }
-
-export type SVGOffsetState = Point & Size
-
-export type DragItemState = { type?: ItemType; output?: Output; id?: string } & Point
-
 export type NodeGroupsRect = {
   leftPoint: number
   rightPoint: number
@@ -35,6 +20,6 @@ export type NodeGroupsRect = {
 }
 
 export type MountedContexts = {
-  zoomContainerRef: React.MutableRefObject<HTMLDivElement>
-  editorContainerRef: React.MutableRefObject<HTMLDivElement>
+  zoomContainerRef: React.RefObject<HTMLDivElement>
+  editorContainerRef: React.RefObject<HTMLDivElement>
 }

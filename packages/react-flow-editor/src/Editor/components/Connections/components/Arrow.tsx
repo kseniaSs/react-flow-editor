@@ -1,4 +1,5 @@
 import React from "react"
+
 import { Size } from "@/types"
 import { DEFAULT_COLOR } from "@/Editor/constants"
 

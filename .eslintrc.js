@@ -37,7 +37,6 @@ module.exports = {
   rules: {
     "react/prop-types": "off",
     "react/display-name": "off",
-    "import/no-unresolved": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
@@ -47,6 +46,22 @@ module.exports = {
       }
     ],
     "no-console": ["error", { allow: ["error"] }],
+    "import/no-unresolved": "off",
+    "import/order": [
+      "error",
+      {
+        groups: ["builtin", "external", "internal", "object"],
+        "newlines-between": "always",
+        pathGroups: [
+          {
+            pattern: "@/**",
+            group: "parent",
+            position: "before"
+          }
+        ],
+        pathGroupsExcludedImportTypes: ["builtin"]
+      }
+    ],
     "import/no-cycle": [
       "error",
       {

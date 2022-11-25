@@ -1,51 +1,80 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
-import { Editor, Node, OnEditorRectsMountedProps, Transformation } from "@kseniass/react-flow-editor"
+import {
+  Editor,
+  Node,
+  NodeState,
+  ScaleComponentProps,
+  Transformation,
+  OutputComponentProps
+} from "@kseniass/react-flow-editor"
+
 import "./simple.scss"
-import { SelectionZone } from "./types"
-import { initialNodes, STYLED_CONFIG, TIPS } from "./constants"
-import { computeSelectionZone, nodeFactory } from "./helpers"
-import { NodeAttributes, SimpleNode } from "./parts"
+import { initialNodes, STYLED_CONFIG, TIPS, OUTPUT_STYLES } from "./constants"
+import { nodeFactory } from "./helpers"
+import { NodeAttributes } from "./parts"
+
+const NodeComponent = (_: Node) => <div>Node</div>
+
+const SelectionZoneComponent = () => <div className="selection-zone" />
+
+const OutputComponent: React.FC<OutputComponentProps> = ({ active, nodeState }) => (
+  <div
+    style={{
+      width: "10px",
+      height: "10px",
+      background: `${active ? OUTPUT_STYLES.color : OUTPUT_STYLES.disconnectedBg}`,
+      borderRadius: "50%",
+      border: active
+        ? "none"
+        : nodeState === NodeState.selected
+        ? `2px solid ${OUTPUT_STYLES.color}`
+        : `1px solid ${OUTPUT_STYLES.disconnectedColor}`
+    }}
+  />
+)
+
+const ScaleComponent: React.FC<ScaleComponentProps> = ({ zoomIn, zoomOut, overview }) => (
+  <div className="scale">
+    <div className="scale-btn" onClick={zoomIn}>
+      Zoom in
+    </div>
+    <div className="scale-btn" onClick={zoomOut}>
+      Zoom out
+    </div>
+    <div className="scale-btn" onClick={overview}>
+      Overview
+    </div>
+  </div>
+)
 
 const App = () => {
   const [nodes, setNodes] = React.useState<Node[]>(initialNodes)
-  const [selectionZone, setSelectionZone] = React.useState<SelectionZone | null>(null)
   const [transformation, setTransformation] = React.useState<Transformation>({ dx: 0, dy: 0, zoom: 1 })
-  const [editorRefs, setEditorRefs] = React.useState<OnEditorRectsMountedProps | null>(null)
 
-  const onSelectionZoneChanged = React.useCallback((val) => setSelectionZone(val), [])
-
-  const selectionZonePosition = React.useMemo(
-    () => computeSelectionZone(editorRefs?.zoomContainerRef, transformation, selectionZone),
-    [selectionZone, editorRefs]
-  )
-
-  const onEditorRectsMounted = React.useCallback((val) => setEditorRefs(val), [])
+  const createNode = (nodeName?: string) => setNodes((nodes) => nodes.concat([nodeFactory(nodeName)]))
 
   return (
     <div className="editor-root">
       <div className="header">Flow Editor</div>
-      <div className="selection-zone" style={selectionZonePosition} />
       <div className="flow-menu">
-        <div className="button" onClick={() => setNodes((nodes) => [...nodes, nodeFactory()])}>
+        <div className="button" onClick={() => createNode()}>
           Create new Node
-        </div>
-        <div className="button" onClick={() => editorRefs.overview()}>
-          Overview
         </div>
         <NodeAttributes nodes={nodes} />
       </div>
       <div className="react-editor-container">
         <Editor
-          nodeRepresentation={SimpleNode()}
+          NodeComponent={NodeComponent}
+          SelectionZoneComponent={SelectionZoneComponent}
+          ScaleComponent={ScaleComponent}
+          OutputComponent={OutputComponent}
           nodes={nodes}
-          setNodes={setNodes}
+          onNodesChange={setNodes}
           transformation={transformation}
-          setTransformation={setTransformation}
-          onSelectionZoneChanged={onSelectionZoneChanged}
-          onEditorRectsMounted={onEditorRectsMounted}
+          onTransfromationChange={setTransformation}
           importantNodeIds={[initialNodes[0].id]}
-          styleConfig={STYLED_CONFIG}
+          connectorStyleConfig={STYLED_CONFIG}
         />
       </div>
       <pre className="tips">{TIPS}</pre>

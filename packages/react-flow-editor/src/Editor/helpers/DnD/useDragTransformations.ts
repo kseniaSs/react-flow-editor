@@ -1,77 +1,80 @@
-import { MutableRefObject, useContext } from "react"
-import { useRecoilValue, useSetRecoilState } from "recoil"
-import { useRecalculateRects } from ".."
+import { useStore } from "@nanostores/react"
+
 import { NodeState } from "@/types"
-import { EditorContext } from "../../context"
-import { dragItemState, newConnectionState, selectionZoneState, svgOffsetState } from "../../ducks/store"
-import { ItemType } from "../../types"
+import {
+  DragItemAtom,
+  NewConnectionAtom,
+  NodesAtom,
+  SelectionZoneAtom,
+  SvgOffsetAtom,
+  TransformationMap
+} from "@/Editor/state"
+
+import { DragItemType } from "../../types"
 import { isNodeInSelectionZone } from "../selectionZone"
+import { getRectFromRef } from "../getRectFromRef"
 
 export const useDragTransformations = ({
   expandSelectionZone,
   zoomContainerRef
 }: {
-  expandSelectionZone: (e: React.MouseEvent) => void
-  zoomContainerRef: MutableRefObject<HTMLElement>
+  expandSelectionZone: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
+  zoomContainerRef: React.RefObject<HTMLDivElement>
 }) => {
-  const { transformation, setNodes, setTransformation } = useContext(EditorContext)
+  const transformation = useStore(TransformationMap)
+  const nodes = useStore(NodesAtom)
+  const svgOffset = useStore(SvgOffsetAtom)
+  const selectionZone = useStore(SelectionZoneAtom)
+  const dragItem = useStore(DragItemAtom)
 
-  const currentDragItem = useRecoilValue(dragItemState)
-  const setNewConnectionState = useSetRecoilState(newConnectionState)
-  const svgOffset = useRecoilValue(svgOffsetState)
-  const selectionZone = useRecoilValue(selectionZoneState)
-  const recalculateRects = useRecalculateRects()
-
-  const zoomRect = zoomContainerRef?.current?.getBoundingClientRect()
+  const zoomRect = getRectFromRef(zoomContainerRef)
 
   return {
-    [ItemType.connection]: (e: React.MouseEvent<HTMLElement>) => {
+    [DragItemType.connection]: (e: React.MouseEvent<HTMLElement>) => {
       const newPos = {
         x: (e.clientX - zoomRect.left) / transformation.zoom - svgOffset.x,
         y: (e.clientY - zoomRect.top) / transformation.zoom - svgOffset.y
       }
 
-      setNewConnectionState(newPos)
+      NewConnectionAtom.set(newPos)
     },
 
-    [ItemType.viewPort]: (e: React.MouseEvent<HTMLElement>) => {
+    [DragItemType.viewPort]: (e: React.MouseEvent<HTMLElement>) => {
       const newPos = {
-        x: (e.clientX - currentDragItem.x) / transformation.zoom,
-        y: (e.clientY - currentDragItem.y) / transformation.zoom
+        x: (e.clientX - dragItem.x) / transformation.zoom,
+        y: (e.clientY - dragItem.y) / transformation.zoom
       }
 
-      setTransformation({
+      TransformationMap.set({
         ...transformation,
         dx: transformation.dx + newPos.x,
         dy: transformation.dy + newPos.y
       })
-
-      recalculateRects()
     },
-    [ItemType.node]: (e: React.MouseEvent<HTMLElement>) => {
-      setNodes((nodes) =>
+    [DragItemType.node]: (e: React.MouseEvent<HTMLElement>) => {
+      NodesAtom.set(
         nodes.map((el) => {
-          const isDragging = el.id === currentDragItem.id
+          const isDragging = el.id === dragItem.id
           const isShiftSelected = e.shiftKey && el.state === NodeState.selected
 
           return isDragging || isShiftSelected
             ? {
                 ...el,
                 position: {
-                  x: el.position.x + (e.clientX - currentDragItem.x) / transformation.zoom,
-                  y: el.position.y + (e.clientY - currentDragItem.y) / transformation.zoom
+                  x: el.position.x + (e.clientX - dragItem.x) / transformation.zoom,
+                  y: el.position.y + (e.clientY - dragItem.y) / transformation.zoom
                 },
-                rectPosition: document.getElementById(el.id).getBoundingClientRect(),
+                rectPosition: document.getElementById(el.id)?.getBoundingClientRect(),
                 state: isShiftSelected ? NodeState.selected : NodeState.dragging
               }
             : { ...el, state: null }
         })
       )
     },
-    [ItemType.selectionZone]: (e: React.MouseEvent<HTMLElement>) => {
+    [DragItemType.selectionZone]: (e: React.MouseEvent<HTMLElement>) => {
       expandSelectionZone(e)
 
-      setNodes((nodes) =>
+      NodesAtom.set(
         nodes.map((el) => ({
           ...el,
           state: isNodeInSelectionZone(el, selectionZone, transformation) ? NodeState.selected : null

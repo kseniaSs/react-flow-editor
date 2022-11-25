@@ -1,10 +1,13 @@
-import { MutableRefObject, useCallback, useContext, useEffect } from "react"
-import { useRecoilState, useRecoilValue } from "recoil"
-import { Node, RectZone, SelectionZone, Transformation } from "../../types"
-import { EditorContext } from "../context"
-import { dragItemState, selectionZoneState } from "../ducks/store"
+import { useStore } from "@nanostores/react"
+import { RefObject, useCallback } from "react"
 
-export const isNodeInSelectionZone = (node: Node, zone: SelectionZone, transform: Transformation): boolean => {
+import { Node, RectZone, SelectionZone, Transformation } from "../../types"
+import { DragItemAtom, SelectionZoneAtom, TransformationMap } from "../state"
+import { getRectFromRef } from "./getRectFromRef"
+
+export const isNodeInSelectionZone = (node: Node, zone: SelectionZone | null, transform: Transformation): boolean => {
+  if (zone === null) return false
+
   const { left, top, right, bottom } = cornersToRect(zone)
 
   const isLeftOver = left < node.position.x + (node.rectPosition?.width || 0) / transform.zoom
@@ -15,7 +18,7 @@ export const isNodeInSelectionZone = (node: Node, zone: SelectionZone, transform
   return isLeftOver && isRightOver && isTopOver && isBottomOver
 }
 
-export const cornersToRect = (zone: SelectionZone): RectZone =>
+export const cornersToRect = (zone: SelectionZone | null): RectZone =>
   zone
     ? {
         left: Math.min(zone.cornerStart.x, zone.cornerEnd.x),
@@ -30,24 +33,21 @@ export const cornersToRect = (zone: SelectionZone): RectZone =>
         bottom: 0
       }
 
-export const useSelectionZone = (zoomContainerRef: MutableRefObject<HTMLElement>) => {
-  const [selectionZone, setSelectionZone] = useRecoilState(selectionZoneState)
-  const { onSelectionZoneChanged, transformation } = useContext(EditorContext)
-  const currentDragItem = useRecoilValue(dragItemState)
-
-  useEffect(() => {
-    onSelectionZoneChanged(cornersToRect(selectionZone))
-  }, [selectionZone])
+export const useSelectionZone = (zoomContainerRef: RefObject<HTMLElement>) => {
+  const selectionZone = useStore(SelectionZoneAtom)
+  const transformation = useStore(TransformationMap)
+  const dragItem = useStore(DragItemAtom)
 
   const initSelectionZone = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
-      if (e.shiftKey && zoomContainerRef.current) {
-        const zoomContainerRect = zoomContainerRef.current.getBoundingClientRect()
+      if (e.shiftKey) {
+        const zoomContainerRect = getRectFromRef(zoomContainerRef)
+
         const left = (e.clientX - zoomContainerRect.left) / transformation.zoom
         const top = (e.clientY - zoomContainerRect.top) / transformation.zoom
         const point = { x: left, y: top }
 
-        setSelectionZone({ cornerStart: point, cornerEnd: point })
+        SelectionZoneAtom.set({ cornerStart: point, cornerEnd: point })
       }
     },
     [transformation.zoom, zoomContainerRef]
@@ -55,20 +55,20 @@ export const useSelectionZone = (zoomContainerRef: MutableRefObject<HTMLElement>
 
   const expandSelectionZone = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
-      setSelectionZone((zone) => {
-        const deltaX = (e.clientX - currentDragItem.x) / transformation.zoom
-        const deltaY = (e.clientY - currentDragItem.y) / transformation.zoom
+      if (selectionZone) {
+        const deltaX = (e.clientX - dragItem.x) / transformation.zoom
+        const deltaY = (e.clientY - dragItem.y) / transformation.zoom
 
-        return {
-          ...zone,
+        SelectionZoneAtom.set({
+          ...selectionZone,
           cornerEnd: {
-            x: zone.cornerEnd.x + deltaX,
-            y: zone.cornerEnd.y + deltaY
+            x: selectionZone.cornerEnd.x + deltaX,
+            y: selectionZone.cornerEnd.y + deltaY
           }
-        }
-      })
+        })
+      }
     },
-    [currentDragItem, transformation.zoom, setSelectionZone]
+    [dragItem, transformation.zoom]
   )
 
   return { initSelectionZone, expandSelectionZone }

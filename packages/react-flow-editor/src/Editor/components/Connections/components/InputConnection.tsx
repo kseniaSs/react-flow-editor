@@ -1,8 +1,10 @@
 import { isEqual } from "lodash"
 import React, { useContext } from "react"
+
 import { Point } from "@/types"
 import { DEFAULT_COLOR } from "@/Editor/constants"
 import { EditorContext } from "@/Editor/context"
+
 import { ARROW_ID } from "./Arrow"
 
 type InputConnectionProps = {
