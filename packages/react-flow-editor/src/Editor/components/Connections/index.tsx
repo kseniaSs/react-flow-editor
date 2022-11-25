@@ -9,7 +9,7 @@ import { Arrow } from "./components/Arrow"
 import { EditorContext } from "../../context"
 
 export const Container: React.FC = () => {
-  const { styleConfig } = useContext(EditorContext)
+  const { connectorStyleConfig } = useContext(EditorContext)
   const nodes = useStore(NodesAtom)
   const transformation = useStore(TransformationMap)
 
@@ -27,7 +27,7 @@ export const Container: React.FC = () => {
   return (
     <div className="con">
       <svg className="connections" style={connectionContainerStyle(nodesRect)}>
-        <Arrow color={styleConfig?.connector?.color} />
+        <Arrow color={connectorStyleConfig?.color} />
         {nodes.map((node) => (
           <Connection key={node.id} node={node} />
         ))}

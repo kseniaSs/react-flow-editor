@@ -55,22 +55,9 @@ export type OnEditorRectsMountedProps = {
   editorContainerRef: MutableRefObject<HTMLDivElement>
 }
 
-export type PointStyleConfig = {
-  width: number
-  height: number
-  color: string
-  disconnectedColor: string
-  disconnectedBg: string
-}
-
 export type ConnectorStyleConfig = {
   color: string
   width: number
-}
-
-export type StyleConfig = {
-  point?: PointStyleConfig
-  connector?: ConnectorStyleConfig
 }
 
 export type ScaleComponentProps = {
@@ -110,5 +97,5 @@ export type EditorProps = {
   ScaleComponent?: React.FC<ScaleComponentProps>
   OutputComponent?: React.FC<OutputComponentProps>
   importantNodeIds?: Array<string>
-  styleConfig?: StyleConfig
+  connectorStyleConfig?: ConnectorStyleConfig
 }

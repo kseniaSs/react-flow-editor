@@ -19,7 +19,7 @@ const Editor: React.FC<EditorProps> = ({
   transformation,
   onTransfromationChange,
   onEditorRectsMounted,
-  styleConfig
+  connectorStyleConfig
 }) => (
   <EditorContext.Provider
     value={{
@@ -27,7 +27,7 @@ const Editor: React.FC<EditorProps> = ({
       OutputComponent,
       importantNodeIds,
       onEditorRectsMounted,
-      styleConfig
+      connectorStyleConfig
     }}
   >
     <Canvas SelectionZoneComponent={SelectionZoneComponent} ScaleComponent={ScaleComponent} />

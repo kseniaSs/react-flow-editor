@@ -9,7 +9,7 @@
     "dev": "vite serve",
     "prettier": "prettier -c --config ../../.prettierrc \"src/**/*.{ts,tsx}\"",
     "eslint": "eslint ./src --ext .ts,.tsx --quiet",
-    "lint": "tsc ./src"
+    "typescript": "tsc -noEmit --pretty"
   },
   "bugs": {
     "url": "https://github.com/lochbrunner/react-flow-editor/issues"

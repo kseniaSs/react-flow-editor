@@ -55,5 +55,5 @@ jobs:
       - name: Run eslint
         run: pnpm run eslint
 
-      # - name: Run typescript lint
-      #   run: pnpm run typescript
+      - name: Run typescript lint
+        run: pnpm run typescript

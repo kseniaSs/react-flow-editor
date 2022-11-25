@@ -9,7 +9,7 @@ import {
   OutputComponentProps
 } from "@kseniass/react-flow-editor"
 import "./simple.scss"
-import { initialNodes, STYLED_CONFIG, TIPS } from "./constants"
+import { initialNodes, STYLED_CONFIG, TIPS, OUTPUT_STYLES } from "./constants"
 import { nodeFactory } from "./helpers"
 import { NodeAttributes } from "./parts"
 
@@ -22,13 +22,13 @@ const OutputComponent: React.FC<OutputComponentProps> = ({ active, nodeState }) 
     style={{
       width: "10px",
       height: "10px",
-      background: `${active ? STYLED_CONFIG.point.color : STYLED_CONFIG.point.disconnectedBg}`,
+      background: `${active ? OUTPUT_STYLES.color : OUTPUT_STYLES.disconnectedBg}`,
       borderRadius: "50%",
       border: active
         ? "none"
         : nodeState === NodeState.selected
-        ? `2px solid ${STYLED_CONFIG.point.color}`
-        : `1px solid ${STYLED_CONFIG.point.disconnectedColor}`
+        ? `2px solid ${OUTPUT_STYLES.color}`
+        : `1px solid ${OUTPUT_STYLES.disconnectedColor}`
     }}
   />
 )
@@ -73,7 +73,7 @@ const App = () => {
           transformation={transformation}
           onTransfromationChange={setTransformation}
           importantNodeIds={[initialNodes[0].id]}
-          styleConfig={STYLED_CONFIG}
+          connectorStyleConfig={STYLED_CONFIG}
         />
       </div>
       <pre className="tips">{TIPS}</pre>

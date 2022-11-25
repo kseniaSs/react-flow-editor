@@ -1,7 +1,8 @@
 import React, { FC, MutableRefObject } from "react"
 import { cornersToRect } from "@/Editor/helpers/selectionZone"
-import { SelectionZoneAtom, Transformation, TransformationMap } from "@/Editor/state"
+import { SelectionZoneAtom, TransformationMap } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
+import { Transformation } from "@/types"
 
 export type SelectionZone = {
   left: number

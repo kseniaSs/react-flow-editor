@@ -1,6 +1,6 @@
 {
   "name": "@kseniass/react-flow-editor",
-  "version": "0.7.60",
+  "version": "1.0.0",
   "description": "React component which enables creating flow editors with ease",
   "repository": {
     "type": "git",
@@ -28,7 +28,8 @@
   "scripts": {
     "build": "vite build",
     "prettier": "prettier -c --config ../../.prettierrc \"src/**/*.{ts,tsx,md}\"",
-    "eslint": "eslint ./src --ext .ts,.tsx --quiet"
+    "eslint": "eslint ./src --ext .ts,.tsx --quiet",
+    "typescript": "tsc -noEmit --pretty"
   },
   "dependencies": {
     "@nanostores/react": "^0.4.0",

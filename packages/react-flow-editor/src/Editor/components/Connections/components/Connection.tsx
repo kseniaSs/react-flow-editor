@@ -14,7 +14,7 @@ type ConnectionProps = {
 }
 
 export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ output, node }) => {
-  const { styleConfig } = useContext(EditorContext)
+  const { connectorStyleConfig } = useContext(EditorContext)
   const nodes = useStore(NodesAtom)
   const svgOffset = useStore(SvgOffsetAtom)
 
@@ -24,8 +24,8 @@ export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ outp
 
   const outputPosition = node.rectPosition
     ? {
-        x: -svgOffset.x + node.position.x + output.position.x + (styleConfig?.point?.width || DEFAULT_POINT_SIZE) / 2,
-        y: -svgOffset.y + node.position.y + output.position.y + (styleConfig?.point?.height || DEFAULT_POINT_SIZE) / 2
+        x: -svgOffset.x + node.position.x + output.position.x + (connectorStyleConfig?.width || DEFAULT_POINT_SIZE) / 2,
+        y: -svgOffset.y + node.position.y + output.position.y + (connectorStyleConfig?.height || DEFAULT_POINT_SIZE) / 2
       }
     : node.position
 

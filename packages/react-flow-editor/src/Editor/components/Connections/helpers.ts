@@ -1,7 +1,6 @@
-import { Node, Point } from "@/types"
+import { Node, Point, Transformation } from "@/types"
 import { DISCONNECTOR_ZONE, LARGEST_RECT, MINIMUM_SVG_SIZE } from "@/Editor/constants"
 import { Axis, NodeGroupsRect } from "../../types"
-import { Transformation } from "@/Editor/state"
 
 const WHITE_SPACE_SCREENS = 2
 
