@@ -26,7 +26,7 @@ jobs:
               args: [--frozen-lockfile, --strict-peer-dependencies]
 
       - name: Build react-flow-editor
-        run: pnpm --dir ./packages/react-flow-editor run build
+        run: pnpm --dir ./packages/react-flow-editor run build && pnpm i
 
       - name: Run prettier
         run: pnpm run prettier
