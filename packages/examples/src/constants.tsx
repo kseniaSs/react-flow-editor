@@ -1,4 +1,4 @@
-import { Node, StyleConfig } from "@kseniass/react-flow-editor"
+import { Node } from "@kseniass/react-flow-editor"
 
 export const DEFAULT_OUTPUT = {
   x: 145,
