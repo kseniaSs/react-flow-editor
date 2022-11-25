@@ -4,7 +4,7 @@ on:
   - pull_request
 
 jobs:
-  build:
+  build-and-lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,27 +27,6 @@ jobs:
 
       - name: Build react-flow-editor
         run: pnpm --dir ./packages/react-flow-editor run build
-
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 7
-          run_install: |
-            - recursive: true
-              args: [--frozen-lockfile, --strict-peer-dependencies]
 
       - name: Run prettier
         run: pnpm run prettier
