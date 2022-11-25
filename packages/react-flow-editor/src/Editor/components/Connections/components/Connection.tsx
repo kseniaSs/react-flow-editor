@@ -1,9 +1,7 @@
-import React, { useContext } from "react"
+import React from "react"
 import { useStore } from "@nanostores/react"
 
 import { Node, Output } from "@/types"
-import { DEFAULT_POINT_SIZE } from "@/Editor/constants"
-import { EditorContext } from "@/Editor/context"
 import { DragItemType } from "@/Editor/types"
 import { DragItemAtom, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
 
@@ -15,7 +13,6 @@ type ConnectionProps = {
 }
 
 export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ output, node }) => {
-  const { connectorStyleConfig } = useContext(EditorContext)
   const nodes = useStore(NodesAtom)
   const svgOffset = useStore(SvgOffsetAtom)
 
@@ -25,8 +22,8 @@ export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ outp
 
   const outputPosition = node.rectPosition
     ? {
-        x: -svgOffset.x + node.position.x + output.position.x + (connectorStyleConfig?.width || DEFAULT_POINT_SIZE) / 2,
-        y: -svgOffset.y + node.position.y + output.position.y + (connectorStyleConfig?.height || DEFAULT_POINT_SIZE) / 2
+        x: -svgOffset.x + node.position.x + output.position.x,
+        y: -svgOffset.y + node.position.y + output.position.y
       }
     : node.position
 
