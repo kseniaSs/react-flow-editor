@@ -1,10 +1,12 @@
 import React, { useContext, useEffect } from "react"
 import { isEqual } from "lodash"
+
 import { Node as NodeType } from "@/types"
+import { nodeActions } from "@/Editor/state"
+
 import { nodeStyle } from "./helpers"
 import { useNodeInteractions } from "./useNodeInteractions"
 import { EditorContext } from "../../context"
-import { nodeActions } from "@/Editor/state"
 import { Output } from "../Output"
 
 type NodeProps = {

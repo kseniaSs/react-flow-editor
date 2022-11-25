@@ -1,5 +1,7 @@
-import { NodeState } from "@/types"
 import { action } from "nanostores"
+
+import { NodeState } from "@/types"
+
 import { NodesAtom } from "./store"
 
 export const changeNodeState = action(NodesAtom, "changeNodeState", (store, nodeId: string, nodeState: NodeState) => {

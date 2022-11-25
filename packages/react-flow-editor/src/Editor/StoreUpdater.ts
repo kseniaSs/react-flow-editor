@@ -1,7 +1,9 @@
-import { NodesAtom } from "@/Editor/state/Nodes"
 import { FC, useEffect } from "react"
-import { Node, Transformation } from "@/types"
 import { MapStore, WritableAtom } from "nanostores"
+
+import { NodesAtom } from "@/Editor/state/Nodes"
+import { Node, Transformation } from "@/types"
+
 import { TransformationMap } from "./state"
 
 type Props = {

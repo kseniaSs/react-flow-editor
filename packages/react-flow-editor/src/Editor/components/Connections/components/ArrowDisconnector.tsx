@@ -1,11 +1,13 @@
 import React, { useCallback, useContext } from "react"
+import { useStore } from "@nanostores/react"
+
 import { NodeState, Output, Point } from "@/types"
 import { DragItemType } from "@/Editor/types"
 import { EditorContext, RectsContext } from "@/Editor/context"
-import { disconnectorStyle } from "../helpers"
 import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom } from "@/Editor/state"
-import { useStore } from "@nanostores/react"
 import { getRectFromRef } from "@/Editor/helpers/getRectFromRef"
+
+import { disconnectorStyle } from "../helpers"
 
 type DisconnectorProps = {
   position: Point

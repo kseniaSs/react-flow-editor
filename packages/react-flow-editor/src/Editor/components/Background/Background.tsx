@@ -1,6 +1,8 @@
-import { TransformationMap } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
 import React, { FC } from "react"
+
+import { TransformationMap } from "@/Editor/state"
+
 import { BackgroundProps, BackgroundVariant } from "./types"
 import { createGridLinesPath, createGridDotsPath } from "./utils"
 

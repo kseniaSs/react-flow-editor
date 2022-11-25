@@ -2,6 +2,7 @@ import React, { useRef } from "react"
 import { useStore } from "@nanostores/react"
 
 import { ScaleComponentProps } from "@/types"
+
 import Background from "./components/Background/Background"
 import { transformCanvasStyle, useEditorRectsMounted } from "./helpers"
 import useDnD from "./helpers/DnD"

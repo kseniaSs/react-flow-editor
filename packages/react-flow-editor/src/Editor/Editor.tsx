@@ -1,10 +1,10 @@
 import React, { memo } from "react"
 import { isEqual } from "lodash"
+
 import type { EditorProps } from "@/types"
+
 import { Canvas } from "./Canvas"
-
 import { EditorContext } from "./context"
-
 import "../_style.scss"
 import { StoreUpdater } from "./StoreUpdater"
 

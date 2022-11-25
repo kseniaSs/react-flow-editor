@@ -1,9 +1,10 @@
 import React, { useContext } from "react"
+import { useStore } from "@nanostores/react"
+
 import { DEFAULT_POINT_SIZE } from "@/Editor/constants"
 import { EditorContext } from "@/Editor/context"
 import { DragItemType } from "@/Editor/types"
 import { DragItemAtom, NewConnectionAtom, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
-import { useStore } from "@nanostores/react"
 
 import InputConnection from "./InputConnection"
 

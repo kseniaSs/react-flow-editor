@@ -1,5 +1,6 @@
-import { Transformation } from "@/types"
 import { map } from "nanostores"
+
+import { Transformation } from "@/types"
 
 export const TransformationMap = map<Transformation>({
   dx: 0,

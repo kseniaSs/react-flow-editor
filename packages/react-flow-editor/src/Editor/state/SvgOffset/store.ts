@@ -1,5 +1,6 @@
-import { Point, Size } from "@/types"
 import { atom } from "nanostores"
+
+import { Point, Size } from "@/types"
 
 export type SVGOffsetState = Point & Size
 

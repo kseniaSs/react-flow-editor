@@ -1,3 +1,5 @@
+import { useStore } from "@nanostores/react"
+
 import {
   autoScrollActions,
   DragItemAtom,
@@ -6,7 +8,7 @@ import {
   NodesAtom,
   SelectionZoneAtom
 } from "@/Editor/state"
-import { useStore } from "@nanostores/react"
+
 import { BUTTON_LEFT } from "../../constants"
 import { DragItemType } from "../../types"
 import { useAutoScroll } from "../autoScroll"

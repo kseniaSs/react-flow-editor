@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react"
-import { NodesAtom, SvgOffsetAtom, TransformationMap } from "@/Editor/state"
 import { useStore } from "@nanostores/react"
+
+import { NodesAtom, SvgOffsetAtom, TransformationMap } from "@/Editor/state"
 
 import { Connection } from "./components/Connection"
 import { NewConnection } from "./components/NewConnection"

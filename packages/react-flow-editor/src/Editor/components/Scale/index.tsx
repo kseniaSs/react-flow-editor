@@ -1,10 +1,12 @@
 import React, { FC } from "react"
-import { ScaleComponentProps } from "@/types"
-import { useOverview } from "./useOverview"
 import { useStore } from "@nanostores/react"
+
+import { ScaleComponentProps } from "@/types"
 import { TransformationMap } from "@/Editor/state"
 import { ZOOM_STEP } from "@/Editor/constants"
 import { clampZoom } from "@/Editor/helpers"
+
+import { useOverview } from "./useOverview"
 
 type Props = {
   ScaleComponent: FC<ScaleComponentProps>

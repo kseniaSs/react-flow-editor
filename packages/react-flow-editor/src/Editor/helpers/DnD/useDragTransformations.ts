@@ -1,6 +1,6 @@
+import { useStore } from "@nanostores/react"
+
 import { NodeState } from "@/types"
-import { DragItemType } from "../../types"
-import { isNodeInSelectionZone } from "../selectionZone"
 import {
   DragItemAtom,
   NewConnectionAtom,
@@ -9,7 +9,9 @@ import {
   SvgOffsetAtom,
   TransformationMap
 } from "@/Editor/state"
-import { useStore } from "@nanostores/react"
+
+import { DragItemType } from "../../types"
+import { isNodeInSelectionZone } from "../selectionZone"
 import { getRectFromRef } from "../getRectFromRef"
 
 export const useDragTransformations = ({
