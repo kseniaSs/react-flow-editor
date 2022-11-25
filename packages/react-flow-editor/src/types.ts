@@ -25,7 +25,6 @@ export type SelectionZone = {
 export enum NodeState {
   dragging = "dragging",
   draggingConnector = "draggingConnector",
-  connectorHovered = "connectorHovered",
   selected = "selected"
 }
 
