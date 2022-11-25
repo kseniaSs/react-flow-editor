@@ -1,4 +1,5 @@
 import { Node } from "@kseniass/react-flow-editor"
+
 import { DEFAULT_OUTPUT } from "./constants"
 
 export const nodeFactory = (nodeName?: string): Node => ({

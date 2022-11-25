@@ -8,6 +8,7 @@ import {
   Transformation,
   OutputComponentProps
 } from "@kseniass/react-flow-editor"
+
 import "./simple.scss"
 import { initialNodes, STYLED_CONFIG, TIPS, OUTPUT_STYLES } from "./constants"
 import { nodeFactory } from "./helpers"
