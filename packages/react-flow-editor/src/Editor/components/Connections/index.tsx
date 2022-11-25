@@ -25,12 +25,14 @@ export const Container: React.FC = () => {
   }, [nodesRect.leftPoint, nodesRect.topPoint, nodesRect.realHeight, nodesRect.realWidth])
 
   return (
-    <svg className="connections" style={connectionContainerStyle(nodesRect)}>
-      <Arrow color={styleConfig?.connector?.color} />
-      {nodes.map((node) => (
-        <Connection key={node.id} node={node} />
-      ))}
-      <NewConnection />
-    </svg>
+    <div className="con">
+      <svg className="connections" style={connectionContainerStyle(nodesRect)}>
+        <Arrow color={styleConfig?.connector?.color} />
+        {nodes.map((node) => (
+          <Connection key={node.id} node={node} />
+        ))}
+        <NewConnection />
+      </svg>
+    </div>
   )
 }

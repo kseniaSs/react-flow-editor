@@ -61,7 +61,7 @@ export const TIPS = `
   - Scroll mouse to zoom
 `
 
-export const STYLED_CONFIG: StyleConfig = {
+export const STYLED_CONFIG = {
   point: {
     width: 10,
     height: 10,
