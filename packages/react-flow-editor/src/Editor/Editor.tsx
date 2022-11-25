@@ -12,6 +12,7 @@ const Editor: React.FC<EditorProps> = ({
   nodes,
   NodeComponent,
   ScaleComponent,
+  OutputComponent,
   SelectionZoneComponent,
   importantNodeIds,
   onNodesChange,
@@ -23,6 +24,7 @@ const Editor: React.FC<EditorProps> = ({
   <EditorContext.Provider
     value={{
       NodeComponent,
+      OutputComponent,
       importantNodeIds,
       onEditorRectsMounted,
       styleConfig

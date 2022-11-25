@@ -12,6 +12,7 @@ export const useNodeInteractions = (node: Node) => {
 
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
     if (e.button === BUTTON_LEFT) {
+      e.stopPropagation()
       const point = { x: e.clientX, y: e.clientY }
       DragItemAtom.set({ type: DragItemType.node, ...point, id: node.id })
 
@@ -57,21 +58,21 @@ export const useNodeInteractions = (node: Node) => {
   )
 
   const onMouseEnter: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
-    const isNodeHovered = (nodeItem: Node) =>
-      nodeItem.id === node.id &&
-      dragItem.type === DragItemType.connection &&
-      dragItem.id !== node.id &&
-      nodeItem.state !== NodeState.connectorHovered
+    // const isNodeHovered = (nodeItem: Node) =>
+    //   nodeItem.id === node.id &&
+    //   dragItem.type === DragItemType.connection &&
+    //   dragItem.id !== node.id &&
+    //   nodeItem.state !== NodeState.connectorHovered
 
-    const needUpdateNodes = nodes.some(isNodeHovered)
+    // const needUpdateNodes = nodes.some(isNodeHovered)
 
-    needUpdateNodes &&
-      NodesAtom.set(
-        nodes.map((nodeItem) => ({
-          ...nodeItem,
-          state: isNodeHovered(nodeItem) ? NodeState.connectorHovered : nodeItem.state
-        }))
-      )
+    // needUpdateNodes &&
+    //   NodesAtom.set(
+    //     nodes.map((nodeItem) => ({
+    //       ...nodeItem,
+    //       state: isNodeHovered(nodeItem) ? NodeState.connectorHovered : nodeItem.state
+    //     }))
+    //   )
 
     HoveredNodeIdAtom.set(node.id)
   }, [dragItem.id, nodes])

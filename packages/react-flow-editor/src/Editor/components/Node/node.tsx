@@ -2,10 +2,10 @@ import React, { useContext, useEffect } from "react"
 import { isEqual } from "lodash"
 import { Node as NodeType } from "@/types"
 import { nodeStyle } from "./helpers"
-import { Point } from "./Point"
 import { useNodeInteractions } from "./useNodeInteractions"
 import { EditorContext } from "../../context"
 import { nodeActions } from "@/Editor/state"
+import { Output } from "../Output"
 
 type NodeProps = {
   node: NodeType
@@ -43,7 +43,7 @@ const Node: React.FC<
       onMouseLeave={nodeInteractions.onMouseLeave}
     >
       {node.outputs.map((out) => (
-        <Point key={out.id} node={node} output={out} />
+        <Output key={out.id} node={node} output={out} />
       ))}
       <NodeComponent {...node} />
     </div>

@@ -1,6 +1,13 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
-import { Editor, Node, ScaleComponentProps, Transformation } from "@kseniass/react-flow-editor"
+import {
+  Editor,
+  Node,
+  NodeState,
+  ScaleComponentProps,
+  Transformation,
+  OutputComponentProps
+} from "@kseniass/react-flow-editor"
 import "./simple.scss"
 import { initialNodes, STYLED_CONFIG, TIPS } from "./constants"
 import { nodeFactory } from "./helpers"
@@ -9,6 +16,22 @@ import { NodeAttributes } from "./parts"
 const NodeComponent = (_: Node) => <div>Node</div>
 
 const SelectionZoneComponent = () => <div className="selection-zone" />
+
+const OutputComponent: React.FC<OutputComponentProps> = ({ active, nodeState }) => (
+  <div
+    style={{
+      width: "10px",
+      height: "10px",
+      background: `${active ? STYLED_CONFIG.point.color : STYLED_CONFIG.point.disconnectedBg}`,
+      borderRadius: "50%",
+      border: active
+        ? "none"
+        : nodeState === NodeState.selected
+        ? `2px solid ${STYLED_CONFIG.point.color}`
+        : `1px solid ${STYLED_CONFIG.point.disconnectedColor}`
+    }}
+  />
+)
 
 const ScaleComponent: React.FC<ScaleComponentProps> = ({ zoomIn, zoomOut, overview }) => (
   <div className="scale">
@@ -44,6 +67,7 @@ const App = () => {
           NodeComponent={NodeComponent}
           SelectionZoneComponent={SelectionZoneComponent}
           ScaleComponent={ScaleComponent}
+          OutputComponent={OutputComponent}
           nodes={nodes}
           onNodesChange={setNodes}
           transformation={transformation}

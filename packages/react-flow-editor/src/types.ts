@@ -80,6 +80,11 @@ export type ScaleComponentProps = {
   overview: () => void
 }
 
+export type OutputComponentProps = {
+  active: boolean
+  nodeState: NodeState | null
+}
+
 export type EditorProps = {
   nodes: Node[]
   onNodesChange: (nodes: Node[]) => void
@@ -104,6 +109,7 @@ export type EditorProps = {
   NodeComponent: React.FC<Node>
   SelectionZoneComponent?: React.FC
   ScaleComponent?: React.FC<ScaleComponentProps>
+  OutputComponent?: React.FC<OutputComponentProps>
   importantNodeIds?: Array<string>
   styleConfig?: StyleConfig
 }
