@@ -14,13 +14,7 @@ import { initialNodes, STYLED_CONFIG, TIPS, OUTPUT_STYLES } from "./constants"
 import { nodeFactory } from "./helpers"
 import { NodeAttributes } from "./parts"
 
-const NodeComponent = (node: Node) => {
-  if (node.id === "Node_1") {
-    console.log(node.state)
-  }
-
-  return <div>Node</div>
-}
+const NodeComponent = (_: Node) => <div>Node</div>
 
 const SelectionZoneComponent = () => <div className="selection-zone" />
 
