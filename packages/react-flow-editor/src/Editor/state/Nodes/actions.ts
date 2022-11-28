@@ -4,8 +4,8 @@ import { NodeState } from "@/types"
 
 import { NodesAtom } from "./store"
 
-export const changeNodeState = action(NodesAtom, "changeNodeState", (store, nodeId: string, nodeState: NodeState) => {
-  store.set(store.get().map((node) => (node.id === nodeId ? { ...node, nodeState } : node)))
+export const changeNodeState = action(NodesAtom, "changeNodeState", (store, nodeId: string, state: NodeState) => {
+  store.set(store.get().map((node) => (node.id === nodeId ? { ...node, state } : node)))
 })
 
 export const changeNodeRectPos = action(

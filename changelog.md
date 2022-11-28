@@ -1,6 +1,12 @@
 # Changelog
 
-### Version 1.0.0
+### Version 1.0.2
+
+##### style fixes
+
+- wrong key in changeNodeState function, must be `node`.
+
+### Version 1.0.1
 
 ##### style fixes
 
