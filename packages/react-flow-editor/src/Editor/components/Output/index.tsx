@@ -58,7 +58,7 @@ export const Output: React.FC<Props> = React.memo(({ node, output }) => {
       style={{
         top: `${output.position.y}px`,
         left: `${output.position.x}px`,
-        transform: "translateY(-50%)"
+        transform: "translate(-50%, -50%)"
       }}
     >
       <OutputComponent active={isActive} nodeState={node.state} />
