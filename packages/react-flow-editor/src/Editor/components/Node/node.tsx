@@ -40,7 +40,7 @@ const Node: React.FC<
       className="node"
       onMouseDown={nodeInteractions.onDragStarted}
       onMouseUp={nodeInteractions.onMouseUp}
-      style={nodeStyle(node.position)}
+      style={nodeStyle(node.position, node.state)}
       onMouseEnter={nodeInteractions.onMouseEnter}
       onMouseLeave={nodeInteractions.onMouseLeave}
     >

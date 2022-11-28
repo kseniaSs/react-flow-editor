@@ -34,10 +34,10 @@ export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent
   return (
     <RectsContext.Provider value={{ zoomContainerRef, editorContainerRef }}>
       <div
-        onMouseUp={onDragEnded}
+        onMouseUpCapture={onDragEnded}
         onMouseMove={onDrag}
         onWheel={onWheel}
-        onMouseDown={onDragStarted}
+        onMouseDownCapture={onDragStarted}
         ref={editorContainerRef}
         className="react-flow-editor"
       >

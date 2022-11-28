@@ -111,6 +111,9 @@ body {
   box-sizing: content-box;
   z-index: 1;
   width: 150px;
+  height: 60px;
+  padding: 10px;
+  box-sizing: border-box;
 
   transition: $node-transitions;
 

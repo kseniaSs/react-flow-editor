@@ -1,5 +1,15 @@
 # Changelog
 
+### Version 1.0.1
+
+##### Style fixes
+
+- Cursor has grabbing style if node state is dragging. Also dragging node z-index was increased.
+
+##### Functionality fixes
+
+- Canvas mouseDown capture on drilling
+
 ### Version 1.0.0
 
 ##### style fixes
