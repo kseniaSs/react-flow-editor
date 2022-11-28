@@ -1,12 +1,12 @@
 import { Node } from "@kseniass/react-flow-editor"
 
 export const DEFAULT_OUTPUT = {
-  x: 145,
+  x: 149,
   y: 30
 }
 
 const DEFAULT_OUTPUT_2 = {
-  x: 145,
+  x: 149,
   y: 45
 }
 
