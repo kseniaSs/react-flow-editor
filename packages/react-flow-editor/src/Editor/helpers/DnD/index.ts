@@ -74,14 +74,9 @@ export default ({
       )
 
       if (inputNode && outputNode && inputNode.inputNumber > inputIdsForInputNode.length) {
-        const alreadyConnected = outputNode.outputs.some(
-          (out) => out.id !== dragItem.output?.id && out.nextNodeId === inputNode.id
-        )
-
         const nodesAreEqual = outputNode.id === inputNode.id
 
-        !alreadyConnected &&
-          !nodesAreEqual &&
+        !nodesAreEqual &&
           NodesAtom.set(
             nodes.map((el) => ({
               ...el,
