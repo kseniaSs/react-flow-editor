@@ -48,7 +48,7 @@ export const Connection: React.FC<ConnectionProps> = ({ node }) => {
       !(
         dragItem.type === DragItemType.connection &&
         out.nextNodeId === dragItem.output?.nextNodeId &&
-        node.id === dragItem.id
+        out.id === dragItem.output.id
       )
   )
 
