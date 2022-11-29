@@ -2,7 +2,7 @@ import { useStore } from "@nanostores/react"
 import { RefObject, useCallback } from "react"
 
 import { Node, RectZone, SelectionZone, Transformation } from "../../types"
-import { DragItemAtom, SelectionZoneAtom, TransformationMap } from "../state"
+import { AutoScrollAtom, AutoScrollDirection, DragItemAtom, SelectionZoneAtom, TransformationMap } from "../state"
 import { getRectFromRef } from "./getRectFromRef"
 
 export const isNodeInSelectionZone = (node: Node, zone: SelectionZone | null, transform: Transformation): boolean => {
@@ -37,6 +37,7 @@ export const useSelectionZone = (zoomContainerRef: RefObject<HTMLElement>) => {
   const selectionZone = useStore(SelectionZoneAtom)
   const transformation = useStore(TransformationMap)
   const dragItem = useStore(DragItemAtom)
+  const autoScroll = useStore(AutoScrollAtom)
 
   const initSelectionZone = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
@@ -62,13 +63,17 @@ export const useSelectionZone = (zoomContainerRef: RefObject<HTMLElement>) => {
         SelectionZoneAtom.set({
           ...selectionZone,
           cornerEnd: {
-            x: selectionZone.cornerEnd.x + deltaX,
-            y: selectionZone.cornerEnd.y + deltaY
+            x:
+              selectionZone.cornerEnd.x +
+              ([AutoScrollDirection.left, AutoScrollDirection.right].includes(autoScroll.direction!) ? 0 : deltaX),
+            y:
+              selectionZone.cornerEnd.y +
+              ([AutoScrollDirection.top, AutoScrollDirection.bottom].includes(autoScroll.direction!) ? 0 : deltaY)
           }
         })
       }
     },
-    [dragItem, transformation.zoom]
+    [dragItem, transformation.zoom, selectionZone]
   )
 
   return { initSelectionZone, expandSelectionZone }
