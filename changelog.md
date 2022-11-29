@@ -1,8 +1,8 @@
 # Changelog
 
-### Version 1.0.4
+### Version 1.1.0
 
-##### Style fixes
+##### Feature
 
 - Disabled node state added. Node is disabled when it has no enough inputs.
 
