@@ -45,13 +45,19 @@ export default ({
   const onDragEnded = () => {
     autoScrollActions.toDeafult()
 
+    if (nodes.some((node) => Boolean(node.state)) && dragItem.type === DragItemType.viewPort) {
+      nodeActions.clearNodesState()
+    }
+
     if (dragItem.type === DragItemType.connection) {
       const inputNode = nodes.find((currentElement) => hoveredNodeId === currentElement.id)!
       const outputNode = nodes.find((node) => node.id === dragItem.id)
 
       const isNew = dragItem.output?.nextNodeId === null
 
-      if (!inputNode && outputNode && isNew && nodes.some((node) => Boolean(node.state))) {
+      const isOnEmptyPlaceOnCreateConnection = !inputNode && outputNode && isNew
+
+      if (nodes.some((node) => Boolean(node.state)) && isOnEmptyPlaceOnCreateConnection) {
         nodeActions.clearNodesState()
       }
 
@@ -105,10 +111,6 @@ export default ({
       }
 
       initSelectionZone(e)
-    }
-
-    if (!dragItem.type && nodes.some((node) => Boolean(node.state))) {
-      nodeActions.clearNodesState()
     }
   }
 
