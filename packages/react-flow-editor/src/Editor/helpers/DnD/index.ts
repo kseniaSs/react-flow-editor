@@ -14,6 +14,7 @@ import { DragItemType } from "../../types"
 import { useAutoScroll } from "../autoScroll"
 import { useSelectionZone } from "../selectionZone"
 import { useDragTransformations } from "./useDragTransformations"
+import { isNodesHaveStateToReset } from "./helpers"
 
 export default ({
   zoomContainerRef,
@@ -45,20 +46,20 @@ export default ({
   const onDragEnded = () => {
     autoScrollActions.toDeafult()
 
+    if (isNodesHaveStateToReset()) {
+      nodeActions.clearNodesState()
+    }
+
     if (dragItem.type === DragItemType.connection) {
       const inputNode = nodes.find((currentElement) => hoveredNodeId === currentElement.id)!
       const outputNode = nodes.find((node) => node.id === dragItem.id)
 
       const isNew = dragItem.output?.nextNodeId === null
 
-      if (!inputNode && outputNode && isNew && nodes.some((node) => Boolean(node.state))) {
-        nodeActions.clearNodesState()
-      }
-
       if (!inputNode && outputNode && !isNew) {
         NodesAtom.set(
           nodes.map((el) => {
-            if (el.id !== outputNode.id) return el
+            if (el.id !== outputNode.id) return { ...el, state: null }
 
             return {
               ...el,
@@ -74,14 +75,9 @@ export default ({
       )
 
       if (inputNode && outputNode && inputNode.inputNumber > inputIdsForInputNode.length) {
-        const alreadyConnected = outputNode.outputs.some(
-          (out) => out.id !== dragItem.output?.id && out.nextNodeId === inputNode.id
-        )
-
         const nodesAreEqual = outputNode.id === inputNode.id
 
-        !alreadyConnected &&
-          !nodesAreEqual &&
+        !nodesAreEqual &&
           NodesAtom.set(
             nodes.map((el) => ({
               ...el,
@@ -110,10 +106,6 @@ export default ({
       }
 
       initSelectionZone(e)
-    }
-
-    if (!dragItem.type && nodes.some((node) => Boolean(node.state))) {
-      nodeActions.clearNodesState()
     }
   }
 

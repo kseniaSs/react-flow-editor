@@ -8,6 +8,10 @@ export const changeNodeState = action(NodesAtom, "changeNodeState", (store, node
   store.set(store.get().map((node) => (node.id === nodeId ? { ...node, state } : node)))
 })
 
+export const changeNodesState = action(NodesAtom, "changeNodesState", (store, nodeIds: string[], state: NodeState) => {
+  store.set(store.get().map((node) => (nodeIds.includes(node.id) ? { ...node, state } : node)))
+})
+
 export const changeNodeRectPos = action(
   NodesAtom,
   "changeNodeRectPos",

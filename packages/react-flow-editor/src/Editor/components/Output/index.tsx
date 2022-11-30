@@ -3,13 +3,21 @@ import React, { useContext } from "react"
 import { useStore } from "@nanostores/react"
 
 import { Node, NodeState, Output as OutputType } from "@/types"
-import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom, TransformationMap } from "@/Editor/state"
+import {
+  DragItemAtom,
+  NewConnectionAtom,
+  nodeActions,
+  NodesAtom,
+  SvgOffsetAtom,
+  TransformationMap
+} from "@/Editor/state"
 import { getRectFromRef } from "@/Editor/helpers/getRectFromRef"
 
 import { BUTTON_LEFT } from "../../constants"
 import { EditorContext, RectsContext } from "../../context"
 import { resetEvent } from "../../helpers"
 import { DragItemType } from "../../types"
+import { markDisabledNodes } from "../Node/helpers"
 
 type Props = {
   node: Node
@@ -22,6 +30,7 @@ export const Output: React.FC<Props> = React.memo(({ node, output }) => {
   const svgOffset = useStore(SvgOffsetAtom)
   const transformation = useStore(TransformationMap)
   const dragItem = useStore(DragItemAtom)
+  const nodes = useStore(NodesAtom)
 
   const startNewConnection = (e: React.MouseEvent<HTMLElement>) => {
     const zoomRect = getRectFromRef(zoomContainerRef)
@@ -44,6 +53,8 @@ export const Output: React.FC<Props> = React.memo(({ node, output }) => {
         x: e.clientX,
         y: e.clientY
       })
+
+      markDisabledNodes(node, nodes)
     }
   }
 

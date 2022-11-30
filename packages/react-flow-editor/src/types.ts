@@ -25,7 +25,8 @@ export type SelectionZone = {
 export enum NodeState {
   dragging = "dragging",
   draggingConnector = "draggingConnector",
-  selected = "selected"
+  selected = "selected",
+  disabled = "disabled"
 }
 
 export type Output = {

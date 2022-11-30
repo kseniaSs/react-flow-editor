@@ -1,5 +1,17 @@
 # Changelog
 
+### Version 1.1.0
+
+##### Feature
+
+- Disabled node state added. Node is disabled when it has no enough inputs.
+
+##### Bug fixes
+
+- Multiple selection bug was fixed
+- Multiple selection DnD bug was fixed
+- Selection zone jerky moves bug was fixed
+
 ### Version 1.0.3
 
 ##### Style fixes

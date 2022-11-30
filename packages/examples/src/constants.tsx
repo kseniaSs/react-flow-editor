@@ -19,7 +19,7 @@ export const initialNodes: Node[] = [
   {
     id: "Node_1",
     position: { x: 110, y: 110 },
-    inputNumber: 10,
+    inputNumber: 0,
     inputPosition: DEFAULT_INPUT,
     outputs: [
       { id: "N_1_1", nextNodeId: "Node_2", position: DEFAULT_OUTPUT },
