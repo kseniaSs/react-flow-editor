@@ -1,5 +1,9 @@
 # Changelog
 
+### Version 1.1.1
+
+- Stop propagation was removed to keep available window catch mousedown
+
 ### Version 1.1.0
 
 ##### Feature
