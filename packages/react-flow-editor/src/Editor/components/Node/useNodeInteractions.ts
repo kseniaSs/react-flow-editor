@@ -14,7 +14,6 @@ export const useNodeInteractions = (node: Node) => {
 
   const onDragStarted: React.MouseEventHandler<HTMLDivElement> = (e) => {
     if (e.button === BUTTON_LEFT) {
-      e.stopPropagation()
       const point = { x: e.clientX, y: e.clientY }
       DragItemAtom.set({ type: DragItemType.node, ...point, id: node.id })
 
