@@ -46,7 +46,7 @@ export default ({
   const onDragEnded = () => {
     autoScrollActions.toDeafult()
 
-    if (isNodesHaveStateToReset(nodes, dragItem)) {
+    if (isNodesHaveStateToReset()) {
       nodeActions.clearNodesState()
     }
 
