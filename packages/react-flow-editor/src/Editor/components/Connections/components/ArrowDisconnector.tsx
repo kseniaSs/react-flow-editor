@@ -4,10 +4,11 @@ import { useStore } from "@nanostores/react"
 import { NodeState, Output, Point } from "@/types"
 import { DragItemType } from "@/Editor/types"
 import { EditorContext, RectsContext } from "@/Editor/context"
-import { DragItemAtom, NewConnectionAtom, nodeActions, SvgOffsetAtom } from "@/Editor/state"
+import { DragItemAtom, NewConnectionAtom, nodeActions, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
 import { getRectFromRef } from "@/Editor/helpers/getRectFromRef"
 
 import { disconnectorStyle } from "../helpers"
+import { markDisabledNodes } from "../../Node/helpers"
 
 type DisconnectorProps = {
   position: Point
@@ -19,10 +20,14 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, outp
   const { zoomContainerRef } = useContext(RectsContext)
   const { transformation } = useContext(EditorContext)
   const svgOffset = useStore(SvgOffsetAtom)
+  const nodes = useStore(NodesAtom)
 
   const onMouseDown = useCallback(
     (e) => {
       e.stopPropagation()
+
+      const fromNode = nodes.find((node) => node.id === fromId)!
+      markDisabledNodes(fromNode, nodes)
 
       DragItemAtom.set({
         type: DragItemType.connection,

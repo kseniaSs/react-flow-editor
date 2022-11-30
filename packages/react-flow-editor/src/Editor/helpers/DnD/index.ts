@@ -14,6 +14,7 @@ import { DragItemType } from "../../types"
 import { useAutoScroll } from "../autoScroll"
 import { useSelectionZone } from "../selectionZone"
 import { useDragTransformations } from "./useDragTransformations"
+import { isNodesHaveStateToReset } from "./helpers"
 
 export default ({
   zoomContainerRef,
@@ -45,7 +46,7 @@ export default ({
   const onDragEnded = () => {
     autoScrollActions.toDeafult()
 
-    if (nodes.some((node) => Boolean(node.state)) && dragItem.type === DragItemType.viewPort) {
+    if (isNodesHaveStateToReset(nodes, dragItem)) {
       nodeActions.clearNodesState()
     }
 
@@ -55,16 +56,10 @@ export default ({
 
       const isNew = dragItem.output?.nextNodeId === null
 
-      const isOnEmptyPlaceOnCreateConnection = !inputNode && outputNode && isNew
-
-      if (nodes.some((node) => Boolean(node.state)) && isOnEmptyPlaceOnCreateConnection) {
-        nodeActions.clearNodesState()
-      }
-
       if (!inputNode && outputNode && !isNew) {
         NodesAtom.set(
           nodes.map((el) => {
-            if (el.id !== outputNode.id) return el
+            if (el.id !== outputNode.id) return { ...el, state: null }
 
             return {
               ...el,

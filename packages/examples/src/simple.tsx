@@ -14,7 +14,9 @@ import { initialNodes, STYLED_CONFIG, TIPS, OUTPUT_STYLES } from "./constants"
 import { nodeFactory } from "./helpers"
 import { NodeAttributes } from "./parts"
 
-const NodeComponent = (_: Node) => <div className="nodeElement">Node</div>
+const NodeComponent = (node: Node) => (
+  <div className={`nodeElement${node.state === NodeState.disabled ? " disabled" : ""}`}>Node</div>
+)
 
 const SelectionZoneComponent = () => <div className="selection-zone" />
 

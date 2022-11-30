@@ -123,6 +123,10 @@ body {
     z-index: 3;
   }
 
+  &.disabled {
+    opacity: 0.5;
+  }
+
   .dot {
     position: absolute;
     height: 10px;

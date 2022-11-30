@@ -64,21 +64,6 @@ export const useNodeInteractions = (node: Node) => {
   }, [dragItem.id, nodes])
 
   const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
-    const isNodeLeavedWithConnector = (nodeItem: Node) =>
-      nodeItem.id === node.id &&
-      dragItem.type === DragItemType.connection &&
-      nodeItem.state !== NodeState.draggingConnector
-
-    const needUpdateNodes = nodes.some(isNodeLeavedWithConnector)
-
-    needUpdateNodes &&
-      NodesAtom.set(
-        nodes.map((nodeItem) => ({
-          ...nodeItem,
-          state: isNodeLeavedWithConnector(nodeItem) ? null : nodeItem.state
-        }))
-      )
-
     HoveredNodeIdAtom.set(null)
   }, [dragItem.type === DragItemType.connection])
 
