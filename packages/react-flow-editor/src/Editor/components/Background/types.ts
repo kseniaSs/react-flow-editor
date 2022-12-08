@@ -11,3 +11,9 @@ export interface BackgroundProps extends HTMLAttributes<SVGElement> {
   color?: string
   size?: number
 }
+
+export type PatternDimensions = {
+  scaledGap: number
+  xOffset: number
+  yOffset: number
+}

@@ -3,6 +3,7 @@ import React, { FC } from "react"
 
 import { TransformationMap } from "@/Editor/state"
 
+import { usePatternDimensions } from "./hooks"
 import { BackgroundProps, BackgroundVariant } from "./types"
 import { createGridLinesPath, createGridDotsPath } from "./utils"
 
@@ -14,10 +15,7 @@ const defaultColors = {
 
 const Background: FC<BackgroundProps> = ({ variant = BackgroundVariant.Dots, gap = 15, size = 0.4, color }) => {
   const transformation = useStore(TransformationMap)
-
-  const scaledGap = gap * transformation.zoom || 1
-  const xOffset = transformation.dx % scaledGap
-  const yOffset = transformation.dy % scaledGap
+  const { scaledGap, xOffset, yOffset } = usePatternDimensions(gap)
 
   const bgColor = color || defaultColors[`${variant}`]
   const path =
