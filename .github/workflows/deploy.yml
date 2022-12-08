@@ -26,7 +26,7 @@ jobs:
             - recursive: true
               args: [--frozen-lockfile, --strict-peer-dependencies]
       - name: Build library
-        - run: pnpm --dir ./packages/examples run build
+        run: pnpm --dir ./packages/examples run build
       - name: Init new repo in dist folder and commit generated files
         run: |
           git init
