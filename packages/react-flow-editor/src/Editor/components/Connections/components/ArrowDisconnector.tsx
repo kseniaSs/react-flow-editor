@@ -3,8 +3,15 @@ import { useStore } from "@nanostores/react"
 
 import { NodeState, Output, Point } from "@/types"
 import { DragItemType } from "@/Editor/types"
-import { EditorContext, RectsContext } from "@/Editor/context"
-import { DragItemAtom, NewConnectionAtom, nodeActions, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
+import { RectsContext } from "@/Editor/context"
+import {
+  DragItemAtom,
+  NewConnectionAtom,
+  nodeActions,
+  NodesAtom,
+  SvgOffsetAtom,
+  TransformationMap
+} from "@/Editor/state"
 import { getRectFromRef } from "@/Editor/helpers/getRectFromRef"
 
 import { disconnectorStyle } from "../helpers"
@@ -18,7 +25,7 @@ type DisconnectorProps = {
 
 const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, output }) => {
   const { zoomContainerRef } = useContext(RectsContext)
-  const { transformation } = useContext(EditorContext)
+  const transformation = useStore(TransformationMap)
   const svgOffset = useStore(SvgOffsetAtom)
   const nodes = useStore(NodesAtom)
 
