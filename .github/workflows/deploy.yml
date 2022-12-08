@@ -2,7 +2,7 @@ name: example deploy
 
 on:
   push:
-    branches: [fix/deploy-example]
+    branches: [master]
 jobs:
   deploy:
     runs-on: ubuntu-latest
