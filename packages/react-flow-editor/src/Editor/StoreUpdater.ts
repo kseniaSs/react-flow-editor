@@ -18,13 +18,21 @@ const synchronizeWithStore = <T extends Record<string, unknown> | Array<unknown>
   storeEntity: WritableAtom<T> | MapStore<T>,
   updateEntity?: (entity: T) => void
 ) => {
+  let unsubCallback: (() => void) | null = null
+
   useEffect(() => {
     storeEntity.set(entity)
   }, [entity])
 
   useEffect(() => {
-    if (updateEntity) {
-      storeEntity.subscribe((value) => updateEntity(value))
+    if (updateEntity && !unsubCallback) {
+      unsubCallback = storeEntity.subscribe((value) => updateEntity(value))
+    }
+
+    return () => {
+      if (unsubCallback) {
+        unsubCallback()
+      }
     }
   }, [updateEntity])
 }
