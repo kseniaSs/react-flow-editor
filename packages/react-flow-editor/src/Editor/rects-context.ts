@@ -1,6 +1,7 @@
-import { createContext } from "react"
+import { createContext, useContext } from "react"
 
 import { MountedContexts } from "./types"
 
-export const EditorContext = createContext<any>({} as any)
 export const RectsContext = createContext<MountedContexts>({} as MountedContexts)
+
+export const useRectsContext = () => useContext(RectsContext)

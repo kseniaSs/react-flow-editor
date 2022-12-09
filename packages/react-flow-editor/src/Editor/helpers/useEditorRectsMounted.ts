@@ -1,6 +1,6 @@
-import { useContext, useEffect } from "react"
+import { useEffect } from "react"
 
-import { EditorContext } from "../context"
+import { useEditorContext } from "../editor-context"
 
 /**
  * @deprecated
@@ -13,7 +13,7 @@ export const useEditorRectsMounted = ({
   zoomContainerRef: React.RefObject<HTMLDivElement>
   editorContainerRef: React.RefObject<HTMLDivElement>
 }) => {
-  const { onEditorRectsMounted } = useContext(EditorContext)
+  const { onEditorRectsMounted } = useEditorContext()
 
   useEffect(() => {
     if (onEditorRectsMounted) {

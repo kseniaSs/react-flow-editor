@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react"
+import React, { useEffect } from "react"
 import { isEqual } from "lodash"
 
 import { Node as NodeType } from "@/types"
@@ -6,7 +6,7 @@ import { nodeActions } from "@/Editor/state"
 
 import { nodeStyle } from "./helpers"
 import { useNodeInteractions } from "./useNodeInteractions"
-import { EditorContext } from "../../context"
+import { useEditorContext } from "../../editor-context"
 import { Output } from "../Output"
 
 type NodeProps = {
@@ -32,7 +32,7 @@ const Node: React.FC<
     nodeInteractions: ReturnType<typeof useNodeInteractions>
   }
 > = ({ node, nodeInteractions }) => {
-  const { NodeComponent } = useContext(EditorContext)
+  const { NodeComponent } = useEditorContext()
 
   return (
     <div

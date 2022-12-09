@@ -1,9 +1,8 @@
-import React, { useCallback, useContext } from "react"
+import React, { useCallback } from "react"
 import { useStore } from "@nanostores/react"
 
 import { NodeState, Output, Point } from "@/types"
 import { DragItemType } from "@/Editor/types"
-import { RectsContext } from "@/Editor/context"
 import {
   DragItemAtom,
   NewConnectionAtom,
@@ -12,7 +11,7 @@ import {
   SvgOffsetAtom,
   TransformationMap
 } from "@/Editor/state"
-import { getRectFromRef } from "@/Editor/helpers/getRectFromRef"
+import { useRectsContext } from "@/Editor/rects-context"
 
 import { disconnectorStyle } from "../helpers"
 import { markDisabledNodes } from "../../Node/helpers"
@@ -24,7 +23,7 @@ type DisconnectorProps = {
 }
 
 const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, output }) => {
-  const { zoomContainerRef } = useContext(RectsContext)
+  const { zoomContainer } = useRectsContext()
   const transformation = useStore(TransformationMap)
   const svgOffset = useStore(SvgOffsetAtom)
   const nodes = useStore(NodesAtom)
@@ -44,7 +43,7 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, outp
         y: e.clientY
       })
 
-      const zoomRect = getRectFromRef(zoomContainerRef)
+      const zoomRect = zoomContainer.getBoundingClientRect()
 
       const newPos = {
         x: (e.clientX - zoomRect.left) / transformation.zoom - svgOffset.x,
@@ -55,7 +54,7 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, outp
 
       nodeActions.changeNodeState(fromId, NodeState.draggingConnector)
     },
-    [transformation, zoomContainerRef, svgOffset]
+    [transformation, zoomContainer, svgOffset]
   )
 
   return <rect onMouseDown={onMouseDown} className="disconnector" style={disconnectorStyle(position)} />

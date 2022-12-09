@@ -1,5 +1,5 @@
 import { isEqual } from "lodash"
-import React, { useContext } from "react"
+import React from "react"
 import { useStore } from "@nanostores/react"
 
 import { Node, NodeState, Output as OutputType } from "@/types"
@@ -11,10 +11,10 @@ import {
   SvgOffsetAtom,
   TransformationMap
 } from "@/Editor/state"
-import { getRectFromRef } from "@/Editor/helpers/getRectFromRef"
+import { useRectsContext } from "@/Editor/rects-context"
 
 import { BUTTON_LEFT } from "../../constants"
-import { EditorContext, RectsContext } from "../../context"
+import { useEditorContext } from "../../editor-context"
 import { resetEvent } from "../../helpers"
 import { DragItemType } from "../../types"
 import { markDisabledNodes } from "../Node/helpers"
@@ -25,15 +25,15 @@ type Props = {
 }
 
 export const Output: React.FC<Props> = React.memo(({ node, output }) => {
-  const { OutputComponent } = useContext(EditorContext)
-  const { zoomContainerRef } = useContext(RectsContext)
+  const { OutputComponent } = useEditorContext()
+  const { zoomContainer } = useRectsContext()
   const svgOffset = useStore(SvgOffsetAtom)
   const transformation = useStore(TransformationMap)
   const dragItem = useStore(DragItemAtom)
   const nodes = useStore(NodesAtom)
 
   const startNewConnection = (e: React.MouseEvent<HTMLElement>) => {
-    const zoomRect = getRectFromRef(zoomContainerRef)
+    const zoomRect = zoomContainer.getBoundingClientRect()
 
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
