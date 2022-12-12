@@ -14,11 +14,12 @@ type ConnectionProps = {
 
 export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ output, node }) => {
   const nodes = useStore(NodesAtom)
-  const svgOffset = useStore(SvgOffsetAtom)
 
   const nextNode = nodes.find((node) => node.id === output.nextNodeId)
 
   if (!nextNode) return null
+
+  const svgOffset = SvgOffsetAtom.get()
 
   const outputPosition = node.rectPosition
     ? {

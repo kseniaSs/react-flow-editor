@@ -23,8 +23,6 @@ export default ({
   zoomContainerRef: React.RefObject<HTMLDivElement>
   editorContainerRef: React.RefObject<HTMLDivElement>
 }) => {
-  const nodes = useStore(NodesAtom)
-  const hoveredNodeId = useStore(HoveredNodeIdAtom)
   const dragItem = useStore(DragItemAtom)
 
   const checkAutoScrollEnable = useAutoScroll(editorContainerRef)
@@ -51,6 +49,9 @@ export default ({
     }
 
     if (dragItem.type === DragItemType.connection) {
+      const hoveredNodeId = HoveredNodeIdAtom.get()
+      const nodes = NodesAtom.get()
+
       const inputNode = nodes.find((currentElement) => hoveredNodeId === currentElement.id)!
       const outputNode = nodes.find((node) => node.id === dragItem.id)
 

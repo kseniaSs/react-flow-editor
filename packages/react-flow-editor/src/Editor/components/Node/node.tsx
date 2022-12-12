@@ -45,7 +45,7 @@ const Node: React.FC<
       onMouseLeave={nodeInteractions.onMouseLeave}
     >
       {node.outputs.map((out) => (
-        <Output key={out.id} node={node} output={out} />
+        <Output key={out.id} nodeId={node.id} nodeState={node.state} output={out} />
       ))}
       <NodeComponent {...node} />
     </div>

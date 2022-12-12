@@ -8,12 +8,13 @@ import { useRectsContext } from "@/Editor/rects-context"
 export const useOverview = () => {
   const { zoomContainer, editorContainer } = useRectsContext()
 
-  const nodes = useStore(NodesAtom)
   const transformation = useStore(TransformationMap)
   const [underOverview, setUnderOverview] = useState<boolean>(false)
 
   useEffect(() => {
     if (underOverview) {
+      const nodes = NodesAtom.get()
+
       if (nodes.length) {
         const editorRect = editorContainer.getBoundingClientRect()
 
@@ -54,7 +55,7 @@ export const useOverview = () => {
 
       setUnderOverview(false)
     }
-  }, [underOverview, nodes, transformation, editorContainer])
+  }, [underOverview, transformation, editorContainer])
 
   /** Overview on mount */
   useEffect(() => {

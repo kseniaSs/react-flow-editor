@@ -2,59 +2,31 @@ import { isEqual } from "lodash"
 import React from "react"
 import { useStore } from "@nanostores/react"
 
-import { Node, NodeState, Output as OutputType } from "@/types"
-import {
-  DragItemAtom,
-  NewConnectionAtom,
-  nodeActions,
-  NodesAtom,
-  SvgOffsetAtom,
-  TransformationMap
-} from "@/Editor/state"
+import { NodeState, Output as OutputType } from "@/types"
+import { DragItemAtom, newConnectionActions } from "@/Editor/state"
 import { useRectsContext } from "@/Editor/rects-context"
 
 import { BUTTON_LEFT } from "../../constants"
 import { useEditorContext } from "../../editor-context"
 import { resetEvent } from "../../helpers"
-import { DragItemType } from "../../types"
-import { markDisabledNodes } from "../Node/helpers"
 
 type Props = {
-  node: Node
+  nodeId: string
+  nodeState: NodeState | null
   output: OutputType
 }
 
-export const Output: React.FC<Props> = React.memo(({ node, output }) => {
+export const Output: React.FC<Props> = React.memo(({ nodeId, nodeState, output }) => {
   const { OutputComponent } = useEditorContext()
   const { zoomContainer } = useRectsContext()
-  const svgOffset = useStore(SvgOffsetAtom)
-  const transformation = useStore(TransformationMap)
   const dragItem = useStore(DragItemAtom)
-  const nodes = useStore(NodesAtom)
 
   const startNewConnection = (e: React.MouseEvent<HTMLElement>) => {
     const zoomRect = zoomContainer.getBoundingClientRect()
 
     resetEvent(e)
     if (e.button === BUTTON_LEFT) {
-      nodeActions.changeNodeState(node.id, NodeState.draggingConnector)
-
-      const pos = {
-        x: -svgOffset.x + (e.clientX - zoomRect.left) / transformation.zoom,
-        y: -svgOffset.y + (e.clientY - zoomRect.top) / transformation.zoom
-      }
-
-      NewConnectionAtom.set(pos)
-
-      DragItemAtom.set({
-        type: DragItemType.connection,
-        output,
-        id: node.id,
-        x: e.clientX,
-        y: e.clientY
-      })
-
-      markDisabledNodes(node, nodes)
+      newConnectionActions.startNewConnection(nodeId, zoomRect, e, output)
     }
   }
 
@@ -72,7 +44,7 @@ export const Output: React.FC<Props> = React.memo(({ node, output }) => {
         transform: "translate(-50%, -50%)"
       }}
     >
-      <OutputComponent active={isActive} nodeState={node.state} />
+      <OutputComponent active={isActive} nodeState={nodeState} />
     </div>
   )
 }, isEqual)

@@ -1,4 +1,3 @@
-import { useStore } from "@nanostores/react"
 import { useEffect } from "react"
 
 import { NodeState } from "../../types"
@@ -8,11 +7,12 @@ import { NodesAtom } from "../state"
 
 export const useHotKeys = () => {
   const { importantNodeIds } = useEditorContext()
-  const nodes = useStore(NodesAtom)
 
   useEffect(() => {
     const hotKeysHandler = (e: KeyboardEvent) => {
       if ([KEY_CODE_BACK, KEY_CODE_DELETE].includes(e.key)) {
+        const nodes = NodesAtom.get()
+
         const selectedNodesIds = nodes
           .filter((node) => node.state === NodeState.selected)
           .filter((node) => importantNodeIds && !importantNodeIds.includes(node.id))
@@ -35,5 +35,5 @@ export const useHotKeys = () => {
     window.addEventListener("keydown", hotKeysHandler)
 
     return () => window.removeEventListener("keydown", hotKeysHandler)
-  }, [nodes])
+  }, [])
 }
