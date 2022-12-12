@@ -20,7 +20,7 @@ export const useSelectionZone = (zoomContainerRef: RefObject<HTMLElement>) => {
         SelectionZoneAtom.set({ cornerStart: point, cornerEnd: point })
       }
     },
-    [zoomContainerRef]
+    [selectionZone]
   )
 
   const expandSelectionZone = useCallback(
