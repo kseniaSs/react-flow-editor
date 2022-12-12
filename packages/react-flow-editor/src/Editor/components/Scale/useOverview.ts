@@ -1,23 +1,22 @@
 import { useStore } from "@nanostores/react"
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { NodesAtom, TransformationMap } from "@/Editor/state"
-import { RectsContext } from "@/Editor/context"
 import { DRAG_OFFSET_TRANSFORM, LARGEST_RECT } from "@/Editor/constants"
+import { useRectsContext } from "@/Editor/rects-context"
 
 export const useOverview = () => {
-  const { zoomContainerRef, editorContainerRef } = useContext(RectsContext)
+  const { zoomContainer, editorContainer } = useRectsContext()
 
-  const nodes = useStore(NodesAtom)
   const transformation = useStore(TransformationMap)
   const [underOverview, setUnderOverview] = useState<boolean>(false)
 
   useEffect(() => {
     if (underOverview) {
-      if (nodes.length) {
-        if (!editorContainerRef.current || !zoomContainerRef.current) return
+      const nodes = NodesAtom.get()
 
-        const editorRect = editorContainerRef.current?.getBoundingClientRect()
+      if (nodes.length) {
+        const editorRect = editorContainer.getBoundingClientRect()
 
         const dimensionsRect = nodes.reduce(
           (acc, node) => {
@@ -45,7 +44,7 @@ export const useOverview = () => {
         const dx = -dimensionsRect.leftPoint + (editorRect.width - width) / 2
         const dy = -dimensionsRect.topPoint + (editorRect.height - height) / 2
 
-        zoomContainerRef.current.style.transformOrigin = `${dx}px ${dy}px`
+        zoomContainer.style.transformOrigin = `${dx}px ${dy}px`
 
         TransformationMap.set({
           dx,
@@ -56,7 +55,7 @@ export const useOverview = () => {
 
       setUnderOverview(false)
     }
-  }, [underOverview, nodes, transformation, editorContainerRef])
+  }, [underOverview, transformation, editorContainer])
 
   /** Overview on mount */
   useEffect(() => {

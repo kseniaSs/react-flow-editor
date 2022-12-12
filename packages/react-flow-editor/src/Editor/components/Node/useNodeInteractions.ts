@@ -8,7 +8,6 @@ import { BUTTON_LEFT } from "../../constants"
 import { DragItemType } from "../../types"
 
 export const useNodeInteractions = (node: Node) => {
-  const nodes = useStore(NodesAtom)
   const dragItem = useStore(DragItemAtom)
   const [initialClickCoords, setInitialClickCoords] = useState<Point>({ x: 0, y: 0 })
 
@@ -25,7 +24,7 @@ export const useNodeInteractions = (node: Node) => {
     (e) => {
       if (e.button === BUTTON_LEFT) {
         NodesAtom.set(
-          nodes.map((nodeItem) => {
+          NodesAtom.get().map((nodeItem) => {
             const isSelected =
               (nodeItem.id === node.id && initialClickCoords.x === e.clientX && initialClickCoords.y === e.clientY) ||
               (e.shiftKey && nodeItem.state === NodeState.dragging)
@@ -55,12 +54,12 @@ export const useNodeInteractions = (node: Node) => {
         DragItemAtom.set({ type: undefined, x: e.clientX, y: e.clientY })
       }
     },
-    [initialClickCoords, nodes]
+    [initialClickCoords]
   )
 
   const onMouseEnter: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
     HoveredNodeIdAtom.set(node.id)
-  }, [dragItem.id, nodes])
+  }, [dragItem.id])
 
   const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
     HoveredNodeIdAtom.set(null)

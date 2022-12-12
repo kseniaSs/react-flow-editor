@@ -1,10 +1,9 @@
-import React, { memo } from "react"
-import { isEqual } from "lodash"
+import React from "react"
 
 import type { EditorProps } from "@/types"
 
 import { Canvas } from "./Canvas"
-import { EditorContext } from "./context"
+import { EditorContext } from "./editor-context"
 import "../_style.scss"
 import { StoreUpdater } from "./StoreUpdater"
 
@@ -39,4 +38,5 @@ const Editor: React.FC<EditorProps> = ({
     />
   </EditorContext.Provider>
 )
-export default memo(Editor, isEqual)
+
+export default Editor

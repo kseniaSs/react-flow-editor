@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react"
+import React, { useEffect } from "react"
 import { useStore } from "@nanostores/react"
 
 import { NodesAtom, SvgOffsetAtom, TransformationMap } from "@/Editor/state"
@@ -7,10 +7,10 @@ import { Connection } from "./components/Connection"
 import { NewConnection } from "./components/NewConnection"
 import { computeNodeGroupsRect, connectionContainerStyle } from "./helpers"
 import { Arrow } from "./components/Arrow"
-import { EditorContext } from "../../context"
+import { useEditorContext } from "../../editor-context"
 
 export const Container: React.FC = () => {
-  const { connectorStyleConfig } = useContext(EditorContext)
+  const { connectorStyleConfig } = useEditorContext()
   const nodes = useStore(NodesAtom)
   const transformation = useStore(TransformationMap)
 

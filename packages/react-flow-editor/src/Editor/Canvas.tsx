@@ -9,7 +9,7 @@ import useDnD from "./helpers/DnD"
 import { useZoom } from "./helpers/zoom"
 import { useHotKeys } from "./helpers/hotKeys"
 import { NodesContainer } from "./components/Node"
-import { RectsContext } from "./context"
+import { RectsContext } from "./rects-context"
 import { TransformationMap } from "./state"
 import { SelectionZone } from "./components/SelectionZone"
 import { Scale } from "./components/Scale"
@@ -20,8 +20,8 @@ type Props = {
 }
 
 export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent }) => {
-  const zoomContainerRef = useRef<HTMLDivElement>(null)
-  const editorContainerRef = useRef<HTMLDivElement>(null)
+  const zoomContainerRef = useRef<HTMLDivElement>(document.querySelector(".zoom-container")!)
+  const editorContainerRef = useRef<HTMLDivElement>(document.querySelector(".react-flow-editor")!)
 
   const transformation = useStore(TransformationMap)
 
@@ -32,7 +32,9 @@ export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent
   useHotKeys()
 
   return (
-    <RectsContext.Provider value={{ zoomContainerRef, editorContainerRef }}>
+    <RectsContext.Provider
+      value={{ zoomContainer: zoomContainerRef.current, editorContainer: editorContainerRef.current }}
+    >
       <div
         onMouseUpCapture={onDragEnded}
         onMouseMove={onDrag}

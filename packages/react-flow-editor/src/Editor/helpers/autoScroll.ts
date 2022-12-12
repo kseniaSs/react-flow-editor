@@ -65,20 +65,19 @@ const useCheckAutoScrollEnable = (editorContainerRef: React.RefObject<HTMLDivEle
 }
 
 export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement>) => {
-  const newConnection = useStore(NewConnectionAtom)
-  const selectionZone = useStore(SelectionZoneAtom)
-  const nodes = useStore(NodesAtom)
-  const dragItem = useStore(DragItemAtom)
   const autoScroll = useStore(AutoScrollAtom)
-  const transformation = useStore(TransformationMap)
 
   useEffect(() => {
     if (!autoScroll.direction) return
 
-    const delta = DRAG_AUTO_SCROLL_DIST * autoScroll.speed * transformation.zoom
+    const dragItem = DragItemAtom.get()
 
     const scroll = () => {
       if (!dragItem.type) return
+
+      const transformation = TransformationMap.get()
+
+      const delta = DRAG_AUTO_SCROLL_DIST * autoScroll.speed * transformation.zoom
 
       if ([DragItemType.node, DragItemType.connection, DragItemType.selectionZone].includes(dragItem.type)) {
         const dx = transformation.dx - getSign(Axis.x, autoScroll) * delta
@@ -92,13 +91,17 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
       }
 
       if (dragItem.type === DragItemType.connection) {
+        const newConnection = NewConnectionAtom.get()
+
         NewConnectionAtom.set({
           x: newConnection.x + getSign(Axis.x, autoScroll) * delta,
           y: newConnection.y + getSign(Axis.y, autoScroll) * delta
         })
       }
 
-      if (dragItem.type === DragItemType.selectionZone && selectionZone !== null) {
+      if (dragItem.type === DragItemType.selectionZone) {
+        const selectionZone = SelectionZoneAtom.get()!
+
         SelectionZoneAtom.set({
           ...selectionZone,
           cornerEnd: {
@@ -109,12 +112,12 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
       }
 
       if (dragItem.type === DragItemType.node) {
-        const draggingNodesIds = nodes
+        const draggingNodesIds = NodesAtom.get()
           .filter((node) => node.state && [NodeState.dragging, NodeState.selected].includes(node.state))
           .map((node) => node.id)
 
         NodesAtom.set(
-          nodes.map((el) =>
+          NodesAtom.get().map((el) =>
             draggingNodesIds.includes(el.id)
               ? {
                   ...el,
@@ -132,7 +135,7 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
     const scrollInterval = setInterval(scroll, DRAG_AUTO_SCROLL_TIME)
 
     return () => clearInterval(scrollInterval)
-  }, [autoScroll, dragItem, newConnection, nodes, transformation, selectionZone])
+  }, [autoScroll])
 
   return useCheckAutoScrollEnable(editorContainerRef)
 }

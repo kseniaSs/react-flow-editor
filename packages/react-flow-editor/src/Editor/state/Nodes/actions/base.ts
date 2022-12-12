@@ -2,7 +2,7 @@ import { action } from "nanostores"
 
 import { NodeState } from "@/types"
 
-import { NodesAtom } from "./store"
+import { NodesAtom } from "../store"
 
 export const changeNodeState = action(NodesAtom, "changeNodeState", (store, nodeId: string, state: NodeState) => {
   store.set(store.get().map((node) => (node.id === nodeId ? { ...node, state } : node)))

@@ -1,9 +1,9 @@
 import { isEqual } from "lodash"
-import React, { useContext } from "react"
+import React from "react"
 
 import { Point } from "@/types"
 import { DEFAULT_COLOR } from "@/Editor/constants"
-import { EditorContext } from "@/Editor/context"
+import { useEditorContext } from "@/Editor/editor-context"
 
 import { ARROW_ID } from "./Arrow"
 
@@ -13,7 +13,7 @@ type InputConnectionProps = {
 }
 
 const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition }) => {
-  const { connectorStyleConfig } = useContext(EditorContext)
+  const { connectorStyleConfig } = useEditorContext()
 
   const dx = Math.max(Math.abs(inputPosition.x - outputPosition.x) / 1.5, 100)
   const a1 = { x: inputPosition.x - dx, y: inputPosition.y }
