@@ -12,6 +12,12 @@ export type SelectionZone = {
   bottom: number
 }
 
+const selectionZoneDisplay = (zonePosition: Partial<DOMRect>): string => {
+  if (!zonePosition.height && !zonePosition.width) return "none"
+
+  return "block"
+}
+
 export const computeSelectionZone = (
   zoomContainerRef: MutableRefObject<HTMLDivElement | null>,
   transformation: Transformation,
@@ -48,6 +54,7 @@ export const SelectionZone: FC<Props> = ({ zoomContainerRef, children }) => {
         position: "fixed",
         zIndex: 1,
         pointerEvents: "none",
+        display: selectionZoneDisplay(selectionZonePosition),
         ...selectionZonePosition
       }}
     >
