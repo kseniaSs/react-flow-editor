@@ -1,9 +1,4 @@
-import { useStore } from "@nanostores/react"
-import { RefObject, useCallback } from "react"
-
 import { Node, RectZone, SelectionZone, Transformation } from "../../types"
-import { AutoScrollAtom, AutoScrollDirection, DragItemAtom, SelectionZoneAtom, TransformationMap } from "../state"
-import { getRectFromRef } from "./getRectFromRef"
 
 export const isNodeInSelectionZone = (node: Node, zone: SelectionZone | null, transform: Transformation): boolean => {
   if (zone === null) return false
@@ -32,49 +27,3 @@ export const cornersToRect = (zone: SelectionZone | null): RectZone =>
         right: 0,
         bottom: 0
       }
-
-export const useSelectionZone = (zoomContainerRef: RefObject<HTMLElement>) => {
-  const selectionZone = useStore(SelectionZoneAtom)
-  const transformation = useStore(TransformationMap)
-  const dragItem = useStore(DragItemAtom)
-  const autoScroll = useStore(AutoScrollAtom)
-
-  const initSelectionZone = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      if (e.shiftKey) {
-        const zoomContainerRect = getRectFromRef(zoomContainerRef)
-
-        const left = (e.clientX - zoomContainerRect.left) / transformation.zoom
-        const top = (e.clientY - zoomContainerRect.top) / transformation.zoom
-        const point = { x: left, y: top }
-
-        SelectionZoneAtom.set({ cornerStart: point, cornerEnd: point })
-      }
-    },
-    [transformation.zoom, zoomContainerRef]
-  )
-
-  const expandSelectionZone = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      if (selectionZone) {
-        const deltaX = (e.clientX - dragItem.x) / transformation.zoom
-        const deltaY = (e.clientY - dragItem.y) / transformation.zoom
-
-        SelectionZoneAtom.set({
-          ...selectionZone,
-          cornerEnd: {
-            x:
-              selectionZone.cornerEnd.x +
-              ([AutoScrollDirection.left, AutoScrollDirection.right].includes(autoScroll.direction!) ? 0 : deltaX),
-            y:
-              selectionZone.cornerEnd.y +
-              ([AutoScrollDirection.top, AutoScrollDirection.bottom].includes(autoScroll.direction!) ? 0 : deltaY)
-          }
-        })
-      }
-    },
-    [dragItem, transformation.zoom, selectionZone]
-  )
-
-  return { initSelectionZone, expandSelectionZone }
-}

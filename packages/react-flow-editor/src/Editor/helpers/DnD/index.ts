@@ -12,7 +12,7 @@ import {
 import { BUTTON_LEFT } from "../../constants"
 import { DragItemType } from "../../types"
 import { useAutoScroll } from "../autoScroll"
-import { useSelectionZone } from "../selectionZone"
+import { useSelectionZone } from "../useSelectionZone"
 import { useDragTransformations } from "./useDragTransformations"
 import { isNodesHaveStateToReset } from "./helpers"
 
