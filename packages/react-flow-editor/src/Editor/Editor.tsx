@@ -2,7 +2,6 @@ import React from "react"
 
 import type { EditorProps } from "@/types"
 
-import { Menu } from "./components/Menu"
 import { Canvas } from "./Canvas"
 import { EditorContext } from "./editor-context"
 import "../_style.scss"
@@ -17,7 +16,6 @@ const Editor: React.FC<EditorProps> = ({
   SelectionZoneComponent,
   importantNodeIds,
   onNodesChange,
-  onEditorRectsMounted,
   connectorStyleConfig
 }) => (
   <EditorContext.Provider
@@ -25,12 +23,15 @@ const Editor: React.FC<EditorProps> = ({
       NodeComponent,
       OutputComponent,
       importantNodeIds,
-      onEditorRectsMounted,
       connectorStyleConfig
     }}
   >
-    <Canvas SelectionZoneComponent={SelectionZoneComponent} ScaleComponent={ScaleComponent} />
-    {MenuComponent && <Menu MenuComponent={MenuComponent} />}
+    <Canvas
+      SelectionZoneComponent={SelectionZoneComponent}
+      ScaleComponent={ScaleComponent}
+      MenuComponent={MenuComponent}
+    />
+
     <StoreUpdater nodes={nodes} onNodesChange={onNodesChange} />
   </EditorContext.Provider>
 )

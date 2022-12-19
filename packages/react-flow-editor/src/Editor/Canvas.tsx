@@ -1,10 +1,10 @@
 import React, { useRef } from "react"
 import { useStore } from "@nanostores/react"
 
-import { ScaleComponentProps } from "@/types"
+import { MenuComponentProps, ScaleComponentProps } from "@/types"
 
 import Background from "./components/Background/Background"
-import { transformCanvasStyle, useEditorRectsMounted } from "./helpers"
+import { transformCanvasStyle } from "./helpers"
 import useDnD from "./helpers/DnD"
 import { useZoom } from "./helpers/zoom"
 import { useHotKeys } from "./helpers/hotKeys"
@@ -13,13 +13,15 @@ import { RectsContext } from "./rects-context"
 import { TransformationMap } from "./state"
 import { SelectionZone } from "./components/SelectionZone"
 import { Scale } from "./components/Scale"
+import { Menu } from "./components/Menu"
 
 type Props = {
   SelectionZoneComponent?: React.FC
   ScaleComponent?: React.FC<ScaleComponentProps>
+  MenuComponent?: React.FC<MenuComponentProps>
 }
 
-export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent }) => {
+export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent, MenuComponent }) => {
   const zoomContainerRef = useRef<HTMLDivElement>(document.querySelector(".zoom-container")!)
   const editorContainerRef = useRef<HTMLDivElement>(document.querySelector(".react-flow-editor")!)
 
@@ -27,7 +29,6 @@ export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent
 
   const { onDrag, onDragEnded, onDragStarted } = useDnD({ editorContainerRef, zoomContainerRef })
   const { onWheel } = useZoom({ zoomContainerRef, editorContainerRef })
-  useEditorRectsMounted({ zoomContainerRef, editorContainerRef })
 
   useHotKeys()
 
@@ -52,7 +53,7 @@ export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent
             <SelectionZoneComponent />
           </SelectionZone>
         )}
-
+        {MenuComponent && <Menu MenuComponent={MenuComponent} />}
         {ScaleComponent && <Scale ScaleComponent={ScaleComponent} />}
       </div>
     </RectsContext.Provider>
