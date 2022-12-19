@@ -1,18 +1,21 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
+import { useStore } from "@nanostores/react"
 import {
   Editor,
   Node,
   NodeState,
   ScaleComponentProps,
-  Transformation,
-  OutputComponentProps
+  OutputComponentProps,
+  MenuComponentProps
 } from "@kseniass/react-flow-editor"
-
 import "./simple.scss"
+import { action } from "nanostores"
+
 import { initialNodes, STYLED_CONFIG, TIPS, OUTPUT_STYLES } from "./constants"
 import { nodeFactory } from "./helpers"
 import { NodeAttributes } from "./parts"
+import { NodesAtom } from "./store"
 
 const NodeComponent = (node: Node) => (
   <div className={`nodeElement${node.state === NodeState.disabled ? " disabled" : ""}`}>Node</div>
@@ -50,19 +53,23 @@ const ScaleComponent: React.FC<ScaleComponentProps> = ({ zoomIn, zoomOut, overvi
   </div>
 )
 
-const App = () => {
-  const [nodes, setNodes] = React.useState<Node[]>(initialNodes)
-  const [transformation, setTransformation] = React.useState<Transformation>({ dx: 0, dy: 0, zoom: 1 })
+const MenuComponent: React.FC<MenuComponentProps> = () => {
+  const createNode = action(NodesAtom, "createNode", (store) => store.set(store.get().concat([nodeFactory()])))
 
-  const createNode = (nodeName?: string) => setNodes((nodes) => nodes.concat([nodeFactory(nodeName)]))
+  return (
+    <div className="flow-menu button" onClick={() => createNode()}>
+      Create new Node
+    </div>
+  )
+}
+
+const App = () => {
+  const nodes = useStore(NodesAtom)
 
   return (
     <div className="editor-root">
       <div className="header">Flow Editor</div>
-      <div className="flow-menu">
-        <div className="button" onClick={() => createNode()}>
-          Create new Node
-        </div>
+      <div className="flow-info">
         <NodeAttributes nodes={nodes} />
       </div>
       <div className="react-editor-container">
@@ -71,10 +78,9 @@ const App = () => {
           SelectionZoneComponent={SelectionZoneComponent}
           ScaleComponent={ScaleComponent}
           OutputComponent={OutputComponent}
+          MenuComponent={MenuComponent}
           nodes={nodes}
-          onNodesChange={setNodes}
-          transformation={transformation}
-          onTransfromationChange={setTransformation}
+          onNodesChange={NodesAtom.set}
           importantNodeIds={[initialNodes[0].id]}
           connectorStyleConfig={STYLED_CONFIG}
         />

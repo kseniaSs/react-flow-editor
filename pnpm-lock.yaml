@@ -31,10 +31,12 @@ importers:
   packages/examples:
     specifiers:
       '@kseniass/react-flow-editor': file:../react-flow-editor/
+      '@nanostores/react': ^0.4.0
       '@types/react': 17.0.30
       '@types/react-dom': ^18.0.8
       '@vitejs/plugin-react': ^1.3.2
       eslint: ^8.20.0
+      nanostores: ^0.7.0
       react: 17.0.2
       react-dom: 17.0.2
       sass: ^1.53.0
@@ -43,6 +45,8 @@ importers:
       vite-plugin-html: ^3.2.0
     dependencies:
       '@kseniass/react-flow-editor': file:packages/react-flow-editor_sfoxds7t5ydpegc3knd667wn6m
+      '@nanostores/react': 0.4.0_unofnab3roj6yv6ovijwz3t42y
+      nanostores: 0.7.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       sass: 1.56.0
@@ -3367,7 +3371,7 @@ packages:
     resolution: {directory: packages/react-flow-editor, type: directory}
     id: file:packages/react-flow-editor
     name: '@kseniass/react-flow-editor'
-    version: 1.0.0
+    version: 1.2.4
     peerDependencies:
       react: ^16.8.0 || ^17.0.0
       react-dom: ^16.8.0 || ^17.0.0
