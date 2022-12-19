@@ -10,10 +10,9 @@ import {
   MenuComponentProps
 } from "@kseniass/react-flow-editor"
 import "./simple.scss"
-import { action } from "nanostores"
 
 import { initialNodes, STYLED_CONFIG, TIPS, OUTPUT_STYLES } from "./constants"
-import { nodeFactory } from "./helpers"
+import { createNode } from "./helpers"
 import { NodeAttributes } from "./parts"
 import { NodesAtom } from "./store"
 
@@ -53,15 +52,11 @@ const ScaleComponent: React.FC<ScaleComponentProps> = ({ zoomIn, zoomOut, overvi
   </div>
 )
 
-const MenuComponent: React.FC<MenuComponentProps> = () => {
-  const createNode = action(NodesAtom, "createNode", (store) => store.set(store.get().concat([nodeFactory()])))
-
-  return (
-    <div className="flow-menu button" onClick={() => createNode()}>
-      Create new Node
-    </div>
-  )
-}
+const MenuComponent: React.FC<MenuComponentProps> = () => (
+  <div className="flow-menu button" onClick={() => createNode()}>
+    Create new Node
+  </div>
+)
 
 const App = () => {
   const nodes = useStore(NodesAtom)
