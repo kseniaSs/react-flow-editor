@@ -53,7 +53,7 @@ const ScaleComponent: React.FC<ScaleComponentProps> = ({ zoomIn, zoomOut, overvi
 )
 
 const MenuComponent: React.FC<MenuComponentProps> = () => (
-  <div className="flow-menu button" onClick={() => createNode()}>
+  <div className="flow-menu button" onClick={createNode}>
     Create new Node
   </div>
 )
