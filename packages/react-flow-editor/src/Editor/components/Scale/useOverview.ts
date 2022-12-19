@@ -12,7 +12,7 @@ export const useOverview = () => {
   const [underOverview, setUnderOverview] = useState<boolean>(false)
 
   useEffect(() => {
-    if (underOverview) {
+    if (underOverview && editorContainer) {
       const nodes = NodesAtom.get()
 
       if (nodes.length) {

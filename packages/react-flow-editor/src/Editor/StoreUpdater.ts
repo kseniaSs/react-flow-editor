@@ -2,15 +2,11 @@ import { FC, useEffect } from "react"
 import { MapStore, WritableAtom } from "nanostores"
 
 import { NodesAtom } from "@/Editor/state/Nodes"
-import { Node, Transformation } from "@/types"
-
-import { TransformationMap } from "./state"
+import { Node } from "@/types"
 
 type Props = {
   nodes: Node[]
   onNodesChange?: (nodes: Node[]) => void
-  transformation: Transformation
-  onTransfromationChange?: (tansformation: Transformation) => void
 }
 
 const synchronizeWithStore = <T extends Record<string, unknown> | Array<unknown>>(
@@ -40,10 +36,8 @@ const synchronizeWithStore = <T extends Record<string, unknown> | Array<unknown>
 /**
  * Used for sync props with inner store
  */
-export const StoreUpdater: FC<Props> = ({ nodes, onNodesChange, transformation, onTransfromationChange }) => {
+export const StoreUpdater: FC<Props> = ({ nodes, onNodesChange }) => {
   synchronizeWithStore(nodes, NodesAtom, onNodesChange)
-
-  synchronizeWithStore(transformation, TransformationMap, onTransfromationChange)
 
   return null
 }

@@ -72,21 +72,14 @@ export type OutputComponentProps = {
   nodeState: NodeState | null
 }
 
+export type MenuComponentProps = {
+  setTransformation: (transformation: Transformation) => void
+  transformation: Transformation
+}
+
 export type EditorProps = {
   nodes: Node[]
   onNodesChange: (nodes: Node[]) => void
-  /**
-   *
-   * @deprecated
-   * Will be removed
-   */
-  transformation: Transformation
-  /**
-   *
-   * @deprecated
-   * Will be removed
-   */
-  onTransfromationChange?: (tansformation: Transformation) => void
   /**
    *
    * @deprecated
@@ -96,6 +89,7 @@ export type EditorProps = {
   NodeComponent: React.FC<Node>
   SelectionZoneComponent?: React.FC
   ScaleComponent?: React.FC<ScaleComponentProps>
+  MenuComponent?: React.FC<MenuComponentProps>
   OutputComponent?: React.FC<OutputComponentProps>
   importantNodeIds?: Array<string>
   connectorStyleConfig?: ConnectorStyleConfig
