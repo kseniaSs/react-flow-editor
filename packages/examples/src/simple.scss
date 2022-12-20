@@ -51,6 +51,12 @@ body {
 }
 
 .flow-menu {
+  position: absolute;
+  left: 15px;
+  top: 17px;
+}
+
+.flow-info {
   background-color: $menu-background-color;
   border-right: 1px solid $border-color;
   padding: 10px;

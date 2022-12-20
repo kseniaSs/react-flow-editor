@@ -11,13 +11,11 @@ const Editor: React.FC<EditorProps> = ({
   nodes,
   NodeComponent,
   ScaleComponent,
+  MenuComponent,
   OutputComponent,
   SelectionZoneComponent,
   importantNodeIds,
   onNodesChange,
-  transformation,
-  onTransfromationChange,
-  onEditorRectsMounted,
   connectorStyleConfig
 }) => (
   <EditorContext.Provider
@@ -25,17 +23,16 @@ const Editor: React.FC<EditorProps> = ({
       NodeComponent,
       OutputComponent,
       importantNodeIds,
-      onEditorRectsMounted,
       connectorStyleConfig
     }}
   >
-    <Canvas SelectionZoneComponent={SelectionZoneComponent} ScaleComponent={ScaleComponent} />
-    <StoreUpdater
-      nodes={nodes}
-      onNodesChange={onNodesChange}
-      transformation={transformation}
-      onTransfromationChange={onTransfromationChange}
+    <Canvas
+      SelectionZoneComponent={SelectionZoneComponent}
+      ScaleComponent={ScaleComponent}
+      MenuComponent={MenuComponent}
     />
+
+    <StoreUpdater nodes={nodes} onNodesChange={onNodesChange} />
   </EditorContext.Provider>
 )
 

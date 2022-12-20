@@ -1,5 +1,3 @@
-import { MutableRefObject } from "react"
-
 export type Size = {
   width: number
   height: number
@@ -51,11 +49,6 @@ export type Node = {
   state: NodeState | null
 }
 
-export type OnEditorRectsMountedProps = {
-  zoomContainerRef: MutableRefObject<HTMLDivElement>
-  editorContainerRef: MutableRefObject<HTMLDivElement>
-}
-
 export type ConnectorStyleConfig = {
   color: string
   width: number
@@ -72,30 +65,20 @@ export type OutputComponentProps = {
   nodeState: NodeState | null
 }
 
+export type MenuComponentProps = {
+  setTransformation: (transformation: Transformation) => void
+  transformation: Transformation
+  zoomContainer: HTMLDivElement
+  editorContainer: HTMLDivElement
+}
+
 export type EditorProps = {
   nodes: Node[]
   onNodesChange: (nodes: Node[]) => void
-  /**
-   *
-   * @deprecated
-   * Will be removed
-   */
-  transformation: Transformation
-  /**
-   *
-   * @deprecated
-   * Will be removed
-   */
-  onTransfromationChange?: (tansformation: Transformation) => void
-  /**
-   *
-   * @deprecated
-   * Will be removed
-   */
-  onEditorRectsMounted?: (value: OnEditorRectsMountedProps) => void
   NodeComponent: React.FC<Node>
   SelectionZoneComponent?: React.FC
   ScaleComponent?: React.FC<ScaleComponentProps>
+  MenuComponent?: React.FC<MenuComponentProps>
   OutputComponent?: React.FC<OutputComponentProps>
   importantNodeIds?: Array<string>
   connectorStyleConfig?: ConnectorStyleConfig
