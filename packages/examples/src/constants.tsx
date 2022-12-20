@@ -21,6 +21,7 @@ export const initialNodes: Node[] = [
     position: { x: 110, y: 110 },
     inputNumber: 0,
     inputPosition: DEFAULT_INPUT,
+    isCyclic: false,
     outputs: [
       { id: "N_1_1", nextNodeId: "Node_2", position: DEFAULT_OUTPUT },
       { id: "N_1_2", nextNodeId: null, position: DEFAULT_OUTPUT_2 }
@@ -32,7 +33,11 @@ export const initialNodes: Node[] = [
     position: { x: 310, y: 310 },
     inputNumber: 10,
     inputPosition: DEFAULT_INPUT,
-    outputs: [{ id: "N_2_1", nextNodeId: "Node_3", position: DEFAULT_OUTPUT }],
+    isCyclic: true,
+    outputs: [
+      { id: "N_2_1", nextNodeId: "Node_3", position: DEFAULT_OUTPUT },
+      { id: "N_2_2", nextNodeId: "Node_2", position: DEFAULT_OUTPUT_2 }
+    ],
     state: null
   },
   {

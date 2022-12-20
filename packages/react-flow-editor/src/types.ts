@@ -46,6 +46,7 @@ export type Node = {
   rectPosition?: DOMRect
   inputPosition?: Point
   inputNumber: number
+  isCyclic: boolean
   state: NodeState | null
 }
 
