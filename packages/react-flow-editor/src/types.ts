@@ -61,8 +61,8 @@ export type ScaleComponentProps = {
 }
 
 export type OutputComponentProps = {
-  active: boolean
-  outlined: boolean
+  isActive: boolean
+  isOutlined: boolean
   nodeState: NodeState | null
 }
 
