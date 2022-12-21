@@ -131,6 +131,7 @@ body {
 
   &.disabled {
     opacity: 0.5;
+    border: $node-border-width solid $node-border-color;
   }
 }
 
@@ -150,12 +151,20 @@ body {
 
     &.outlined {
       background: $node-background-color;
-      border: 2px solid $node-border-color-active;
     }
 
     &.active {
       background: $node-border-color-active;
+    }
+
+    &.outlined,
+    &.selected,
+    &.active {
       border: 2px solid $node-border-color-active;
+    }
+
+    &.disabled {
+      border: 1px solid $node-border-color;
     }
   }
 }
