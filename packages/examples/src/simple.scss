@@ -3,7 +3,6 @@ $log-height: 60px;
 $border-color: #ddd;
 $menu-background-color: #fcfcfc;
 
-$selected-color: #fda;
 $border-color: #ddd;
 $node-border-width: 1px;
 $node-border-width-selected: 2px;
@@ -11,6 +10,7 @@ $node-border-width-selected: 2px;
 $node-background-color: #fafafa;
 $node-background-hover-color: #fcfcfc;
 $node-border-color: #ccc;
+$node-border-color-active: #7d7d7d;
 
 $node-header-color: #f7f7f7;
 $node-header-hover-color: #f9f9f9;
@@ -123,25 +123,41 @@ body {
 
   transition: $node-transitions;
 
-  &.selected {
-    border: $node-border-width-selected solid $selected-color;
-    margin: #{$node-border-width - $node-border-width-selected};
+  &.selected,
+  &:hover {
+    border-color: $node-border-color-active;
     z-index: 3;
   }
 
   &.disabled {
     opacity: 0.5;
   }
+}
 
-  .dot {
-    position: absolute;
-    height: 10px;
+.dot {
+  position: absolute;
+  display: inline-block;
+  user-select: none;
+  -moz-user-select: none;
+  cursor: pointer;
+
+  & > div {
     width: 10px;
+    height: 10px;
     border-radius: 50%;
-    display: inline-block;
-    user-select: none;
-    -moz-user-select: none;
-    cursor: pointer;
+    background: $node-background-color;
+    border-radius: 50%;
+    border: 1px solid $node-border-color;
+
+    &.outlined {
+      background: $node-background-color;
+      border: 2px solid $node-border-color-active;
+    }
+
+    &.active {
+      background: $node-border-color-active;
+      border: 2px solid $node-border-color-active;
+    }
   }
 }
 

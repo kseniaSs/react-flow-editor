@@ -4,38 +4,23 @@ import { useStore } from "@nanostores/react"
 import {
   Editor,
   Node,
-  NodeState,
   ScaleComponentProps,
   OutputComponentProps,
   MenuComponentProps
 } from "@kseniass/react-flow-editor"
 import "./simple.scss"
 
-import { initialNodes, STYLED_CONFIG, TIPS, OUTPUT_STYLES } from "./constants"
+import { initialNodes, STYLED_CONFIG, TIPS } from "./constants"
 import { createNode } from "./helpers"
 import { NodeAttributes } from "./parts"
 import { NodesAtom } from "./store"
 
-const NodeComponent = (node: Node) => (
-  <div className={`nodeElement${node.state === NodeState.disabled ? " disabled" : ""}`}>Node</div>
-)
+const NodeComponent = (node: Node) => <div className={`nodeElement ${node.state || ""}`}>Node</div>
 
 const SelectionZoneComponent = () => <div className="selection-zone" />
 
-const OutputComponent: React.FC<OutputComponentProps> = ({ active, nodeState }) => (
-  <div
-    style={{
-      width: "10px",
-      height: "10px",
-      background: `${active ? OUTPUT_STYLES.color : OUTPUT_STYLES.disconnectedBg}`,
-      borderRadius: "50%",
-      border: active
-        ? "none"
-        : nodeState === NodeState.selected
-        ? `2px solid ${OUTPUT_STYLES.color}`
-        : `1px solid ${OUTPUT_STYLES.disconnectedColor}`
-    }}
-  />
+const OutputComponent: React.FC<OutputComponentProps> = ({ isActive, nodeState, isOutlined }) => (
+  <div className={`${nodeState || ""} ${isActive ? "active" : ""} ${isOutlined ? "outlined" : ""}`} />
 )
 
 const ScaleComponent: React.FC<ScaleComponentProps> = ({ zoomIn, zoomOut, overview }) => (
