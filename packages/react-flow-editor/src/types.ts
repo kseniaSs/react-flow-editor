@@ -43,10 +43,11 @@ export type Node = {
   id: string
   outputs: Output[]
   position: Point
-  rectPosition?: DOMRect
-  inputPosition?: Point
   inputNumber: number
   state: NodeState | null
+  inputPosition?: Point
+  rectPosition?: DOMRect
+  isCyclic?: boolean
 }
 
 export type ConnectorStyleConfig = {

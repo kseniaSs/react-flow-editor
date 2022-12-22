@@ -52,7 +52,7 @@ export default ({
       const hoveredNodeId = HoveredNodeIdAtom.get()
       const nodes = NodesAtom.get()
 
-      const inputNode = nodes.find((currentElement) => hoveredNodeId === currentElement.id)!
+      const inputNode = nodes.find((node) => hoveredNodeId === node.id)!
       const outputNode = nodes.find((node) => node.id === dragItem.id)
 
       const isNew = dragItem.output?.nextNodeId === null
@@ -78,7 +78,7 @@ export default ({
       if (inputNode && outputNode && inputNode.inputNumber > inputIdsForInputNode.length) {
         const nodesAreEqual = outputNode.id === inputNode.id
 
-        !nodesAreEqual &&
+        if (!nodesAreEqual || inputNode.isCyclic) {
           NodesAtom.set(
             nodes.map((el) => ({
               ...el,
@@ -91,6 +91,7 @@ export default ({
               state: null
             }))
           )
+        }
       }
     }
 
