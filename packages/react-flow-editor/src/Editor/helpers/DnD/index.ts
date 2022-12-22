@@ -42,7 +42,7 @@ export default ({
   }
 
   const onDragEnded = () => {
-    autoScrollActions.toDeafult()
+    autoScrollActions.resetAutoscroll()
 
     if (isNodesHaveStateToReset()) {
       nodeActions.clearNodesState()

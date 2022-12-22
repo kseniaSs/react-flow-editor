@@ -23,12 +23,14 @@ export const useSelectionZone = (zoomContainerRef: RefObject<HTMLElement>) => {
     [selectionZone]
   )
 
+  const expandDelta = (degrees: Array<AutoScrollDirection>, delta: number) =>
+    AutoScrollAtom.get().find((degree) => degrees.includes(degree.direction)) ? 0 : delta
+
   const expandSelectionZone = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
       if (selectionZone) {
         const transformation = TransformationMap.get()
         const dragItem = DragItemAtom.get()
-        const autoScroll = AutoScrollAtom.get()
 
         const deltaX = (e.clientX - dragItem.x) / transformation.zoom
         const deltaY = (e.clientY - dragItem.y) / transformation.zoom
@@ -36,12 +38,8 @@ export const useSelectionZone = (zoomContainerRef: RefObject<HTMLElement>) => {
         SelectionZoneAtom.set({
           ...selectionZone,
           cornerEnd: {
-            x:
-              selectionZone.cornerEnd.x +
-              ([AutoScrollDirection.left, AutoScrollDirection.right].includes(autoScroll.direction!) ? 0 : deltaX),
-            y:
-              selectionZone.cornerEnd.y +
-              ([AutoScrollDirection.top, AutoScrollDirection.bottom].includes(autoScroll.direction!) ? 0 : deltaY)
+            x: selectionZone.cornerEnd.x + expandDelta([AutoScrollDirection.left, AutoScrollDirection.right], deltaX),
+            y: selectionZone.cornerEnd.y + expandDelta([AutoScrollDirection.top, AutoScrollDirection.bottom], deltaY)
           }
         })
       }
