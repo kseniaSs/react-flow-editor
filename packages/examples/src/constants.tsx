@@ -66,14 +66,6 @@ export const TIPS = `
   - Scroll mouse to zoom
 `
 
-export const OUTPUT_STYLES = {
-  width: 10,
-  height: 10,
-  color: "#7d7d7d",
-  disconnectedColor: "#ccc",
-  disconnectedBg: "#fafafa"
-}
-
 export const STYLED_CONFIG = {
   width: 10,
   color: "#7d7d7d"
