@@ -3371,7 +3371,7 @@ packages:
     resolution: {directory: packages/react-flow-editor, type: directory}
     id: file:packages/react-flow-editor
     name: '@kseniass/react-flow-editor'
-    version: 2.0.0
+    version: 2.1.0
     peerDependencies:
       react: ^16.8.0 || ^17.0.0
       react-dom: ^16.8.0 || ^17.0.0

@@ -21,6 +21,7 @@ export const initialNodes: Node[] = [
     position: { x: 110, y: 110 },
     inputNumber: 0,
     inputPosition: DEFAULT_INPUT,
+    isCyclic: false,
     outputs: [
       { id: "N_1_1", nextNodeId: "Node_2", position: DEFAULT_OUTPUT },
       { id: "N_1_2", nextNodeId: null, position: DEFAULT_OUTPUT_2 }
@@ -32,7 +33,11 @@ export const initialNodes: Node[] = [
     position: { x: 310, y: 310 },
     inputNumber: 10,
     inputPosition: DEFAULT_INPUT,
-    outputs: [{ id: "N_2_1", nextNodeId: "Node_3", position: DEFAULT_OUTPUT }],
+    isCyclic: true,
+    outputs: [
+      { id: "N_2_1", nextNodeId: "Node_3", position: DEFAULT_OUTPUT },
+      { id: "N_2_2", nextNodeId: "Node_2", position: DEFAULT_OUTPUT_2 }
+    ],
     state: null
   },
   {
@@ -60,14 +65,6 @@ export const TIPS = `
   - DnD multiple selected nodes with SHIFT\n
   - Scroll mouse to zoom
 `
-
-export const OUTPUT_STYLES = {
-  width: 10,
-  height: 10,
-  color: "#7d7d7d",
-  disconnectedColor: "#ccc",
-  disconnectedBg: "#fafafa"
-}
 
 export const STYLED_CONFIG = {
   width: 10,
