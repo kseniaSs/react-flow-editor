@@ -3,7 +3,7 @@ import React from "react"
 import { useStore } from "@nanostores/react"
 
 import { NodeState, Output as OutputType } from "@/types"
-import { DragItemAtom, newConnectionActions } from "@/Editor/state"
+import { DragItemAtom, HoveredNodeIdAtom, newConnectionActions } from "@/Editor/state"
 import { useRectsContext } from "@/Editor/rects-context"
 
 import { BUTTON_LEFT } from "../../constants"
@@ -19,6 +19,7 @@ type Props = {
 export const Output: React.FC<Props> = React.memo(({ nodeId, nodeState, output }) => {
   const { OutputComponent } = useEditorContext()
   const { zoomContainer } = useRectsContext()
+  const hoveredNodeId = useStore(HoveredNodeIdAtom)
   const dragItem = useStore(DragItemAtom)
 
   const startNewConnection = (e: React.MouseEvent<HTMLElement>) => {
@@ -44,7 +45,7 @@ export const Output: React.FC<Props> = React.memo(({ nodeId, nodeState, output }
         transform: "translate(-50%, -50%)"
       }}
     >
-      <OutputComponent active={isActive} nodeState={nodeState} />
+      <OutputComponent isOutlined={hoveredNodeId === nodeId} isActive={isActive} nodeState={nodeState} />
     </div>
   )
 }, isEqual)
