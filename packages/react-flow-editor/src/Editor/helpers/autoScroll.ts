@@ -3,7 +3,6 @@ import { useCallback, useEffect } from "react"
 
 import {
   AutoScrollDirection,
-  AutoScrollState,
   AutoScrollAtom,
   NodesAtom,
   autoScrollActions,
@@ -18,14 +17,24 @@ import { DRAG_AUTO_SCROLL_DIST, DRAG_AUTO_SCROLL_TIME, DRAG_OFFSET_TRANSFORM } f
 import { Axis, DragItemType } from "../types"
 import { getRectFromRef } from "./getRectFromRef"
 
-export const getSign = (axis: Axis, autoScroll: AutoScrollState): -1 | 0 | 1 => {
-  if (axis === Axis.x && autoScroll.direction === AutoScrollDirection.left) return -1
-  if (axis === Axis.x && autoScroll.direction === AutoScrollDirection.right) return 1
-
-  if (axis === Axis.y && autoScroll.direction === AutoScrollDirection.top) return -1
-  if (axis === Axis.y && autoScroll.direction === AutoScrollDirection.bottom) return 1
+export const getSign = (direction: AutoScrollDirection): -1 | 0 | 1 => {
+  if ([AutoScrollDirection.left, AutoScrollDirection.top].includes(direction)) return -1
+  if ([AutoScrollDirection.right, AutoScrollDirection.bottom].includes(direction)) return 1
 
   return 0
+}
+
+const axisDirections = {
+  [Axis.x]: [AutoScrollDirection.left, AutoScrollDirection.right],
+  [Axis.y]: [AutoScrollDirection.top, AutoScrollDirection.bottom]
+}
+
+const countScrollDelta = (axis: Axis) => {
+  const scrollDegree = AutoScrollAtom.get().find((item) => axisDirections[axis].includes(item.direction))
+
+  if (!scrollDegree) return 0
+
+  return getSign(scrollDegree.direction) * DRAG_AUTO_SCROLL_DIST * scrollDegree.speed * TransformationMap.get().zoom
 }
 
 const useCheckAutoScrollEnable = (editorContainerRef: React.RefObject<HTMLDivElement>) => {
@@ -40,25 +49,21 @@ const useCheckAutoScrollEnable = (editorContainerRef: React.RefObject<HTMLDivEle
       const topOverflow = editorRect.top + DRAG_OFFSET_TRANSFORM - e.clientY
       const bottomOverflow = e.clientY - (editorRect.bottom - DRAG_OFFSET_TRANSFORM)
 
-      if (leftOverflow > 0) {
-        AutoScrollAtom.set({ speed: leftOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.left })
-      }
+      leftOverflow > 0
+        ? autoScrollActions.addAutoscrollDegree(leftOverflow, AutoScrollDirection.left)
+        : autoScrollActions.dropAutoscrollDegree(AutoScrollDirection.left)
 
-      if (rightOverflow > 0) {
-        AutoScrollAtom.set({ speed: rightOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.right })
-      }
+      rightOverflow > 0
+        ? autoScrollActions.addAutoscrollDegree(rightOverflow, AutoScrollDirection.right)
+        : autoScrollActions.dropAutoscrollDegree(AutoScrollDirection.right)
 
-      if (topOverflow > 0) {
-        AutoScrollAtom.set({ speed: topOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.top })
-      }
+      topOverflow > 0
+        ? autoScrollActions.addAutoscrollDegree(topOverflow, AutoScrollDirection.top)
+        : autoScrollActions.dropAutoscrollDegree(AutoScrollDirection.top)
 
-      if (bottomOverflow > 0) {
-        AutoScrollAtom.set({ speed: bottomOverflow / DRAG_OFFSET_TRANSFORM, direction: AutoScrollDirection.bottom })
-      }
-
-      if (autoScroll.direction && Math.max(leftOverflow, rightOverflow, topOverflow, bottomOverflow) <= 0) {
-        autoScrollActions.toDeafult()
-      }
+      bottomOverflow > 0
+        ? autoScrollActions.addAutoscrollDegree(bottomOverflow, AutoScrollDirection.bottom)
+        : autoScrollActions.dropAutoscrollDegree(AutoScrollDirection.bottom)
     },
     [autoScroll, editorContainerRef]
   )
@@ -68,7 +73,7 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
   const autoScroll = useStore(AutoScrollAtom)
 
   useEffect(() => {
-    if (!autoScroll.direction) return
+    if (!autoScroll.length) return
 
     const dragItem = DragItemAtom.get()
 
@@ -77,11 +82,12 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
 
       const transformation = TransformationMap.get()
 
-      const delta = DRAG_AUTO_SCROLL_DIST * autoScroll.speed * transformation.zoom
+      const deltaX = countScrollDelta(Axis.x)
+      const deltaY = countScrollDelta(Axis.y)
 
       if ([DragItemType.node, DragItemType.connection, DragItemType.selectionZone].includes(dragItem.type)) {
-        const dx = transformation.dx - getSign(Axis.x, autoScroll) * delta
-        const dy = transformation.dy - getSign(Axis.y, autoScroll) * delta
+        const dx = transformation.dx - deltaX
+        const dy = transformation.dy - deltaY
 
         TransformationMap.set({
           ...transformation,
@@ -94,8 +100,8 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
         const newConnection = NewConnectionAtom.get()
 
         NewConnectionAtom.set({
-          x: newConnection.x + getSign(Axis.x, autoScroll) * delta,
-          y: newConnection.y + getSign(Axis.y, autoScroll) * delta
+          x: newConnection.x + deltaX,
+          y: newConnection.y + deltaY
         })
       }
 
@@ -105,8 +111,8 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
         SelectionZoneAtom.set({
           ...selectionZone,
           cornerEnd: {
-            x: selectionZone.cornerEnd.x + getSign(Axis.x, autoScroll) * delta,
-            y: selectionZone.cornerEnd.y + getSign(Axis.y, autoScroll) * delta
+            x: selectionZone.cornerEnd.x + deltaX,
+            y: selectionZone.cornerEnd.y + deltaY
           }
         })
       }
@@ -122,8 +128,8 @@ export const useAutoScroll = (editorContainerRef: React.RefObject<HTMLDivElement
               ? {
                   ...el,
                   position: {
-                    x: el.position.x + getSign(Axis.x, autoScroll) * delta,
-                    y: el.position.y + getSign(Axis.y, autoScroll) * delta
+                    x: el.position.x + deltaX,
+                    y: el.position.y + deltaY
                   }
                 }
               : el

@@ -7,6 +7,6 @@ export enum AutoScrollDirection {
   bottom = "bottom"
 }
 
-export type AutoScrollState = { speed: number; direction: AutoScrollDirection | null }
+export type AutoScrollState = { speed: number; direction: AutoScrollDirection }
 
-export const AutoScrollAtom = atom<AutoScrollState>({ speed: 0, direction: null })
+export const AutoScrollAtom = atom<Array<AutoScrollState>>([])
