@@ -16,9 +16,11 @@ export const NewConnection: React.FC = () => {
 
   const outputNode = nodes.find((node) => node.id === dragItem?.id)
 
+  const nodeRect = useNodeRect(outputNode)
+
   if (!outputNode || dragItem.type !== DragItemType.connection) return null
 
-  const outputPosition = useNodeRect(outputNode)
+  const outputPosition = nodeRect
     ? {
         x: -svgOffset.x + outputNode.position.x + (dragItem.output?.position.x || 0),
         y: -svgOffset.y + outputNode.position.y + (dragItem.output?.position.y || 0)

@@ -14,6 +14,8 @@ export const Menu: FC<Props> = ({ MenuComponent }) => {
   const { editorContainer, zoomContainer } = useRectsContext()
   const preventCanvasMove = () => DragItemAtom.set({ type: undefined, x: 0, y: 0 })
 
+  if (!zoomContainer || !editorContainer) return null
+
   return (
     <div onMouseDownCapture={preventCanvasMove}>
       <MenuComponent
