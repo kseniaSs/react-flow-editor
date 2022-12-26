@@ -1,5 +1,5 @@
 import { Node, RectZone, SelectionZone, Transformation } from "../../types"
-import { useNodeRect } from "./nodeRect"
+import { useNodeRect } from "../components/Node/hooks"
 
 export const isNodeInSelectionZone = (node: Node, zone: SelectionZone | null, transform: Transformation): boolean => {
   if (zone === null) return false

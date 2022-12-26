@@ -4,10 +4,10 @@ import { useStore } from "@nanostores/react"
 import { Node, Output } from "@/types"
 import { DragItemType } from "@/Editor/types"
 import { DragItemAtom, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
-import { useNodeRect } from "@/Editor/helpers/nodeRect"
 
 import ArrowDisconnector from "./ArrowDisconnector"
 import InputConnection from "./InputConnection"
+import { useNodeRect } from "../../Node/hooks"
 
 type ConnectionProps = {
   node: Node

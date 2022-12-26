@@ -1,7 +1,7 @@
 import { useLayoutEffect } from "react"
 
 import { useRectsContext } from "@/Editor/rects-context"
-import { overview } from "@/Editor/state/Transformation/actions"
+import { overview } from "@/Editor/state/Overview"
 
 export const useOverview = () => {
   const { editorContainer } = useRectsContext()

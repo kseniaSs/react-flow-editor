@@ -3,9 +3,9 @@ import { useStore } from "@nanostores/react"
 
 import { DragItemType } from "@/Editor/types"
 import { DragItemAtom, NewConnectionAtom, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
-import { useNodeRect } from "@/Editor/helpers/nodeRect"
 
 import InputConnection from "./InputConnection"
+import { useNodeRect } from "../../Node/hooks"
 
 export const NewConnection: React.FC = () => {
   const nodes = useStore(NodesAtom)
