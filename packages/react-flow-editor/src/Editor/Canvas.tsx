@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react"
+import React from "react"
 import { useStore } from "@nanostores/react"
 
 import { MenuComponentProps, ScaleComponentProps } from "@/types"
@@ -14,6 +14,7 @@ import { TransformationMap } from "./state"
 import { SelectionZone } from "./components/SelectionZone"
 import { Scale } from "./components/Scale"
 import { Menu } from "./components/Menu"
+import { useEditorRects } from "./helpers/editorRects"
 
 type Props = {
   SelectionZoneComponent?: React.FC
@@ -22,8 +23,7 @@ type Props = {
 }
 
 export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent, MenuComponent }) => {
-  const zoomContainerRef = useRef<HTMLDivElement>(document.querySelector(".zoom-container")!)
-  const editorContainerRef = useRef<HTMLDivElement>(document.querySelector(".react-flow-editor")!)
+  const { rects, zoomContainerRef, editorContainerRef } = useEditorRects()
 
   const transformation = useStore(TransformationMap)
 
@@ -32,10 +32,8 @@ export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent
 
   useHotKeys()
 
-  const rectsContextValue = useMemo(() => ({ zoomContainerRef, editorContainerRef }), [])
-
   return (
-    <RectsContext.Provider value={rectsContextValue}>
+    <RectsContext.Provider value={rects}>
       <div
         onMouseUpCapture={onDragEnded}
         onMouseMove={onDrag}

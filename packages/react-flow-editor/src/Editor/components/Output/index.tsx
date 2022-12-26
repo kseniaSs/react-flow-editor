@@ -23,10 +23,10 @@ export const Output: React.FC<Props> = React.memo(({ nodeId, nodeState, output }
   const dragItem = useStore(DragItemAtom)
 
   const startNewConnection = (e: React.MouseEvent<HTMLElement>) => {
-    const zoomRect = zoomContainer.getBoundingClientRect()
+    const zoomRect = zoomContainer?.getBoundingClientRect()
 
     resetEvent(e)
-    if (e.button === BUTTON_LEFT) {
+    if (e.button === BUTTON_LEFT && zoomRect) {
       newConnectionActions.startNewConnection(nodeId, zoomRect, e, output)
     }
   }

@@ -17,9 +17,9 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, outp
 
   const onMouseDown = (e: React.MouseEvent<SVGRectElement>) => {
     e.stopPropagation()
-    const zoomRect = zoomContainer.getBoundingClientRect()
+    const zoomRect = zoomContainer?.getBoundingClientRect()
 
-    newConnectionActions.dragArrowDisconnector(e, fromId, output, zoomRect)
+    zoomRect && newConnectionActions.dragArrowDisconnector(e, fromId, output, zoomRect)
   }
 
   return <rect onMouseDown={onMouseDown} className="disconnector" style={disconnectorStyle(position)} />
