@@ -1,8 +1,7 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { isEqual } from "lodash"
 
 import { Node as NodeType } from "@/types"
-import { nodeActions } from "@/Editor/state"
 
 import { nodeStyle } from "./helpers"
 import { useNodeInteractions } from "./useNodeInteractions"
@@ -14,14 +13,6 @@ type NodeProps = {
 }
 
 export const Provider = ({ node }: NodeProps) => {
-  useEffect(() => {
-    const nodeElement = document.getElementById(node.id)
-
-    if (nodeElement) {
-      nodeActions.changeNodeRectPos(node.id, nodeElement.getBoundingClientRect())
-    }
-  }, [node.id])
-
   const nodeInteractions = useNodeInteractions(node)
 
   return <Node node={node} nodeInteractions={nodeInteractions} />

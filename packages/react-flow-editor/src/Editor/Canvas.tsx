@@ -1,4 +1,4 @@
-import React, { useRef } from "react"
+import React, { useMemo, useRef } from "react"
 import { useStore } from "@nanostores/react"
 
 import { MenuComponentProps, ScaleComponentProps } from "@/types"
@@ -32,10 +32,10 @@ export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent
 
   useHotKeys()
 
+  const rectsContextValue = useMemo(() => ({ zoomContainerRef, editorContainerRef }), [])
+
   return (
-    <RectsContext.Provider
-      value={{ zoomContainer: zoomContainerRef.current, editorContainer: editorContainerRef.current }}
-    >
+    <RectsContext.Provider value={rectsContextValue}>
       <div
         onMouseUpCapture={onDragEnded}
         onMouseMove={onDrag}

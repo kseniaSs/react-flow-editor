@@ -3,6 +3,7 @@ import { useStore } from "@nanostores/react"
 
 import { DragItemType } from "@/Editor/types"
 import { DragItemAtom, NewConnectionAtom, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
+import { nodeRect } from "@/Editor/helpers/nodeRect"
 
 import InputConnection from "./InputConnection"
 
@@ -17,7 +18,7 @@ export const NewConnection: React.FC = () => {
 
   if (!outputNode || dragItem.type !== DragItemType.connection) return null
 
-  const outputPosition = outputNode.rectPosition
+  const outputPosition = nodeRect(outputNode)
     ? {
         x: -svgOffset.x + outputNode.position.x + (dragItem.output?.position.x || 0),
         y: -svgOffset.y + outputNode.position.y + (dragItem.output?.position.y || 0)

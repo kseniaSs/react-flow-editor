@@ -4,6 +4,7 @@ import { useStore } from "@nanostores/react"
 import { Node, Output } from "@/types"
 import { DragItemType } from "@/Editor/types"
 import { DragItemAtom, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
+import { nodeRect } from "@/Editor/helpers/nodeRect"
 
 import ArrowDisconnector from "./ArrowDisconnector"
 import InputConnection from "./InputConnection"
@@ -21,7 +22,7 @@ export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ outp
 
   const svgOffset = SvgOffsetAtom.get()
 
-  const outputPosition = node.rectPosition
+  const outputPosition = nodeRect(node)
     ? {
         x: -svgOffset.x + node.position.x + output.position.x,
         y: -svgOffset.y + node.position.y + output.position.y

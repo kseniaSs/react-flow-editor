@@ -22,7 +22,6 @@ export const dragNodeHandler = action(NodesAtom, "changeNodeState", (store, e: R
               x: el.position.x + (e.clientX - dragItem.x) / transformation.zoom,
               y: el.position.y + (e.clientY - dragItem.y) / transformation.zoom
             },
-            rectPosition: document.getElementById(el.id)?.getBoundingClientRect(),
             state: isShiftSelected ? NodeState.selected : NodeState.dragging
           }
         : { ...el, state: null }
