@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "cypress:open": "cypress open -C cypress.config.ts",
-    "cypress:run": "cypress run -C cypress.config.ts",
-    "cypress:docker": "docker build -f ./Dockerfile ."
+    "cypress:run": "cypress run -C cypress.config.ts"
   },
   "keywords": [],
   "author": "",
@@ -14,8 +13,5 @@
   "dependencies": {
     "cypress": "^12.2.0",
     "cypress-real-events": "^1.7.4"
-  },
-  "devDependencies": {
-    "typescript": "^4.0.2"
   }
 }

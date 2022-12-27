@@ -28,6 +28,14 @@ importers:
       prettier: 2.7.1
       typescript: 4.8.4
 
+  packages/e2e:
+    specifiers:
+      cypress: ^12.2.0
+      cypress-real-events: ^1.7.4
+    dependencies:
+      cypress: 12.2.0
+      cypress-real-events: 1.7.6_cypress@12.2.0
+
   packages/examples:
     specifiers:
       '@kseniass/react-flow-editor': file:../react-flow-editor/
@@ -97,17 +105,6 @@ importers:
       vite-plugin-dts: 1.7.0_vite@2.9.15
       vite-plugin-externals: 0.5.1_vite@2.9.15
       vite-plugin-static-copy: 0.6.1_vite@2.9.15
-
-  packages/tests:
-    specifiers:
-      cypress: ^12.2.0
-      cypress-real-events: ^1.7.4
-      typescript: ^4.0.2
-    dependencies:
-      cypress: 12.2.0
-      cypress-real-events: 1.7.6_cypress@12.2.0
-    devDependencies:
-      typescript: 4.8.4
 
 packages:
 

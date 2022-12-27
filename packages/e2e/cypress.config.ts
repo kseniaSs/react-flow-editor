@@ -10,7 +10,7 @@ export default defineConfig({
   video: false,
   watchForFileChanges: true,
   e2e: {
-    baseUrl: `http://localhost:3000/`,
+    baseUrl: `http://host.docker.internal:3000/`,
     async setupNodeEvents(on) {
       on("before:browser:launch", (browser, launchOptions) => {
         if (browser.name === "chrome") {
@@ -22,6 +22,6 @@ export default defineConfig({
       })
     },
     specPattern: "**/*.cy.{js,jsx,ts,tsx}",
-    supportFile: "e2e/cypress/support/index.ts"
+    supportFile: "./cypress/support/index.ts"
   }
 })

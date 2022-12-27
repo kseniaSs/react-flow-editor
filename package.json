@@ -12,7 +12,8 @@
   "scripts": {
     "prettier": "pnpm -r prettier",
     "eslint": "pnpm -r eslint",
-    "typescript": "pnpm -r typescript"
+    "typescript": "pnpm -r typescript",
+    "cypress:docker": "docker build . --network=host --progress=plain"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.31.0",
