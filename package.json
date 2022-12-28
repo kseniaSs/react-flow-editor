@@ -13,7 +13,7 @@
     "prettier": "pnpm -r prettier",
     "eslint": "pnpm -r eslint",
     "typescript": "pnpm -r typescript",
-    "cypress:docker": "docker-compose up --build",
+    "cypress:docker": "docker-compose up --build --abort-on-container-exit",
     "serve:ci": "cd packages/examples && vite serve"
   },
   "devDependencies": {
