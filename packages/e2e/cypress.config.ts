@@ -11,7 +11,7 @@ export default defineConfig({
   screenshotOnRunFailure: false,
   watchForFileChanges: true,
   e2e: {
-    baseUrl: `http://${process.env.UNDER_DOCKER ? "host.docker.internal:5173" : "localhost:3000"}/`,
+    baseUrl: `http://${process.env.UNDER_DOCKER ? "172.17.0.1:5173" : "localhost:3000"}/`,
     async setupNodeEvents(on) {
       on("before:browser:launch", (browser, launchOptions) => {
         if (browser.name === "chrome") {
