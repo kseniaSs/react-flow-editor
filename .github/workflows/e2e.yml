@@ -8,7 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: isbang/compose-action@v1.4.1
-        with:
-          up-flags: --build
-          compose-file: "docker-compose.yml"
+      - name: Build the docker-compose stack
+        run: docker-compose up --build
+      # - uses: isbang/compose-action@v1.4.1
+      # with:
+      #   up-flags: --build
+      #   compose-file: "docker-compose.yml"
