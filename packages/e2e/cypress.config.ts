@@ -8,9 +8,10 @@ export default defineConfig({
   modifyObstructiveCode: false,
   chromeWebSecurity: false,
   video: false,
+  screenshotOnRunFailure: false,
   watchForFileChanges: true,
   e2e: {
-    baseUrl: `http://host.docker.internal:5173/`,
+    baseUrl: `http://${process.env.UNDER_DOCKER ? "host.docker.internal:5173" : "localhost:3000"}/`,
     async setupNodeEvents(on) {
       on("before:browser:launch", (browser, launchOptions) => {
         if (browser.name === "chrome") {
