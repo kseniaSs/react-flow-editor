@@ -6,6 +6,7 @@ services:
     build:
       context: .
       target: cypress
+    entrypoint: cypress run --project /flow-editor/packages/e2e
     links:
       - flow-editor
     depends_on:

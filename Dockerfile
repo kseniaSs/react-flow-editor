@@ -11,6 +11,5 @@ FROM cypress/included:11.2.0 as cypress
 
 WORKDIR /flow-editor
 COPY --from=flow-editor-install /flow-editor /flow-editor
-COPY ./packages/e2e/cypress.config.ts /flow-editor
 RUN npm install -g pnpm
 ENV UNDER_DOCKER=true

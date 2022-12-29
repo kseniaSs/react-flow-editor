@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { defineConfig } from "cypress"
 
 export const getHost = () => (process.env.UNDER_DOCKER ? "http://flow-editor:5173" : "http://localhost:3000")
@@ -19,6 +21,11 @@ export default defineConfig({
   e2e: {
     baseUrl: getHost(),
     specPattern: "**/*.cy.{js,jsx,ts,tsx}",
-    supportFile: process.env.UNDER_DOCKER ? "./packages/e2e/cypress/support/index.ts" : "./cypress/support/index.ts"
+    async setupNodeEvents(on, config) {
+      const getCompareSnapshotsPlugin = require("cypress-image-diff-js/dist/plugin")
+
+      return getCompareSnapshotsPlugin(on, config)
+    },
+    supportFile: "./cypress/support/index.ts"
   }
 })
