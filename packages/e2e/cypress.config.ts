@@ -21,11 +21,6 @@ export default defineConfig({
   e2e: {
     baseUrl: getHost(),
     specPattern: "**/*.cy.{js,jsx,ts,tsx}",
-    async setupNodeEvents(on, config) {
-      const getCompareSnapshotsPlugin = require("cypress-image-diff-js/dist/plugin")
-
-      return getCompareSnapshotsPlugin(on, config)
-    },
     supportFile: "./cypress/support/index.ts"
   }
 })
