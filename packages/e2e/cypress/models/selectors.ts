@@ -1,1 +1,3 @@
-export default {}
+export default {
+  SINGLE_NODE: "#Node_"
+}

@@ -5,6 +5,7 @@ ADD . /flow-editor
 RUN npm install -g pnpm
 RUN npm install -g vite
 RUN pnpm install
+EXPOSE 5173
 
 FROM cypress/included:11.2.0 as cypress
 
@@ -13,4 +14,3 @@ COPY --from=flow-editor-install /flow-editor /flow-editor
 COPY ./packages/e2e/cypress.config.ts /flow-editor
 RUN npm install -g pnpm
 ENV UNDER_DOCKER=true
-
