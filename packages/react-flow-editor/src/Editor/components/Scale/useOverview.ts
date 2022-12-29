@@ -1,16 +1,16 @@
-import { useLayoutEffect } from "react"
+import { useEffect } from "react"
 
 import { useRectsContext } from "@/Editor/rects-context"
-import { overview } from "@/Editor/state/Overview"
+import { overviewActions } from "@/Editor/state"
 
 export const useOverview = () => {
-  const { editorContainer } = useRectsContext()
+  const { editorContainerRef, isMounted } = useRectsContext()
 
   const makeOverview = () => {
-    if (editorContainer) overview(editorContainer)
+    if (isMounted && editorContainerRef.current) overviewActions.overview(editorContainerRef)
   }
 
-  useLayoutEffect(makeOverview, [Boolean(editorContainer)])
+  useEffect(makeOverview, [isMounted])
 
   return makeOverview
 }

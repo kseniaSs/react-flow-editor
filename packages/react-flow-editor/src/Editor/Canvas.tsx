@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useStore } from "@nanostores/react"
 
 import { MenuComponentProps, ScaleComponentProps } from "@/types"
@@ -14,7 +14,7 @@ import { TransformationMap } from "./state"
 import { SelectionZone } from "./components/SelectionZone"
 import { Scale } from "./components/Scale"
 import { Menu } from "./components/Menu"
-import { useEditorRects } from "./helpers/editorRects"
+import { MountedContexts } from "./types"
 
 type Props = {
   SelectionZoneComponent?: React.FC
@@ -23,7 +23,11 @@ type Props = {
 }
 
 export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent, MenuComponent }) => {
-  const { rects, zoomContainerRef, editorContainerRef } = useEditorRects()
+  const zoomContainerRef = useRef<HTMLDivElement | null>(null)
+  const editorContainerRef = useRef<HTMLDivElement | null>(null)
+  const [rectsContextValue, setRectsContextValue] = useState<MountedContexts>({ zoomContainerRef, editorContainerRef })
+
+  useEffect(() => setRectsContextValue((prev) => ({ ...prev, isMounted: true })), [])
 
   const transformation = useStore(TransformationMap)
 
@@ -33,7 +37,7 @@ export const Canvas: React.FC<Props> = ({ SelectionZoneComponent, ScaleComponent
   useHotKeys()
 
   return (
-    <RectsContext.Provider value={rects}>
+    <RectsContext.Provider value={rectsContextValue}>
       <div
         onMouseUpCapture={onDragEnded}
         onMouseMove={onDrag}

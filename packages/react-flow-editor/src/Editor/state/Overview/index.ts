@@ -1,1 +1,1 @@
-export * from "./actions"
+export * as overviewActions from "./actions"

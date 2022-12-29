@@ -11,18 +11,18 @@ type Props = {
 
 export const Menu: FC<Props> = ({ MenuComponent }) => {
   const transformation = useStore(TransformationMap)
-  const { editorContainer, zoomContainer } = useRectsContext()
+  const { editorContainerRef, zoomContainerRef } = useRectsContext()
   const preventCanvasMove = () => DragItemAtom.set({ type: undefined, x: 0, y: 0 })
 
-  if (!zoomContainer || !editorContainer) return null
+  if (!zoomContainerRef.current || !editorContainerRef.current) return null
 
   return (
     <div onMouseDownCapture={preventCanvasMove}>
       <MenuComponent
         setTransformation={TransformationMap.set}
         transformation={transformation}
-        zoomContainer={zoomContainer}
-        editorContainer={editorContainer}
+        zoomContainer={zoomContainerRef.current}
+        editorContainer={editorContainerRef.current}
       />
     </div>
   )
