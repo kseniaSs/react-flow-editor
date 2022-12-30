@@ -13,8 +13,6 @@ export default defineConfig({
   video: false,
   screenshotOnRunFailure: false,
   watchForFileChanges: true,
-  viewportWidth: 1920,
-  viewportHeight: 1080,
   env: {
     HOST: getHost()
   },
