@@ -1,4 +1,4 @@
-import { RootModel } from "../../../models"
+import { RootModel, selectors } from "../../../models"
 
 export class CanvasModel extends RootModel {
   canvasPosition() {
@@ -6,6 +6,9 @@ export class CanvasModel extends RootModel {
   }
   canvasPositionOrigin() {
     return this.getCanvas().then(($el) => $el.css("transform-origin"))
+  }
+  getCanvas() {
+    return cy.get(selectors.ZOOM_CONTAINER)
   }
 }
 

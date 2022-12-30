@@ -15,7 +15,7 @@ context("Node connections", () => {
     })
 
     it("Should move connectors", () => {
-      connectionsModel.getRoot().realMouseDown({ position: { x: 470, y: 152 } })
+      connectionsModel.mouseDown(470, 152)
       connectionsModel.getRoot().realMouseMove(470, 152)
 
       connectionsModel
@@ -28,7 +28,7 @@ context("Node connections", () => {
         })
 
       connectionsModel.getRoot().realMouseMove(530, 330)
-      connectionsModel.getRoot().realMouseUp({ position: { x: 530, y: 330 } })
+      connectionsModel.mouseUp(530, 330)
 
       verifyFirstConnectionInitial()
     })
@@ -36,15 +36,15 @@ context("Node connections", () => {
     it("Should disconnect/connect connectors", () => {
       connectionsModel.getConnections().then(($cons) => expect($cons.length).to.equal(3))
 
-      connectionsModel.getRoot().realMouseDown({ position: { x: 470, y: 152 } })
+      connectionsModel.mouseDown(470, 152)
       connectionsModel.getRoot().realMouseMove(480, 170)
-      connectionsModel.getRoot().realMouseUp({ position: { x: 480, y: 170 } })
+      connectionsModel.mouseUp(480, 170)
 
       connectionsModel.getConnections().then(($cons) => expect($cons.length).to.equal(2))
 
-      connectionsModel.getRoot().realMouseDown({ position: { x: 470, y: 152 } })
+      connectionsModel.mouseDown(470, 152)
       connectionsModel.getRoot().realMouseMove(530, 330)
-      connectionsModel.getRoot().realMouseUp({ position: { x: 530, y: 330 } })
+      connectionsModel.mouseUp(530, 330)
 
       connectionsModel.getConnections().then(($cons) => expect($cons.length).to.equal(3))
 

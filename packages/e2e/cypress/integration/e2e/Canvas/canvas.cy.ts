@@ -1,4 +1,4 @@
-import { coordinatesFromMatrix } from "../helpers"
+import { coordinatesFromMatrix, coordinatesFromStringPX } from "../helpers"
 import { canvasModel } from "./Canvas.model"
 import { CANVAS_CONTEXT } from "./constants"
 
@@ -6,7 +6,7 @@ context(CANVAS_CONTEXT, () => {
   beforeEach(canvasModel.open)
 
   describe("Movements without autoscroll", () => {
-    const matchEndPosition = () =>
+    const matchEndPosition = () => {
       canvasModel
         .canvasPosition()
         .then(coordinatesFromMatrix)
@@ -15,6 +15,15 @@ context(CANVAS_CONTEXT, () => {
           expect(Number(y)).to.be.closeTo(65, 1)
         })
 
+      canvasModel
+        .canvasPositionOrigin()
+        .then(coordinatesFromStringPX)
+        .then(([x, y]) => {
+          expect(Number(x)).to.be.closeTo(285, 1)
+          expect(Number(y)).to.be.closeTo(240, 1)
+        })
+    }
+
     it("Should match default position", () => {
       canvasModel
         .canvasPosition()
@@ -22,6 +31,14 @@ context(CANVAS_CONTEXT, () => {
         .then(([x, y]) => {
           expect(Number(x)).to.be.closeTo(15, 1)
           expect(Number(y)).to.be.closeTo(-35, 1)
+        })
+
+      canvasModel
+        .canvasPositionOrigin()
+        .then(coordinatesFromStringPX)
+        .then(([x, y]) => {
+          expect(Number(x)).to.be.closeTo(385, 1)
+          expect(Number(y)).to.be.closeTo(340, 1)
         })
     })
 

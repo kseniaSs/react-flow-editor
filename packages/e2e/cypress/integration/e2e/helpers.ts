@@ -1,8 +1,8 @@
 export const coordinatesFromMatrix = (matrixString: string): [string, string] =>
   matrixString.match(/([^ ]+), ([^ ]+)\)$/)!.slice(1) as [string, string]
 
+export const coordinatesFromStringPX = (positionString: string) =>
+  positionString.split(" ").map((item) => Math.round(parseInt(item)))
+
 export const coordinatesFromPath = (pathString: string) =>
-  pathString
-    .split(" ")
-    .map((item) => Math.round(parseInt(item)))
-    .filter((item) => !isNaN(Number(item)))
+  coordinatesFromStringPX(pathString).filter((item) => !isNaN(Number(item)))

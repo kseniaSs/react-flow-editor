@@ -8,27 +8,6 @@ export class RootModel {
   getRoot() {
     return cy.get(selectors.ROOT)
   }
-  getNode(nodeNumber: number) {
-    return cy.get(selectors.SINGLE_NODE + nodeNumber)
-  }
-  getConnections() {
-    return cy.get(selectors.CONNECTION)
-  }
-  getFirstConnectionPath() {
-    return cy
-      .get(selectors.CONNECTION)
-      .first()
-      .then(($el) => $el.attr("d"))
-  }
-  getLastConnectionPath() {
-    return cy
-      .get(selectors.CONNECTION)
-      .last()
-      .then(($el) => $el.attr("d") as string)
-  }
-  getCanvas() {
-    return cy.get(selectors.ZOOM_CONTAINER)
-  }
   mouseDown(x: number, y: number) {
     return this.getRoot().realMouseDown({ position: { x, y } })
   }
@@ -40,9 +19,5 @@ export class RootModel {
       .realMouseDown({ position: { x: fromX, y: fromY } })
       .realMouseMove(toX, toY)
       .realMouseUp({ position: { x: toX, y: toY } })
-  }
-
-  nodePosition(nodeNumber: number) {
-    return this.getNode(nodeNumber).then(($el) => $el.css("transform"))
   }
 }
