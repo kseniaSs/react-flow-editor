@@ -1,6 +1,4 @@
-import { ConnectionsModel } from "./Connections.model"
-
-const connectionsModel = new ConnectionsModel()
+import { connectionsModel } from "./Connections.model"
 
 context("Node connections", () => {
   beforeEach(connectionsModel.open)

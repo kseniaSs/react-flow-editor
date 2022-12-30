@@ -29,6 +29,12 @@ export class RootModel {
   getCanvas() {
     return cy.get(selectors.ZOOM_CONTAINER)
   }
+  mouseDown(x: number, y: number) {
+    return this.getRoot().realMouseDown({ position: { x, y } })
+  }
+  mouseUp(x: number, y: number) {
+    return this.getRoot().realMouseUp({ position: { x, y } })
+  }
   dnd(fromX: number, fromY: number, toX: number, toY: number) {
     return this.getRoot()
       .realMouseDown({ position: { x: fromX, y: fromY } })
@@ -38,12 +44,5 @@ export class RootModel {
 
   nodePosition(nodeNumber: number) {
     return this.getNode(nodeNumber).then(($el) => $el.css("transform"))
-  }
-
-  canvasPosition() {
-    return this.getCanvas().then(($el) => $el.css("transform"))
-  }
-  canvasPositionOrigin() {
-    return this.getCanvas().then(($el) => $el.css("transform-origin"))
   }
 }
