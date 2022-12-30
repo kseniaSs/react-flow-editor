@@ -1,3 +1,4 @@
+import { WheelDirection } from "../integration/e2e/constants"
 import selectors from "./selectors"
 
 export class RootModel {
@@ -19,5 +20,8 @@ export class RootModel {
       .realMouseDown({ position: { x: fromX, y: fromY } })
       .realMouseMove(toX, toY)
       .realMouseUp({ position: { x: toX, y: toY } })
+  }
+  wheel(direction: WheelDirection) {
+    this.getRoot().trigger("wheel", { deltaY: direction === WheelDirection.top ? 1 : -1 })
   }
 }
