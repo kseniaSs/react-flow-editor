@@ -1,3 +1,4 @@
+import { coordinatesFromPath } from "../helpers"
 import { connectionsModel } from "./Connections.model"
 
 context("Node connections", () => {
@@ -9,18 +10,22 @@ context("Node connections", () => {
         .getFirstConnectionPath()
         .should("be.equal", "M 15310 15335 C 15210 15335, 15359 15140, 15259 15140")
 
-    it("Should move connectors", () => {
+    it("Should match default connector path", () => {
       verifyFirstConnectionInitial()
+    })
 
+    it("Should move connectors", () => {
       connectionsModel.getRoot().realMouseDown({ position: { x: 470, y: 152 } })
-      connectionsModel.getRoot().realMouseMove(471, 153)
+      connectionsModel.getRoot().realMouseMove(470, 152)
 
       connectionsModel
         .getLastConnectionPath()
-        .should(
-          "be.equal",
-          "M 15254.75390625 15137.003908157349 C 15154.75390625 15137.003908157349, 15359 15140, 15259 15140"
-        )
+        .then(coordinatesFromPath)
+        .then((coordinates) => {
+          const properCoordinates = [15253, 15136, 15153, 15136, 15359, 15140, 15259, 15140]
+
+          coordinates.forEach((coord, inx) => expect(coord).to.closeTo(properCoordinates[inx], 2))
+        })
 
       connectionsModel.getRoot().realMouseMove(530, 330)
       connectionsModel.getRoot().realMouseUp({ position: { x: 530, y: 330 } })

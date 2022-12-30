@@ -24,7 +24,7 @@ export class RootModel {
     return cy
       .get(selectors.CONNECTION)
       .last()
-      .then(($el) => $el.attr("d"))
+      .then(($el) => $el.attr("d") as string)
   }
   getCanvas() {
     return cy.get(selectors.ZOOM_CONTAINER)
