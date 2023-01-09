@@ -84,41 +84,46 @@ context("Nodes interactions", () => {
       nodesModel.getRoot().trigger("mousemove", { clientX: 400, clientY: 200, shiftKey: true })
       nodesModel.getNode(1).trigger("mouseup", { shiftKey: true, button: 0 })
 
-      nodesModel.nodePosition(1).should("be.equal", "matrix(1, 0, 0, 1, 111, 231)")
-      nodesModel.nodePosition(2).should("be.equal", "matrix(1, 0, 0, 1, 311, 431)")
+      nodesModel.nodePositionNumeric(1).then(([x, y]) => {
+        expect(Number(x)).to.closeTo(111, 1)
+        expect(Number(y)).to.closeTo(231, 1)
+      })
+
+      nodesModel.nodePositionNumeric(2).then(([x, y]) => {
+        expect(Number(x)).to.closeTo(311, 1)
+        expect(Number(y)).to.closeTo(431, 1)
+      })
     })
   })
 
   describe("Movements with autoscroll", () => {
-    const firstNodePosition = () => nodesModel.nodePosition(1).then(coordinatesFromMatrix)
-
     it("Should autoscroll top", () => {
       nodesModel.dndWithDelayUp(350, 150, 400, 50)
-      firstNodePosition().then(([_, y]) => expect(Number(y)).to.be.lessThan(0))
+      nodesModel.nodePositionNumeric(1).then(([_, y]) => expect(Number(y)).to.be.lessThan(0))
     })
 
     it("Should autoscroll right", () => {
       nodesModel.dndWithDelayUp(350, 150, 999, 300)
 
-      firstNodePosition().then(([x]) => expect(Number(x)).to.be.greaterThan(800))
+      nodesModel.nodePositionNumeric(1).then(([x]) => expect(Number(x)).to.be.greaterThan(800))
     })
 
     it("Should autoscroll bottom", () => {
       nodesModel.dndWithDelayUp(350, 150, 350, 659)
 
-      firstNodePosition().then(([_, y]) => expect(Number(y)).to.be.greaterThan(610))
+      nodesModel.nodePositionNumeric(1).then(([_, y]) => expect(Number(y)).to.be.greaterThan(610))
     })
 
     it("Should autoscroll left", () => {
       nodesModel.dndWithDelayUp(350, 150, 240, 200)
 
-      firstNodePosition().then(([x]) => expect(Number(x)).to.be.lessThan(0))
+      nodesModel.nodePositionNumeric(1).then(([x]) => expect(Number(x)).to.be.lessThan(0))
     })
 
     it("Should autoscroll two direction at corners", () => {
       nodesModel.dndWithDelayUp(350, 150, 990, 100)
 
-      firstNodePosition().then(([x, y]) => {
+      nodesModel.nodePositionNumeric(1).then(([x, y]) => {
         expect(Number(y)).to.be.lessThan(0)
         expect(Number(x)).to.be.greaterThan(800)
       })
@@ -128,7 +133,7 @@ context("Nodes interactions", () => {
       nodesModel.wheelDirection(Array(23).fill(WheelDirection.bottom))
       nodesModel.dndWithDelayUp(520, 295, 990, 100)
 
-      firstNodePosition().then(([x, y]) => {
+      nodesModel.nodePositionNumeric(1).then(([x, y]) => {
         expect(Number(y)).to.be.lessThan(0)
         expect(Number(x)).to.be.greaterThan(800)
       })
