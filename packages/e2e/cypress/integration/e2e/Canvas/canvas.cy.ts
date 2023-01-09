@@ -1,48 +1,42 @@
-import { WheelDirection } from "../constants"
+import { BROWSER_PX_DEVIATION, WheelDirection } from "../constants"
 import { coordinatesFromMatrix, coordinatesFromStringPX, zoomFromMatrix } from "../helpers"
 import { canvasModel } from "./Canvas.model"
 import { CANVAS_CONTEXT } from "./constants"
 
+const wheelDirection = (items: Array<WheelDirection>) => items.forEach((direction) => canvasModel.wheel(direction))
+
 context(CANVAS_CONTEXT, () => {
   beforeEach(canvasModel.open)
 
+  const checkCanvasPosition = (x: number, y: number) =>
+    canvasModel
+      .canvasPosition()
+      .then(coordinatesFromMatrix)
+      .then(([xCoord, yCoord]) => {
+        expect(Number(xCoord)).to.be.closeTo(x, BROWSER_PX_DEVIATION)
+        expect(Number(yCoord)).to.be.closeTo(y, BROWSER_PX_DEVIATION)
+      })
+
+  const checkCanvasOriginPosition = (x: number, y: number) =>
+    canvasModel
+      .canvasPositionOrigin()
+      .then(coordinatesFromStringPX)
+      .then(([xCoord, yCoord]) => {
+        expect(Number(xCoord)).to.be.closeTo(x, BROWSER_PX_DEVIATION)
+        expect(Number(yCoord)).to.be.closeTo(y, BROWSER_PX_DEVIATION)
+      })
+
   describe("Initializing", () => {
     it("Should match default position", () => {
-      canvasModel
-        .canvasPosition()
-        .then(coordinatesFromMatrix)
-        .then(([x, y]) => {
-          expect(Number(x)).to.be.closeTo(15, 1)
-          expect(Number(y)).to.be.closeTo(-35, 1)
-        })
-
-      canvasModel
-        .canvasPositionOrigin()
-        .then(coordinatesFromStringPX)
-        .then(([x, y]) => {
-          expect(Number(x)).to.be.closeTo(385, 1)
-          expect(Number(y)).to.be.closeTo(340, 1)
-        })
+      checkCanvasPosition(15, -35)
+      checkCanvasOriginPosition(385, 340)
     })
   })
 
   describe("Movements DnD", () => {
     const matchEndPosition = () => {
-      canvasModel
-        .canvasPosition()
-        .then(coordinatesFromMatrix)
-        .then(([x, y]) => {
-          expect(Number(x)).to.be.closeTo(115, 1)
-          expect(Number(y)).to.be.closeTo(65, 1)
-        })
-
-      canvasModel
-        .canvasPositionOrigin()
-        .then(coordinatesFromStringPX)
-        .then(([x, y]) => {
-          expect(Number(x)).to.be.closeTo(285, 1)
-          expect(Number(y)).to.be.closeTo(240, 1)
-        })
+      checkCanvasPosition(115, 65)
+      checkCanvasOriginPosition(285, 240)
     }
 
     it("Should move canvas one movement", () => {
@@ -67,7 +61,7 @@ context(CANVAS_CONTEXT, () => {
     })
   })
 
-  describe.only("Zoom interactions", () => {
+  describe("Zoom interactions", () => {
     it("Should zoom out properly once", () => {
       canvasModel.wheel(WheelDirection.bottom)
 
@@ -75,17 +69,13 @@ context(CANVAS_CONTEXT, () => {
     })
 
     it("Should zoom out properly multiple", () => {
-      canvasModel.wheel(WheelDirection.bottom)
-      canvasModel.wheel(WheelDirection.bottom)
-      canvasModel.wheel(WheelDirection.bottom)
+      wheelDirection(Array(3).fill(WheelDirection.bottom))
 
       canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.86, 0.01)
     })
 
     it("Should zoom out properly to low threshold", () => {
-      for (let i = 0; i < 40; i++) {
-        canvasModel.wheel(WheelDirection.bottom)
-      }
+      wheelDirection(Array(40).fill(WheelDirection.bottom))
 
       canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.2, 0.01)
     })
@@ -97,32 +87,39 @@ context(CANVAS_CONTEXT, () => {
     })
 
     it("Should zoom in properly multiple", () => {
-      canvasModel.wheel(WheelDirection.top)
-      canvasModel.wheel(WheelDirection.top)
-      canvasModel.wheel(WheelDirection.top)
+      wheelDirection(Array(3).fill(WheelDirection.top))
 
       canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 1.15, 0.01)
     })
 
     it("Should zoom in properly to high threshold", () => {
-      for (let i = 0; i < 23; i++) {
-        canvasModel.wheel(WheelDirection.top)
-      }
+      wheelDirection(Array(23).fill(WheelDirection.top))
 
       canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 3, 0.01)
     })
 
     it("Should zoom properly bidirectionally", () => {
-      canvasModel.wheel(WheelDirection.top)
-      canvasModel.wheel(WheelDirection.top)
-      canvasModel.wheel(WheelDirection.bottom)
-      canvasModel.wheel(WheelDirection.bottom)
-      canvasModel.wheel(WheelDirection.bottom)
-      canvasModel.wheel(WheelDirection.bottom)
-      canvasModel.wheel(WheelDirection.bottom)
-      canvasModel.wheel(WheelDirection.top)
+      wheelDirection([
+        WheelDirection.top,
+        WheelDirection.top,
+        WheelDirection.bottom,
+        WheelDirection.bottom,
+        WheelDirection.bottom,
+        WheelDirection.bottom,
+        WheelDirection.bottom,
+        WheelDirection.top
+      ])
 
       canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.9, 0.01)
+    })
+
+    it("Should zoom with move properly", () => {
+      canvasModel.dnd(350, 350, 450, 450)
+      canvasModel.wheel(WheelDirection.bottom)
+
+      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.95, 0.01)
+      checkCanvasPosition(115, 65)
+      checkCanvasOriginPosition(285, 240)
     })
   })
 })
