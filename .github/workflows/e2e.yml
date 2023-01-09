@@ -5,8 +5,8 @@ on:
 
 jobs:
   e2e:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Build the docker-compose stack
-        run: docker compose up --build --abort-on-container-exit
+        run: docker-compose up --build --abort-on-container-exit
