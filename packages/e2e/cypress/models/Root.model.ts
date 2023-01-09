@@ -21,7 +21,17 @@ export class RootModel {
       .realMouseMove(toX, toY)
       .realMouseUp({ position: { x: toX, y: toY } })
   }
+  dndWithDelayUp(fromX: number, fromY: number, toX: number, toY: number) {
+    return this.getRoot()
+      .realMouseDown({ position: { x: fromX, y: fromY } })
+      .realMouseMove(toX, toY)
+      .wait(1000)
+      .realMouseUp({ position: { x: toX, y: toY } })
+  }
   wheel(direction: WheelDirection) {
     this.getRoot().trigger("wheel", { deltaY: direction === WheelDirection.top ? 1 : -1 })
+  }
+  wheelDirection(items: Array<WheelDirection>) {
+    items.forEach((direction) => this.wheel(direction))
   }
 }

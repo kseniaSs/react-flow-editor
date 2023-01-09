@@ -3,8 +3,6 @@ import { coordinatesFromMatrix, coordinatesFromStringPX, zoomFromMatrix } from "
 import { canvasModel } from "./Canvas.model"
 import { CANVAS_CONTEXT } from "./constants"
 
-const wheelDirection = (items: Array<WheelDirection>) => items.forEach((direction) => canvasModel.wheel(direction))
-
 context(CANVAS_CONTEXT, () => {
   beforeEach(canvasModel.open)
 
@@ -69,13 +67,13 @@ context(CANVAS_CONTEXT, () => {
     })
 
     it("Should zoom out properly multiple", () => {
-      wheelDirection(Array(3).fill(WheelDirection.bottom))
+      canvasModel.wheelDirection(Array(3).fill(WheelDirection.bottom))
 
       canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.86, 0.01)
     })
 
     it("Should zoom out properly to low threshold", () => {
-      wheelDirection(Array(40).fill(WheelDirection.bottom))
+      canvasModel.wheelDirection(Array(40).fill(WheelDirection.bottom))
 
       canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.2, 0.01)
     })
@@ -87,19 +85,19 @@ context(CANVAS_CONTEXT, () => {
     })
 
     it("Should zoom in properly multiple", () => {
-      wheelDirection(Array(3).fill(WheelDirection.top))
+      canvasModel.wheelDirection(Array(3).fill(WheelDirection.top))
 
       canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 1.15, 0.01)
     })
 
     it("Should zoom in properly to high threshold", () => {
-      wheelDirection(Array(23).fill(WheelDirection.top))
+      canvasModel.wheelDirection(Array(23).fill(WheelDirection.top))
 
       canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 3, 0.01)
     })
 
     it("Should zoom properly bidirectionally", () => {
-      wheelDirection([
+      canvasModel.wheelDirection([
         WheelDirection.top,
         WheelDirection.top,
         WheelDirection.bottom,
