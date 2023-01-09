@@ -8,7 +8,7 @@ import { useRectsContext } from "@/Editor/rects-context"
 
 import { BUTTON_LEFT } from "../../constants"
 import { useEditorContext } from "../../editor-context"
-import { getRectFromRef, resetEvent } from "../../helpers"
+import { getDOMRect, resetEvent } from "../../helpers"
 
 type Props = {
   nodeId: string
@@ -23,7 +23,7 @@ export const Output: React.FC<Props> = React.memo(({ nodeId, nodeState, output }
   const dragItem = useStore(DragItemAtom)
 
   const startNewConnection = (e: React.MouseEvent<HTMLElement>) => {
-    const zoomRect = getRectFromRef(zoomContainerRef)
+    const zoomRect = getDOMRect(zoomContainerRef.current)
 
     resetEvent(e)
     if (e.button === BUTTON_LEFT && zoomRect) {

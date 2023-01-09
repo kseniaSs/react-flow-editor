@@ -1,12 +1,12 @@
 import { Node, RectZone, SelectionZone, Transformation } from "../../types"
-import { getRectFromNode } from "./getRectFromNode"
+import { getDOMRect } from "./getDOMRect"
 
 export const isNodeInSelectionZone = (node: Node, zone: SelectionZone | null, transform: Transformation): boolean => {
   if (zone === null) return false
 
   const { left, top, right, bottom } = cornersToRect(zone)
 
-  const rect = getRectFromNode(node)
+  const rect = getDOMRect(document.getElementById(node.id))
   const isLeftOver = left < node.position.x + rect.width / transform.zoom
   const isRightOver = right > node.position.x
   const isTopOver = top < node.position.y + rect.height / transform.zoom

@@ -4,7 +4,7 @@ import { useStore } from "@nanostores/react"
 import { cornersToRect } from "@/Editor/helpers/selectionZone"
 import { SelectionZoneAtom, TransformationMap } from "@/Editor/state"
 import { Transformation } from "@/types"
-import { getRectFromRef } from "@/Editor/helpers"
+import { getDOMRect } from "@/Editor/helpers"
 
 export type SelectionZone = {
   left: number
@@ -24,7 +24,7 @@ export const computeSelectionZone = (
   transformation: Transformation,
   selectionZone: SelectionZone | null
 ): Partial<DOMRect> => {
-  const zoomContainerRect = getRectFromRef(zoomContainerRef)
+  const zoomContainerRect = getDOMRect(zoomContainerRef.current)
 
   const left = (zoomContainerRect?.left || 0) + (selectionZone?.left || 0) * transformation.zoom || 0
   const top = (zoomContainerRect?.top || 0) + (selectionZone?.top || 0) * transformation.zoom || 0

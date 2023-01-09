@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react"
 import { ZOOM_STEP } from "../constants"
 import { DragItemAtom, TransformationMap } from "../state"
 import { clampZoom } from "./clampZoom"
-import { getRectFromRef } from "./getRectFromRef"
+import { getDOMRect } from "./getDOMRect"
 
 export const useZoom = ({
   zoomContainerRef,
@@ -17,7 +17,7 @@ export const useZoom = ({
   const transformation = useStore(TransformationMap)
 
   const zoomRefPoint = useMemo(() => {
-    const editorRect = getRectFromRef(editorContainerRef)
+    const editorRect = getDOMRect(editorContainerRef.current)
 
     return {
       x: -transformation.dx + (editorRect?.width || 0) / 2,
