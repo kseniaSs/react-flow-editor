@@ -46,21 +46,32 @@ context(NODES_CONTEXT, () => {
         .nodePosition(1)
         .then(coordinatesFromMatrix)
         .then(([xCoord, yCoord]) => {
-          expect(Number(xCoord)).to.be.closeTo(x, 200)
-          expect(Number(yCoord)).to.be.closeTo(y, 200)
+          expect(Number(xCoord)).to.be.closeTo(x, 100)
+          expect(Number(yCoord)).to.be.closeTo(y, 100)
         })
 
-    it("Should autoscroll one direction at the moment", () => {
+    it("Should autoscroll top", () => {
       nodesModel.dndWithDelayUp(350, 150, 400, 100)
-      nodesModel.dnd(400, 100, 350, 300)
-      nodesModel.dndWithDelayUp(350, 300, 990, 300)
-      nodesModel.dnd(990, 300, 350, 300)
-      nodesModel.dndWithDelayUp(350, 300, 350, 590)
-      nodesModel.dnd(350, 570, 350, 300)
-      nodesModel.dndWithDelayUp(350, 300, 240, 300)
-      nodesModel.dnd(240, 300, 350, 300)
 
-      checkNodePosition(1500, -900)
+      checkNodePosition(160, -1500)
+    })
+
+    it("Should autoscroll right", () => {
+      nodesModel.dndWithDelayUp(350, 150, 990, 300)
+
+      checkNodePosition(4300, 260)
+    })
+
+    it("Should autoscroll bottom", () => {
+      nodesModel.dndWithDelayUp(350, 150, 350, 590)
+
+      checkNodePosition(110, 1100)
+    })
+
+    it("Should autoscroll left", () => {
+      nodesModel.dndWithDelayUp(350, 150, 240, 300)
+
+      checkNodePosition(-2050, 260)
     })
 
     it("Should autoscroll two direction at corners", () => {
