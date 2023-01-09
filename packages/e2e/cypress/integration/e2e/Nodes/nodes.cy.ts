@@ -1,9 +1,8 @@
 import { WheelDirection } from "../constants"
 import { coordinatesFromMatrix } from "../helpers"
-import { NODES_CONTEXT } from "./constants"
 import { nodesModel } from "./Nodes.model"
 
-context(NODES_CONTEXT, () => {
+context("Nodes interactions", () => {
   beforeEach(nodesModel.open)
 
   describe("Initializing", () => {

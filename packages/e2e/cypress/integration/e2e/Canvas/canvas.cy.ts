@@ -1,9 +1,8 @@
 import { BROWSER_PX_DEVIATION, WheelDirection } from "../constants"
 import { coordinatesFromMatrix, coordinatesFromStringPX, zoomFromMatrix } from "../helpers"
 import { canvasModel } from "./Canvas.model"
-import { CANVAS_CONTEXT } from "./constants"
 
-context(CANVAS_CONTEXT, () => {
+context("Canvas interactions", () => {
   beforeEach(canvasModel.open)
 
   const checkCanvasPosition = (x: number, y: number) =>

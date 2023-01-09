@@ -34,4 +34,7 @@ export class RootModel {
   wheelDirection(items: Array<WheelDirection>) {
     items.forEach((direction) => this.wheel(direction))
   }
+  getNode(nodeNumber: number) {
+    return cy.get(selectors.SINGLE_NODE + nodeNumber)
+  }
 }

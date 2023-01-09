@@ -1,10 +1,11 @@
+import { selectors } from "../../../models"
 import { coordinatesFromPath } from "../helpers"
 import { connectionsModel } from "./Connections.model"
 
 context("Node connections", () => {
   beforeEach(connectionsModel.open)
 
-  describe("Connections without autoscroll", () => {
+  describe("Connections logic", () => {
     const verifyFirstConnectionInitial = () =>
       connectionsModel
         .getFirstConnectionPath()
@@ -49,6 +50,30 @@ context("Node connections", () => {
       connectionsModel.getConnections().then(($cons) => expect($cons.length).to.equal(3))
 
       verifyFirstConnectionInitial()
+    })
+
+    it("Should drag connection via autoscroll", () => {
+      connectionsModel.mouseDown(470, 152)
+      connectionsModel.getRoot().realMouseMove(990, 110).wait(100).realMouseMove(500, 500)
+
+      cy.get(selectors.CONNECTION)
+        .last()
+        .then(($el) => {
+          const rect = $el.get()[0].getBoundingClientRect()
+
+          expect(rect.top).to.closeTo(266, 10)
+          expect(rect.left).to.closeTo(105, 10)
+          expect(rect.height).to.closeTo(239, 10)
+          expect(rect.width).to.closeTo(371, 10)
+        })
+    })
+
+    it.only("Should disable node without empty inputs", () => {
+      connectionsModel.getNodeElement(1).then(($el) => expect($el.hasClass("disabled")).to.equal(false))
+
+      connectionsModel.mouseDown(670, 366)
+
+      connectionsModel.getNodeElement(1).then(($el) => expect($el.hasClass("disabled")).to.equal(true))
     })
   })
 })

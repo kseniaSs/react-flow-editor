@@ -4,5 +4,6 @@ export default {
   ZOOM_CONTAINER: ".zoom-container",
   ROOT: ".editor-root",
   DOT: ".dot",
-  CONNECTION: ".connection"
+  CONNECTION: ".connection",
+  NODE_ELEMENT: ".nodeElement"
 }
