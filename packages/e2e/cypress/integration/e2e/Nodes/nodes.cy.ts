@@ -39,7 +39,57 @@ context("Nodes interactions", () => {
     })
   })
 
-  describe.only("Movements with autoscroll", () => {
+  describe("Selections", () => {
+    it("Should be not selected on init", () => {
+      nodesModel.getNodeElement(1).then(($el) => expect($el.hasClass("selected")).to.equals(false))
+    })
+
+    it("Should select nodes on click", () => {
+      nodesModel.nodeClick(1)
+
+      nodesModel.getNodeElement(1).then(($el) => expect($el.hasClass("selected")).to.equals(true))
+      nodesModel.getNodeElement(2).then(($el) => expect($el.hasClass("selected")).to.equals(false))
+    })
+
+    it("Should select nodes on click chain", () => {
+      nodesModel.nodeClick(1)
+
+      nodesModel.getNodeElement(1).then(($el) => expect($el.hasClass("selected")).to.equals(true))
+      nodesModel.getNodeElement(2).then(($el) => expect($el.hasClass("selected")).to.equals(false))
+
+      nodesModel.nodeClick(2)
+
+      nodesModel.getNodeElement(1).then(($el) => expect($el.hasClass("selected")).to.equals(false))
+      nodesModel.getNodeElement(2).then(($el) => expect($el.hasClass("selected")).to.equals(true))
+    })
+
+    it("Should select nodes on click multiple", () => {
+      nodesModel.nodeClick(1)
+      nodesModel.getNode(2).click({ shiftKey: true })
+
+      nodesModel.getNodeElement(1).then(($el) => expect($el.hasClass("selected")).to.equals(true))
+      nodesModel.getNodeElement(2).then(($el) => expect($el.hasClass("selected")).to.equals(true))
+
+      nodesModel.nodeClick(1)
+
+      nodesModel.getNodeElement(1).then(($el) => expect($el.hasClass("selected")).to.equals(true))
+      nodesModel.getNodeElement(2).then(($el) => expect($el.hasClass("selected")).to.equals(false))
+    })
+
+    it("Should move multiple selected nodes", () => {
+      nodesModel.nodeClick(1)
+      nodesModel.getNode(2).click({ shiftKey: true })
+
+      nodesModel.getNode(1).trigger("mousedown", { shiftKey: true, button: 0 })
+      nodesModel.getRoot().trigger("mousemove", { clientX: 400, clientY: 200, shiftKey: true })
+      nodesModel.getNode(1).trigger("mouseup", { shiftKey: true, button: 0 })
+
+      nodesModel.nodePosition(1).should("be.equal", "matrix(1, 0, 0, 1, 111, 231)")
+      nodesModel.nodePosition(2).should("be.equal", "matrix(1, 0, 0, 1, 311, 431)")
+    })
+  })
+
+  describe("Movements with autoscroll", () => {
     const firstNodePosition = () => nodesModel.nodePosition(1).then(coordinatesFromMatrix)
 
     it("Should autoscroll top", () => {

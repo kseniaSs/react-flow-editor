@@ -54,21 +54,21 @@ context("Node connections", () => {
 
     it("Should drag connection via autoscroll", () => {
       connectionsModel.mouseDown(470, 152)
-      connectionsModel.getRoot().realMouseMove(990, 110).wait(100).realMouseMove(500, 500)
+      connectionsModel.getRoot().realMouseMove(990, 110).wait(1000)
 
       cy.get(selectors.CONNECTION)
         .last()
         .then(($el) => {
           const rect = $el.get()[0].getBoundingClientRect()
-
-          expect(rect.top).to.closeTo(266, 10)
-          expect(rect.left).to.closeTo(105, 10)
-          expect(rect.height).to.closeTo(239, 10)
-          expect(rect.width).to.closeTo(371, 10)
+          expect(rect.top).to.closeTo(110, 2)
+          expect(rect.left).to.lessThan(0)
+          expect(rect.right).to.closeTo(990, 2)
+          expect(rect.height).to.greaterThan(660)
+          expect(rect.width).to.greaterThan(1000)
         })
     })
 
-    it.only("Should disable node without empty inputs", () => {
+    it("Should disable node without empty inputs", () => {
       connectionsModel.getNodeElement(1).then(($el) => expect($el.hasClass("disabled")).to.equal(false))
 
       connectionsModel.mouseDown(670, 366)

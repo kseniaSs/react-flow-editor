@@ -37,4 +37,7 @@ export class RootModel {
   getNode(nodeNumber: number) {
     return cy.get(selectors.SINGLE_NODE + nodeNumber)
   }
+  getNodeElement(nodeNum: number) {
+    return this.getNode(nodeNum).find(selectors.NODE_ELEMENT)
+  }
 }

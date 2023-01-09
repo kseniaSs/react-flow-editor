@@ -16,9 +16,6 @@ export class ConnectionsModel extends RootModel {
   getConnections() {
     return cy.get(selectors.CONNECTION)
   }
-  getNodeElement(nodeNum: number) {
-    return connectionsModel.getNode(nodeNum).find(selectors.NODE_ELEMENT)
-  }
 }
 
 export const connectionsModel = new ConnectionsModel()
