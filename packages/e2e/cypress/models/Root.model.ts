@@ -25,7 +25,7 @@ export class RootModel {
     return this.getRoot()
       .realMouseDown({ position: { x: fromX, y: fromY } })
       .realMouseMove(toX, toY)
-      .wait(1000)
+      .wait(100)
       .realMouseUp({ position: { x: toX, y: toY } })
   }
   wheel(direction: WheelDirection) {
