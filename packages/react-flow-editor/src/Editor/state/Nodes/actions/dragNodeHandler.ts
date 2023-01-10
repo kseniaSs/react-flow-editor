@@ -13,16 +13,16 @@ export const dragNodeHandler = action(NodesAtom, "changeNodeState", (store, e: R
   store.set(
     store.get().map((el) => {
       const isDragging = el.id === dragItem.id
-      const isShiftSelected = e.shiftKey && el.state === NodeState.selected
+      const isSelected = el.state === NodeState.selected
 
-      return isDragging || isShiftSelected
+      return isDragging || isSelected
         ? {
             ...el,
             position: {
               x: el.position.x + (e.clientX - dragItem.x) / transformation.zoom,
               y: el.position.y + (e.clientY - dragItem.y) / transformation.zoom
             },
-            state: isShiftSelected ? NodeState.selected : NodeState.dragging
+            state: isSelected ? NodeState.selected : NodeState.dragging
           }
         : { ...el, state: null }
     })
