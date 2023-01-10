@@ -1,4 +1,4 @@
-import { RootModel } from "../../../models"
+import { RootModel, selectors } from "../../../models"
 import { coordinatesFromMatrix } from "../helpers"
 
 export class NodesModel extends RootModel {
@@ -10,6 +10,9 @@ export class NodesModel extends RootModel {
   }
   nodePositionNumeric(nodeNumber: number) {
     return this.nodePosition(nodeNumber).then(coordinatesFromMatrix)
+  }
+  nodesElements() {
+    return cy.get(selectors.NODE_ELEMENT)
   }
 }
 

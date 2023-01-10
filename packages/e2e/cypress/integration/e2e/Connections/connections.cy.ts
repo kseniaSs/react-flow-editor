@@ -5,6 +5,9 @@ import { connectionsModel } from "./Connections.model"
 context("Node connections", () => {
   beforeEach(connectionsModel.open)
 
+  const checkConnectionsCount = (count: number) =>
+    connectionsModel.getConnections().then(($cons) => expect($cons.length).to.equal(count))
+
   describe("Connections logic", () => {
     const verifyFirstConnectionInitial = () =>
       connectionsModel
@@ -35,19 +38,19 @@ context("Node connections", () => {
     })
 
     it("Should disconnect/connect connectors", () => {
-      connectionsModel.getConnections().then(($cons) => expect($cons.length).to.equal(3))
+      checkConnectionsCount(3)
 
       connectionsModel.mouseDown(470, 152)
       connectionsModel.getRoot().realMouseMove(480, 170)
       connectionsModel.mouseUp(480, 170)
 
-      connectionsModel.getConnections().then(($cons) => expect($cons.length).to.equal(2))
+      checkConnectionsCount(2)
 
       connectionsModel.mouseDown(470, 152)
       connectionsModel.getRoot().realMouseMove(530, 330)
       connectionsModel.mouseUp(530, 330)
 
-      connectionsModel.getConnections().then(($cons) => expect($cons.length).to.equal(3))
+      checkConnectionsCount(3)
 
       verifyFirstConnectionInitial()
     })
@@ -74,6 +77,40 @@ context("Node connections", () => {
       connectionsModel.mouseDown(670, 366)
 
       connectionsModel.getNodeElement(1).then(($el) => expect($el.hasClass("disabled")).to.equal(true))
+    })
+
+    it("Should has 'draggingConnector' state", () => {
+      const checkFirstDraggingConnector = (isDragging: boolean) =>
+        connectionsModel
+          .getNodeElement(1)
+          .then(($el) => expect($el.hasClass("draggingConnector")).to.be.equals(isDragging))
+
+      checkFirstDraggingConnector(false)
+
+      connectionsModel.mouseDown(470, 152).realMouseMove(700, 500)
+
+      checkFirstDraggingConnector(true)
+
+      connectionsModel.getRoot().realMouseUp({ position: { x: 400, y: 200 } })
+      checkFirstDraggingConnector(false)
+    })
+
+    it("Should connect nodes with cyclic prop", () => {
+      connectionsModel.dnd(990, 400, 750, 300)
+
+      checkConnectionsCount(3)
+
+      connectionsModel.dnd(630, 466, 630, 426)
+
+      checkConnectionsCount(3)
+
+      connectionsModel.dnd(430, 266, 430, 300)
+
+      checkConnectionsCount(2)
+
+      connectionsModel.dnd(430, 266, 430, 226)
+
+      checkConnectionsCount(3)
     })
   })
 })
