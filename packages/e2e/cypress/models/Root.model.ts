@@ -21,11 +21,11 @@ export class RootModel {
       .realMouseMove(toX, toY)
       .realMouseUp({ position: { x: toX, y: toY } })
   }
-  dndWithDelayUp(fromX: number, fromY: number, toX: number, toY: number) {
+  dndWithDelayUp(fromX: number, fromY: number, toX: number, toY: number, delay?: number) {
     return this.getRoot()
       .realMouseDown({ position: { x: fromX, y: fromY } })
       .realMouseMove(toX, toY)
-      .wait(100)
+      .wait(delay || 100)
       .realMouseUp({ position: { x: toX, y: toY } })
   }
   wheel(direction: WheelDirection) {

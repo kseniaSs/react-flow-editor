@@ -1,18 +1,11 @@
 import { BROWSER_PX_DEVIATION, WheelDirection } from "../constants"
-import { coordinatesFromMatrix, coordinatesFromStringPX, zoomFromMatrix } from "../helpers"
+import { coordinatesFromStringPX, zoomFromMatrix } from "../helpers"
 import { canvasModel } from "./Canvas.model"
+import { CONTEXT } from "./context"
+import { checkCanvasPosition } from "./helpers"
 
-context("Canvas interactions", () => {
+context(CONTEXT, () => {
   beforeEach(canvasModel.open)
-
-  const checkCanvasPosition = (x: number, y: number) =>
-    canvasModel
-      .canvasPosition()
-      .then(coordinatesFromMatrix)
-      .then(([xCoord, yCoord]) => {
-        expect(Number(xCoord)).to.be.closeTo(x, BROWSER_PX_DEVIATION)
-        expect(Number(yCoord)).to.be.closeTo(y, BROWSER_PX_DEVIATION)
-      })
 
   const checkCanvasOriginPosition = (x: number, y: number) =>
     canvasModel
