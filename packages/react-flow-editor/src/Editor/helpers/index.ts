@@ -1,4 +1,4 @@
 export * from "./transformCanvasStyle"
 export * from "./resetEvent"
 export * from "./clampZoom"
-export * from "./getDOMRect"
+export * from "./findDOMRect"

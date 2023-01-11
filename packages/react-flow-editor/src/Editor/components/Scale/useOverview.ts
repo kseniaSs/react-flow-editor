@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { useRectsContext } from "@/Editor/rects-context"
 import { overviewActions } from "@/Editor/state"
 
-export const useOverview = () => {
+export const useOverview = (): (() => void) => {
   const { editorContainerRef, isMounted } = useRectsContext()
 
   const makeOverview = () => {

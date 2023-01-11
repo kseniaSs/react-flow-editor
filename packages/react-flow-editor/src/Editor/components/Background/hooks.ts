@@ -2,14 +2,14 @@ import { useStore } from "@nanostores/react"
 
 import { TransformationMap } from "@/Editor/state"
 import { useRectsContext } from "@/Editor/rects-context"
-import { getDOMRect } from "@/Editor/helpers"
+import { findDOMRect } from "@/Editor/helpers"
 
 import { PatternDimensions } from "./types"
 import { countOffset } from "./helpers"
 
 export const usePatternDimensions = (gap: number): PatternDimensions => {
   const { editorContainerRef } = useRectsContext()
-  const editorRect = getDOMRect(editorContainerRef.current)
+  const editorRect = findDOMRect(editorContainerRef.current)
   const transformation = useStore(TransformationMap)
 
   return {

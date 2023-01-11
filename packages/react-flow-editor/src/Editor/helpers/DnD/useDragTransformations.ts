@@ -1,7 +1,7 @@
 import { newConnectionActions, nodeActions, transformationActions } from "@/Editor/state"
 
 import { DragItemType } from "../../types"
-import { getDOMRect } from "../getDOMRect"
+import { findDOMRect } from "../findDOMRect"
 
 export const useDragTransformations = ({
   expandSelectionZone,
@@ -10,7 +10,7 @@ export const useDragTransformations = ({
   expandSelectionZone: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
   zoomContainerRef: React.RefObject<HTMLDivElement>
 }) => {
-  const zoomRect = getDOMRect(zoomContainerRef.current)
+  const zoomRect = findDOMRect(zoomContainerRef.current)
 
   return {
     [DragItemType.connection]: (e: React.MouseEvent<HTMLElement>) => {

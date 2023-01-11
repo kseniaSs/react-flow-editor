@@ -1,7 +1,7 @@
 import { action } from "nanostores"
 
 import { LARGEST_RECT, DRAG_OFFSET_TRANSFORM } from "@/Editor/constants"
-import { getDOMRect } from "@/Editor/helpers"
+import { findDOMRect } from "@/Editor/helpers"
 
 import { NodesAtom } from "../Nodes"
 import { TransformationMap } from "../Transformation"
@@ -12,7 +12,7 @@ const countDumensionsRect = () => {
 
   return nodes.reduce(
     (acc, node) => {
-      const rect = getDOMRect(document.getElementById(node.id))
+      const rect = findDOMRect(document.getElementById(node.id))
 
       if (node.position.x > acc.rightPoint) acc.rightPoint = node.position.x + rect.width / zoom
       if (node.position.x < acc.leftPoint) acc.leftPoint = node.position.x
@@ -33,7 +33,7 @@ export const overview = action(
 
     if (!nodes.length) return
 
-    const editorRect = getDOMRect(editorContainerRef.current)
+    const editorRect = findDOMRect(editorContainerRef.current)
     const dimensionsRect = countDumensionsRect()
 
     const width = dimensionsRect.rightPoint - dimensionsRect.leftPoint

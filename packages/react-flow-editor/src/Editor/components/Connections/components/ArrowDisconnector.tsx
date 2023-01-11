@@ -3,7 +3,7 @@ import React from "react"
 import { Output, Point } from "@/types"
 import { newConnectionActions } from "@/Editor/state"
 import { useRectsContext } from "@/Editor/rects-context"
-import { getDOMRect } from "@/Editor/helpers"
+import { findDOMRect } from "@/Editor/helpers"
 
 import { disconnectorStyle } from "../helpers"
 
@@ -18,7 +18,7 @@ const ArrowDisconnector: React.FC<DisconnectorProps> = ({ position, fromId, outp
 
   const onMouseDown = (e: React.MouseEvent<SVGRectElement>) => {
     e.stopPropagation()
-    const zoomRect = getDOMRect(zoomContainerRef.current)
+    const zoomRect = findDOMRect(zoomContainerRef.current)
 
     zoomRect && newConnectionActions.dragArrowDisconnector(e, fromId, output, zoomRect)
   }
