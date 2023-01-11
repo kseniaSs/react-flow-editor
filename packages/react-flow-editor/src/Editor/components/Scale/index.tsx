@@ -1,21 +1,23 @@
-import React, { FC } from "react"
+import React, { FC, useLayoutEffect } from "react"
 import { useStore } from "@nanostores/react"
 
 import { ScaleComponentProps } from "@/types"
-import { TransformationMap } from "@/Editor/state"
+import { overviewActions, TransformationMap } from "@/Editor/state"
 import { ZOOM_STEP } from "@/Editor/constants"
 import { clampZoom } from "@/Editor/helpers"
-
-import { useOverview } from "./useOverview"
+import { useRectsContext } from "@/Editor/rects-context"
 
 type Props = {
   ScaleComponent: FC<ScaleComponentProps>
 }
 
 export const Scale: FC<Props> = ({ ScaleComponent }) => {
+  const { editorContainerRef, isMounted } = useRectsContext()
   const transformation = useStore(TransformationMap)
 
-  const overview = useOverview()
+  const overview = () => void (isMounted && editorContainerRef.current && overviewActions.overview(editorContainerRef))
+
+  useLayoutEffect(overview, [isMounted])
 
   const zoomIn = () => {
     const zoom = clampZoom(transformation.zoom + ZOOM_STEP)
