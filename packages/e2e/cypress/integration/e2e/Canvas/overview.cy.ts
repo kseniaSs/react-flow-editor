@@ -1,4 +1,4 @@
-import { WheelDirection } from "../constants"
+import { WheelDirection, ZOOM_OUT_COUNT } from "../constants"
 import { zoomFromMatrix } from "../helpers"
 import { CONTEXT } from "../Nodes/constants"
 import { canvasModel } from "./Canvas.model"
@@ -17,7 +17,7 @@ context(CONTEXT, () => {
 
     it("Should overview zoom in", () => {
       canvasModel.dnd(200, 200, 400, 400)
-      canvasModel.wheelDirection(Array(23).fill(WheelDirection.top))
+      canvasModel.wheelDirection(Array(ZOOM_OUT_COUNT).fill(WheelDirection.top))
 
       cy.contains("Overview").click()
 

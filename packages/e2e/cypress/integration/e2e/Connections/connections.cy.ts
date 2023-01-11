@@ -1,6 +1,8 @@
 import { selectors } from "../../../models"
+import { CANVAS_ZONE_POINTS, CLICK_COORDS, NodeState } from "../constants"
 import { coordinatesFromPath } from "../helpers"
 import { connectionsModel } from "./Connections.model"
+import { FIRST_NODE_CONNECTOR, SECOND_NODE_CONNECTOR } from "./constants"
 
 context("Node connections", () => {
   beforeEach(connectionsModel.open)
@@ -19,8 +21,8 @@ context("Node connections", () => {
     })
 
     it("Should move connectors", () => {
-      connectionsModel.mouseDown(470, 152)
-      connectionsModel.getRoot().realMouseMove(470, 152)
+      connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
+      connectionsModel.getRoot().realMouseMove(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
 
       connectionsModel
         .getLastConnectionPath()
@@ -31,8 +33,8 @@ context("Node connections", () => {
           coordinates.forEach((coord, inx) => expect(coord).to.closeTo(properCoordinates[inx], 2))
         })
 
-      connectionsModel.getRoot().realMouseMove(530, 330)
-      connectionsModel.mouseUp(530, 330)
+      connectionsModel.getRoot().realMouseMove(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y)
+      connectionsModel.mouseUp(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y)
 
       verifyFirstConnectionInitial()
     })
@@ -40,15 +42,15 @@ context("Node connections", () => {
     it("Should disconnect/connect connectors", () => {
       checkConnectionsCount(3)
 
-      connectionsModel.mouseDown(470, 152)
+      connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
       connectionsModel.getRoot().realMouseMove(480, 170)
       connectionsModel.mouseUp(480, 170)
 
       checkConnectionsCount(2)
 
-      connectionsModel.mouseDown(470, 152)
-      connectionsModel.getRoot().realMouseMove(530, 330)
-      connectionsModel.mouseUp(530, 330)
+      connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
+      connectionsModel.getRoot().realMouseMove(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y)
+      connectionsModel.mouseUp(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y)
 
       checkConnectionsCount(3)
 
@@ -56,38 +58,38 @@ context("Node connections", () => {
     })
 
     it("Should drag connection via autoscroll", () => {
-      connectionsModel.mouseDown(470, 152)
-      connectionsModel.getRoot().realMouseMove(990, 110).wait(1000)
+      connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
+      connectionsModel.getRoot().realMouseMove(CANVAS_ZONE_POINTS.RIGHT, CANVAS_ZONE_POINTS.TOP).wait(1000)
 
       cy.get(selectors.CONNECTION)
         .last()
         .then(($el) => {
           const rect = $el.get()[0].getBoundingClientRect()
-          expect(rect.top).to.closeTo(110, 2)
+          expect(rect.top).to.closeTo(CANVAS_ZONE_POINTS.TOP, 2)
           expect(rect.left).to.lessThan(0)
-          expect(rect.right).to.closeTo(990, 2)
-          expect(rect.height).to.greaterThan(660)
-          expect(rect.width).to.greaterThan(1000)
+          expect(rect.right).to.closeTo(CANVAS_ZONE_POINTS.RIGHT, 2)
+          expect(rect.height).to.greaterThan(CANVAS_ZONE_POINTS.BOTTOM)
+          expect(rect.width).to.greaterThan(CANVAS_ZONE_POINTS.RIGHT)
         })
     })
 
     it("Should disable node without empty inputs", () => {
-      connectionsModel.getNodeElement(1).then(($el) => expect($el.hasClass("disabled")).to.equal(false))
+      connectionsModel.getNodeElement(1).then(($el) => expect($el.hasClass(NodeState.disabled)).to.equal(false))
 
-      connectionsModel.mouseDown(670, 366)
+      connectionsModel.mouseDown(SECOND_NODE_CONNECTOR.X, SECOND_NODE_CONNECTOR.Y)
 
-      connectionsModel.getNodeElement(1).then(($el) => expect($el.hasClass("disabled")).to.equal(true))
+      connectionsModel.getNodeElement(1).then(($el) => expect($el.hasClass(NodeState.disabled)).to.equal(true))
     })
 
     it("Should has 'draggingConnector' state", () => {
       const checkFirstDraggingConnector = (isDragging: boolean) =>
         connectionsModel
           .getNodeElement(1)
-          .then(($el) => expect($el.hasClass("draggingConnector")).to.be.equals(isDragging))
+          .then(($el) => expect($el.hasClass(NodeState.draggingConnector)).to.be.equals(isDragging))
 
       checkFirstDraggingConnector(false)
 
-      connectionsModel.mouseDown(470, 152).realMouseMove(700, 500)
+      connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y).realMouseMove(700, 500)
 
       checkFirstDraggingConnector(true)
 

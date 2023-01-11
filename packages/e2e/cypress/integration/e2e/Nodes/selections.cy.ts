@@ -1,3 +1,4 @@
+import { BROWSER_PX_DEVIATION } from "../constants"
 import { CONTEXT } from "./constants"
 import { nodesModel } from "./Nodes.model"
 
@@ -50,13 +51,13 @@ context(CONTEXT, () => {
       nodesModel.getNode(1).trigger("mouseup", { button: 0 })
 
       nodesModel.nodePositionNumeric(1).then(([x, y]) => {
-        expect(Number(x)).to.closeTo(111, 1)
-        expect(Number(y)).to.closeTo(231, 1)
+        expect(Number(x)).to.closeTo(111, BROWSER_PX_DEVIATION)
+        expect(Number(y)).to.closeTo(231, BROWSER_PX_DEVIATION)
       })
 
       nodesModel.nodePositionNumeric(2).then(([x, y]) => {
-        expect(Number(x)).to.closeTo(311, 1)
-        expect(Number(y)).to.closeTo(431, 1)
+        expect(Number(x)).to.closeTo(311, BROWSER_PX_DEVIATION)
+        expect(Number(y)).to.closeTo(431, BROWSER_PX_DEVIATION)
       })
     })
 

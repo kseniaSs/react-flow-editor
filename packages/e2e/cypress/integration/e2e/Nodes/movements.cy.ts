@@ -1,4 +1,11 @@
-import { WheelDirection } from "../constants"
+import {
+  BROWSER_PX_DEVIATION,
+  CANVAS_ZONE_POINTS,
+  CLICK_COORDS,
+  NodeState,
+  WheelDirection,
+  ZOOM_IN_COUNT
+} from "../constants"
 import { coordinatesFromMatrix } from "../helpers"
 import { CONTEXT } from "./constants"
 import { nodesModel } from "./Nodes.model"
@@ -16,25 +23,25 @@ context(CONTEXT, () => {
 
   describe("Movements without autoscroll", () => {
     const verifyEndNodePoint = ([x, y]: [string, string]) => {
-      expect(Number(x)).to.closeTo(160, 1)
-      expect(Number(y)).to.closeTo(160, 1)
+      expect(Number(x)).to.closeTo(160, BROWSER_PX_DEVIATION)
+      expect(Number(y)).to.closeTo(160, BROWSER_PX_DEVIATION)
     }
 
     it("Should single node move correctly", () => {
-      nodesModel.dnd(350, 150, 400, 200)
+      nodesModel.dnd(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, 400, 200)
 
       nodesModel.nodePosition(1).then(coordinatesFromMatrix).then(verifyEndNodePoint)
 
-      nodesModel.dnd(550, 350, 400, 200)
+      nodesModel.dnd(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y, 400, 200)
 
       nodesModel.nodePosition(2).then(coordinatesFromMatrix).then(verifyEndNodePoint)
     })
 
     it("Should has 'dragging' state", () => {
-      nodesModel.getRoot().realMouseDown({ position: { x: 350, y: 150 } })
+      nodesModel.getRoot().realMouseDown({ position: { x: CLICK_COORDS.FIRST_NODE.X, y: CLICK_COORDS.FIRST_NODE.Y } })
 
       const checkFirstDragging = (isDragging: boolean) =>
-        nodesModel.getNodeElement(1).then(($el) => expect($el.hasClass("dragging")).to.be.equals(isDragging))
+        nodesModel.getNodeElement(1).then(($el) => expect($el.hasClass(NodeState.dragging)).to.be.equals(isDragging))
 
       checkFirstDragging(false)
 
@@ -47,9 +54,9 @@ context(CONTEXT, () => {
     })
 
     it("Should multiple node movements correctly", () => {
-      nodesModel.dnd(350, 150, 400, 200)
-      nodesModel.dnd(350, 150, 450, 150)
-      nodesModel.dnd(450, 150, 400, 250)
+      nodesModel.dnd(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, 400, 200)
+      nodesModel.dnd(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, 450, CLICK_COORDS.FIRST_NODE.Y)
+      nodesModel.dnd(450, CLICK_COORDS.FIRST_NODE.Y, 400, 250)
       nodesModel.dnd(400, 250, 400, 200)
 
       nodesModel.nodePosition(1).then(coordinatesFromMatrix).then(verifyEndNodePoint)
@@ -57,46 +64,56 @@ context(CONTEXT, () => {
   })
 
   describe("Movements with autoscroll", () => {
+    const checkCornerAutoscroll = () =>
+      nodesModel.nodePositionNumeric(1).then(([x, y]) => {
+        expect(Number(y)).to.be.lessThan(0)
+        expect(Number(x)).to.be.greaterThan(800)
+      })
+
     it("Should autoscroll top", () => {
-      nodesModel.dndWithDelayUp(350, 150, 400, 50)
+      nodesModel.dndWithDelayUp(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, 400, 50)
       nodesModel.nodePositionNumeric(1).then(([_, y]) => expect(Number(y)).to.be.lessThan(0))
     })
 
     it("Should autoscroll right", () => {
-      nodesModel.dndWithDelayUp(350, 150, 999, 300)
+      nodesModel.dndWithDelayUp(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, CANVAS_ZONE_POINTS.RIGHT, 300)
 
       nodesModel.nodePositionNumeric(1).then(([x]) => expect(Number(x)).to.be.greaterThan(800))
     })
 
     it("Should autoscroll bottom", () => {
-      nodesModel.dndWithDelayUp(350, 150, 350, 659)
+      nodesModel.dndWithDelayUp(
+        CLICK_COORDS.FIRST_NODE.X,
+        CLICK_COORDS.FIRST_NODE.Y,
+        CLICK_COORDS.FIRST_NODE.X,
+        CANVAS_ZONE_POINTS.BOTTOM
+      )
 
       nodesModel.nodePositionNumeric(1).then(([_, y]) => expect(Number(y)).to.be.greaterThan(610))
     })
 
     it("Should autoscroll left", () => {
-      nodesModel.dndWithDelayUp(350, 150, 240, 200)
+      nodesModel.dndWithDelayUp(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, 240, 200)
 
       nodesModel.nodePositionNumeric(1).then(([x]) => expect(Number(x)).to.be.lessThan(0))
     })
 
     it("Should autoscroll two direction at corners", () => {
-      nodesModel.dndWithDelayUp(350, 150, 990, 100)
+      nodesModel.dndWithDelayUp(
+        CLICK_COORDS.FIRST_NODE.X,
+        CLICK_COORDS.FIRST_NODE.Y,
+        CANVAS_ZONE_POINTS.RIGHT,
+        CANVAS_ZONE_POINTS.TOP
+      )
 
-      nodesModel.nodePositionNumeric(1).then(([x, y]) => {
-        expect(Number(y)).to.be.lessThan(0)
-        expect(Number(x)).to.be.greaterThan(800)
-      })
+      checkCornerAutoscroll()
     })
 
     it("Should autoscroll with zoom", () => {
-      nodesModel.wheelDirection(Array(23).fill(WheelDirection.bottom))
-      nodesModel.dndWithDelayUp(520, 295, 990, 100)
+      nodesModel.wheelDirection(Array(ZOOM_IN_COUNT).fill(WheelDirection.bottom))
+      nodesModel.dndWithDelayUp(520, 295, CANVAS_ZONE_POINTS.RIGHT, CANVAS_ZONE_POINTS.TOP)
 
-      nodesModel.nodePositionNumeric(1).then(([x, y]) => {
-        expect(Number(y)).to.be.lessThan(0)
-        expect(Number(x)).to.be.greaterThan(800)
-      })
+      checkCornerAutoscroll()
     })
   })
 })

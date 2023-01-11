@@ -1,3 +1,4 @@
+import { CLICK_COORDS, KEY_CODE_BACK, KEY_CODE_DELETE } from "../constants"
 import { CONTEXT } from "./constants"
 import { nodesModel } from "./Nodes.model"
 
@@ -9,23 +10,23 @@ context(CONTEXT, () => {
 
   describe("Deletions", () => {
     it("Should not do anything without selected nodes", () => {
-      cy.realPress("Backspace")
-      cy.realPress("Delete")
+      cy.realPress(KEY_CODE_BACK)
+      cy.realPress(KEY_CODE_DELETE)
 
       checkNodesCount(3)
     })
 
     it("Should delete single node on backspace", () => {
-      nodesModel.getRoot().realClick({ x: 550, y: 350 })
+      nodesModel.getRoot().realClick({ x: CLICK_COORDS.SECOND_NODE.X, y: CLICK_COORDS.SECOND_NODE.Y })
 
-      cy.realPress("Backspace")
+      cy.realPress(KEY_CODE_BACK)
       checkNodesCount(2)
     })
 
     it("Should delete single node on delete", () => {
-      nodesModel.getRoot().realClick({ x: 550, y: 350 })
+      nodesModel.getRoot().realClick({ x: CLICK_COORDS.SECOND_NODE.X, y: CLICK_COORDS.SECOND_NODE.Y })
 
-      cy.realPress("Delete")
+      cy.realPress(KEY_CODE_DELETE)
       checkNodesCount(2)
     })
 
@@ -33,15 +34,15 @@ context(CONTEXT, () => {
       nodesModel.nodeClick(2)
       nodesModel.getNode(3).click({ shiftKey: true, force: true })
 
-      cy.realPress("Backspace")
+      cy.realPress(KEY_CODE_BACK)
 
       checkNodesCount(1)
     })
 
     it("Should not delete important nodes", () => {
-      nodesModel.getRoot().realClick({ x: 350, y: 150 })
+      nodesModel.getRoot().realClick({ x: CLICK_COORDS.FIRST_NODE.X, y: CLICK_COORDS.FIRST_NODE.Y })
 
-      cy.realPress("Backspace")
+      cy.realPress(KEY_CODE_BACK)
       checkNodesCount(3)
     })
 
@@ -49,7 +50,7 @@ context(CONTEXT, () => {
       nodesModel.nodeClick(1)
       nodesModel.getNode(2).click({ shiftKey: true, force: true })
 
-      cy.realPress("Backspace")
+      cy.realPress(KEY_CODE_BACK)
 
       checkNodesCount(2)
     })
