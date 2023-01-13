@@ -41,3 +41,8 @@ export enum NodeState {
 
 export const ZOOM_IN_COUNT = 23
 export const ZOOM_OUT_COUNT = 40
+
+export enum CSSStyles {
+  transform = "transform",
+  transformOrigin = "transform-origin"
+}

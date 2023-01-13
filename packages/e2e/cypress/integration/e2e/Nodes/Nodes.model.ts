@@ -1,9 +1,10 @@
 import { RootModel, selectors } from "../../../models"
+import { CSSStyles } from "../constants"
 import { coordinatesFromMatrix } from "../helpers"
 
 export class NodesModel extends RootModel {
   nodePosition(nodeNumber: number) {
-    return this.getNode(nodeNumber).then(($el) => $el.css("transform"))
+    return this.getNode(nodeNumber).then(($el) => $el.css(CSSStyles.transform))
   }
   nodeClick(nodeNumber: number) {
     return this.getNode(nodeNumber).realClick()
