@@ -1,8 +1,8 @@
 import { selectors } from "../../../models"
-import { CANVAS_ZONE_POINTS, CLICK_COORDS, NodeState } from "../constants"
+import { CANVAS_POINT, CANVAS_ZONE_POINTS, CLICK_COORDS, NodeState } from "../constants"
 import { coordinatesFromPath } from "../helpers"
 import { connectionsModel } from "./Connections.model"
-import { FIRST_NODE_CONNECTOR, SECOND_NODE_CONNECTOR } from "./constants"
+import { CYCLIC_TEST_2_CONNECTOR, FIRST_NODE_CONNECTOR, SECOND_NODE_CONNECTOR } from "./constants"
 
 context("Node connections", () => {
   beforeEach(connectionsModel.open)
@@ -43,8 +43,10 @@ context("Node connections", () => {
       checkConnectionsCount(3)
 
       connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
-      connectionsModel.getRoot().realMouseMove(480, 170)
-      connectionsModel.mouseUp(480, 170)
+      connectionsModel
+        .getRoot()
+        .realMouseMove(FIRST_NODE_CONNECTOR.X + 10, FIRST_NODE_CONNECTOR.Y)
+        .realMouseUp()
 
       checkConnectionsCount(2)
 
@@ -93,7 +95,7 @@ context("Node connections", () => {
 
       checkFirstDraggingConnector(true)
 
-      connectionsModel.getRoot().realMouseUp({ position: { x: 400, y: 200 } })
+      connectionsModel.getRoot().realMouseUp({ position: { x: CANVAS_POINT.X, y: CANVAS_POINT.Y } })
       checkFirstDraggingConnector(false)
     })
 
@@ -106,11 +108,11 @@ context("Node connections", () => {
 
       checkConnectionsCount(3)
 
-      connectionsModel.dnd(430, 266, 430, 300)
+      connectionsModel.dnd(CYCLIC_TEST_2_CONNECTOR.X, CYCLIC_TEST_2_CONNECTOR.Y, CYCLIC_TEST_2_CONNECTOR.X, 300)
 
       checkConnectionsCount(2)
 
-      connectionsModel.dnd(430, 266, 430, 226)
+      connectionsModel.dnd(CYCLIC_TEST_2_CONNECTOR.X, CYCLIC_TEST_2_CONNECTOR.Y, CYCLIC_TEST_2_CONNECTOR.X, 226)
 
       checkConnectionsCount(3)
     })

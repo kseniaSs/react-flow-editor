@@ -1,7 +1,8 @@
-import { WheelDirection, ZOOM_OUT_COUNT } from "../constants"
+import { CANVAS_ZONE_POINTS, CLICK_COORDS, WheelDirection, ZOOM_OUT_COUNT } from "../constants"
 import { zoomFromMatrix } from "../helpers"
 import { CONTEXT } from "../Nodes/constants"
 import { canvasModel } from "./Canvas.model"
+import { INITIAL_OVERVIEW_X, INITIAL_OVERVIEW_Y } from "./constants"
 import { checkCanvasPosition } from "./helpers"
 
 context(CONTEXT, () => {
@@ -12,7 +13,7 @@ context(CONTEXT, () => {
       cy.contains("Overview").click()
 
       canvasModel.canvasPosition().then(zoomFromMatrix).should("be.equals", 1)
-      checkCanvasPosition(15, -35)
+      checkCanvasPosition(INITIAL_OVERVIEW_X, INITIAL_OVERVIEW_Y)
     })
 
     it("Should overview zoom in", () => {
@@ -26,7 +27,13 @@ context(CONTEXT, () => {
     })
 
     it("Should overview big scale", () => {
-      canvasModel.dndWithDelayUp(350, 150, 999, 300, 1000)
+      canvasModel.dndWithDelayUp(
+        CLICK_COORDS.FIRST_NODE.X,
+        CLICK_COORDS.FIRST_NODE.Y,
+        CANVAS_ZONE_POINTS.RIGHT,
+        CANVAS_ZONE_POINTS.TOP,
+        1000
+      )
 
       cy.contains("Overview").click()
 

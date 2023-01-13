@@ -1,58 +1,62 @@
-import { BROWSER_PX_DEVIATION, WheelDirection, ZOOM_IN_COUNT, ZOOM_OUT_COUNT, ZOOM_PX_DEVIATION } from "../constants"
-import { coordinatesFromStringPX, zoomFromMatrix } from "../helpers"
+import { WheelDirection, ZOOM_IN_COUNT, ZOOM_OUT_COUNT, ZOOM_PX_DEVIATION } from "../constants"
+import { zoomFromMatrix } from "../helpers"
 import { canvasModel } from "./Canvas.model"
+import { CANVAS_LONG_MOVE, INITIAL_OVERVIEW_X, INITIAL_OVERVIEW_Y } from "./constants"
 import { CONTEXT } from "./context"
-import { checkCanvasPosition } from "./helpers"
-
-const CANVAS_MOVE_POINT_X = 350
-const CANVAS_MOVE_POINT_Y = 350
+import { checkCanvasOriginPosition, checkCanvasPosition, matchEndPosition } from "./helpers"
 
 context(CONTEXT, () => {
   beforeEach(canvasModel.open)
 
-  const checkCanvasOriginPosition = (x: number, y: number) =>
-    canvasModel
-      .canvasPositionOrigin()
-      .then(coordinatesFromStringPX)
-      .then(([xCoord, yCoord]) => {
-        expect(Number(xCoord)).to.be.closeTo(x, BROWSER_PX_DEVIATION)
-        expect(Number(yCoord)).to.be.closeTo(y, BROWSER_PX_DEVIATION)
-      })
-
   describe("Initializing", () => {
     it("Should match default position", () => {
-      checkCanvasPosition(15, -35)
+      checkCanvasPosition(INITIAL_OVERVIEW_X, INITIAL_OVERVIEW_Y)
       checkCanvasOriginPosition(385, 340)
     })
   })
 
   describe("Movements DnD", () => {
-    const matchEndPosition = () => {
-      checkCanvasPosition(115, 65)
-      checkCanvasOriginPosition(285, 240)
-    }
-
     it("Should move canvas one movement", () => {
-      canvasModel.dnd(CANVAS_MOVE_POINT_X, CANVAS_MOVE_POINT_Y, 450, 450)
+      canvasModel.dnd(
+        CANVAS_LONG_MOVE.FIRST_POINT.X,
+        CANVAS_LONG_MOVE.FIRST_POINT.Y,
+        CANVAS_LONG_MOVE.THIRD_POINT.X,
+        CANVAS_LONG_MOVE.THIRD_POINT.Y
+      )
 
       matchEndPosition()
     })
 
     it("Should move canvas chain movement", () => {
-      canvasModel.dnd(CANVAS_MOVE_POINT_X, CANVAS_MOVE_POINT_Y, 550, 550)
-      canvasModel.dnd(550, 550, 550, CANVAS_MOVE_POINT_Y)
-      canvasModel.dnd(550, CANVAS_MOVE_POINT_Y, 450, 450)
+      canvasModel.dnd(
+        CANVAS_LONG_MOVE.FIRST_POINT.X,
+        CANVAS_LONG_MOVE.FIRST_POINT.Y,
+        CANVAS_LONG_MOVE.SECOND_POINT.X,
+        CANVAS_LONG_MOVE.SECOND_POINT.Y
+      )
+      canvasModel.dnd(
+        CANVAS_LONG_MOVE.SECOND_POINT.X,
+        CANVAS_LONG_MOVE.SECOND_POINT.Y,
+        CANVAS_LONG_MOVE.SECOND_POINT.X,
+        CANVAS_LONG_MOVE.FIRST_POINT.Y
+      )
+      canvasModel.dnd(
+        CANVAS_LONG_MOVE.SECOND_POINT.X,
+        CANVAS_LONG_MOVE.FIRST_POINT.Y,
+        CANVAS_LONG_MOVE.THIRD_POINT.X,
+        CANVAS_LONG_MOVE.THIRD_POINT.Y
+      )
 
       matchEndPosition()
     })
 
     it("Should move canvas long movement", () => {
       canvasModel
-        .mouseDown(CANVAS_MOVE_POINT_X, CANVAS_MOVE_POINT_Y)
-        .realMouseMove(550, 550)
-        .realMouseMove(550, CANVAS_MOVE_POINT_Y)
-        .realMouseMove(450, 450)
-      canvasModel.mouseUp(450, 450)
+        .mouseDown(CANVAS_LONG_MOVE.FIRST_POINT.X, CANVAS_LONG_MOVE.FIRST_POINT.Y)
+        .realMouseMove(CANVAS_LONG_MOVE.SECOND_POINT.X, CANVAS_LONG_MOVE.SECOND_POINT.Y)
+        .realMouseMove(CANVAS_LONG_MOVE.SECOND_POINT.X, CANVAS_LONG_MOVE.FIRST_POINT.Y)
+        .realMouseMove(CANVAS_LONG_MOVE.THIRD_POINT.X, CANVAS_LONG_MOVE.THIRD_POINT.Y)
+      canvasModel.mouseUp(CANVAS_LONG_MOVE.THIRD_POINT.X, CANVAS_LONG_MOVE.THIRD_POINT.Y)
 
       matchEndPosition()
     })
@@ -111,12 +115,17 @@ context(CONTEXT, () => {
     })
 
     it("Should zoom with move properly", () => {
-      canvasModel.dnd(CANVAS_MOVE_POINT_X, CANVAS_MOVE_POINT_Y, 450, 450)
+      canvasModel.dnd(
+        CANVAS_LONG_MOVE.FIRST_POINT.X,
+        CANVAS_LONG_MOVE.FIRST_POINT.Y,
+        CANVAS_LONG_MOVE.THIRD_POINT.X,
+        CANVAS_LONG_MOVE.THIRD_POINT.Y
+      )
       canvasModel.wheel(WheelDirection.bottom)
 
       canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.95, ZOOM_PX_DEVIATION)
-      checkCanvasPosition(115, 65)
-      checkCanvasOriginPosition(285, 240)
+
+      matchEndPosition()
     })
   })
 })

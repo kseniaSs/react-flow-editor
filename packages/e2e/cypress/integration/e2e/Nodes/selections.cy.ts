@@ -1,5 +1,5 @@
 import { BROWSER_PX_DEVIATION } from "../constants"
-import { CONTEXT } from "./constants"
+import { CONTEXT, MOVEMENT_X_1, MOVEMENT_Y_1 } from "./constants"
 import { nodesModel } from "./Nodes.model"
 
 context(CONTEXT, () => {
@@ -47,7 +47,7 @@ context(CONTEXT, () => {
       nodesModel.getNode(2).click({ shiftKey: true })
 
       nodesModel.getNode(1).trigger("mousedown", { shiftKey: true, button: 0 })
-      nodesModel.getRoot().trigger("mousemove", { clientX: 400, clientY: 200 })
+      nodesModel.getRoot().trigger("mousemove", { clientX: MOVEMENT_X_1, clientY: MOVEMENT_Y_1 })
       nodesModel.getNode(1).trigger("mouseup", { button: 0 })
 
       nodesModel.nodePositionNumeric(1).then(([x, y]) => {

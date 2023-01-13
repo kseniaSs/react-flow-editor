@@ -7,7 +7,7 @@ import {
   ZOOM_IN_COUNT
 } from "../constants"
 import { coordinatesFromMatrix } from "../helpers"
-import { CONTEXT } from "./constants"
+import { CONTEXT, MOVEMENT_X_1, MOVEMENT_X_2, MOVEMENT_Y_1, MOVEMENT_Y_2 } from "./constants"
 import { nodesModel } from "./Nodes.model"
 
 context(CONTEXT, () => {
@@ -28,11 +28,11 @@ context(CONTEXT, () => {
     }
 
     it("Should single node move correctly", () => {
-      nodesModel.dnd(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, 400, 200)
+      nodesModel.dnd(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, MOVEMENT_X_1, MOVEMENT_Y_1)
 
       nodesModel.nodePosition(1).then(coordinatesFromMatrix).then(verifyEndNodePoint)
 
-      nodesModel.dnd(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y, 400, 200)
+      nodesModel.dnd(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y, MOVEMENT_X_1, MOVEMENT_Y_1)
 
       nodesModel.nodePosition(2).then(coordinatesFromMatrix).then(verifyEndNodePoint)
     })
@@ -45,19 +45,19 @@ context(CONTEXT, () => {
 
       checkFirstDragging(false)
 
-      nodesModel.getRoot().realMouseMove(400, 200)
+      nodesModel.getRoot().realMouseMove(MOVEMENT_X_1, MOVEMENT_Y_1)
 
       checkFirstDragging(true)
 
-      nodesModel.getRoot().realMouseUp({ position: { x: 400, y: 200 } })
+      nodesModel.getRoot().realMouseUp({ position: { x: MOVEMENT_X_1, y: MOVEMENT_Y_1 } })
       checkFirstDragging(false)
     })
 
     it("Should multiple node movements correctly", () => {
-      nodesModel.dnd(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, 400, 200)
-      nodesModel.dnd(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, 450, CLICK_COORDS.FIRST_NODE.Y)
-      nodesModel.dnd(450, CLICK_COORDS.FIRST_NODE.Y, 400, 250)
-      nodesModel.dnd(400, 250, 400, 200)
+      nodesModel.dnd(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, MOVEMENT_X_1, MOVEMENT_Y_1)
+      nodesModel.dnd(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, MOVEMENT_X_2, CLICK_COORDS.FIRST_NODE.Y)
+      nodesModel.dnd(MOVEMENT_X_2, CLICK_COORDS.FIRST_NODE.Y, MOVEMENT_X_1, MOVEMENT_Y_2)
+      nodesModel.dnd(MOVEMENT_X_1, MOVEMENT_Y_2, MOVEMENT_X_1, MOVEMENT_Y_1)
 
       nodesModel.nodePosition(1).then(coordinatesFromMatrix).then(verifyEndNodePoint)
     })
@@ -71,7 +71,7 @@ context(CONTEXT, () => {
       })
 
     it("Should autoscroll top", () => {
-      nodesModel.dndWithDelayUp(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, 400, 50)
+      nodesModel.dndWithDelayUp(CLICK_COORDS.FIRST_NODE.X, CLICK_COORDS.FIRST_NODE.Y, MOVEMENT_X_1, 50)
       nodesModel.nodePositionNumeric(1).then(([_, y]) => expect(Number(y)).to.be.lessThan(0))
     })
 

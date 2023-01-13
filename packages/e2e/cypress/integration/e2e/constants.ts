@@ -27,6 +27,11 @@ export const CANVAS_ZONE_POINTS = {
   BOTTOM: 659
 }
 
+export const CANVAS_POINT = {
+  X: 400,
+  Y: 200
+}
+
 export enum NodeState {
   dragging = "dragging",
   draggingConnector = "draggingConnector",
