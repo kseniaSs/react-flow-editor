@@ -8,6 +8,15 @@ import { checkCanvasPosition } from "./helpers"
 context(CONTEXT, () => {
   beforeEach(canvasModel.open)
 
+  const checkNodeInView = (node: JQuery<HTMLElement>) => {
+    const rect = node.get()[0].getBoundingClientRect()
+
+    expect(rect.top).to.be.greaterThan(CANVAS_ZONE_POINTS.TOP)
+    expect(rect.bottom).to.be.lessThan(CANVAS_ZONE_POINTS.BOTTOM)
+    expect(rect.left).to.be.greaterThan(CANVAS_ZONE_POINTS.LEFT)
+    expect(rect.right).to.be.lessThan(CANVAS_ZONE_POINTS.RIGHT)
+  }
+
   describe("Overview", () => {
     it("Should overview simple", () => {
       cy.contains("Overview").click()
@@ -23,7 +32,7 @@ context(CONTEXT, () => {
       cy.contains("Overview").click()
 
       canvasModel.canvasPosition().then(zoomFromMatrix).should("be.equals", 1)
-      checkCanvasPosition(64, -15)
+      checkCanvasPosition(15, -35)
     })
 
     it("Should overview big scale", () => {
@@ -35,9 +44,13 @@ context(CONTEXT, () => {
         1000
       )
 
+      canvasModel.wheelDirection(Array(ZOOM_OUT_COUNT).fill(WheelDirection.bottom))
+
       cy.contains("Overview").click()
 
-      // toDO write tests after https://github.com/kseniaSs/react-flow-editor/pull/97 will be merged
+      canvasModel.getNode(1).then(checkNodeInView)
+      canvasModel.getNode(2).then(checkNodeInView)
+      canvasModel.getNode(3).then(checkNodeInView)
     })
   })
 })

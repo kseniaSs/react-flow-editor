@@ -24,7 +24,8 @@ export const KEY_CODE_DELETE = "Delete"
 export const CANVAS_ZONE_POINTS = {
   RIGHT: 999,
   TOP: 101,
-  BOTTOM: 659
+  BOTTOM: 659,
+  LEFT: 201
 }
 
 export const CANVAS_POINT = {
