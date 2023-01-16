@@ -26,10 +26,10 @@ export const computeSelectionZone = (
 ): Partial<DOMRect> => {
   const zoomContainerRect = findDOMRect(zoomContainerRef.current)
 
-  const left = (zoomContainerRect?.left || 0) + (selectionZone?.left || 0) * transformation.zoom || 0
-  const top = (zoomContainerRect?.top || 0) + (selectionZone?.top || 0) * transformation.zoom || 0
-  const right = (zoomContainerRect?.left || 0) + (selectionZone?.right || 0) * transformation.zoom || 0
-  const bottom = (zoomContainerRect?.top || 0) + (selectionZone?.bottom || 0) * transformation.zoom || 0
+  const left = (zoomContainerRect.left || 0) + (selectionZone?.left || 0) * transformation.zoom || 0
+  const top = (zoomContainerRect.top || 0) + (selectionZone?.top || 0) * transformation.zoom || 0
+  const right = (zoomContainerRect.left || 0) + (selectionZone?.right || 0) * transformation.zoom || 0
+  const bottom = (zoomContainerRect.top || 0) + (selectionZone?.bottom || 0) * transformation.zoom || 0
 
   return {
     left,

@@ -20,8 +20,8 @@ export const useZoom = ({
     const editorRect = findDOMRect(editorContainerRef.current)
 
     return {
-      x: -transformation.dx + (editorRect?.width || 0) / 2,
-      y: -transformation.dy + (editorRect?.height || 0) / 2
+      x: -transformation.dx + (editorRect.width || 0) / 2,
+      y: -transformation.dy + (editorRect.height || 0) / 2
     }
   }, [editorContainerRef?.current, transformation])
 

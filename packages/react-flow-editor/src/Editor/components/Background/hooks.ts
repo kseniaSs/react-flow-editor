@@ -14,7 +14,7 @@ export const usePatternDimensions = (gap: number): PatternDimensions => {
 
   return {
     scaledGap: gap * transformation.zoom || 1,
-    xOffset: countOffset(transformation.dx, transformation.zoom, editorRect?.width),
-    yOffset: countOffset(transformation.dy, transformation.zoom, editorRect?.height)
+    xOffset: countOffset(transformation.dx, transformation.zoom, editorRect.width),
+    yOffset: countOffset(transformation.dy, transformation.zoom, editorRect.height)
   }
 }
