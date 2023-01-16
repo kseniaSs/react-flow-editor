@@ -26,7 +26,7 @@ export const Output: React.FC<Props> = React.memo(({ nodeId, nodeState, output }
     const zoomRect = findDOMRect(zoomContainerRef.current)
 
     resetEvent(e)
-    if (e.button === BUTTON_LEFT && zoomRect) {
+    if (e.button === BUTTON_LEFT) {
       newConnectionActions.startNewConnection(nodeId, zoomRect, e, output)
     }
   }
