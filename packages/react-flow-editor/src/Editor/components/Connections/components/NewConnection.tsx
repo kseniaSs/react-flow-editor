@@ -17,12 +17,10 @@ export const NewConnection: React.FC = () => {
 
   if (!outputNode || dragItem.type !== DragItemType.connection) return null
 
-  const outputPosition = outputNode.rectPosition
-    ? {
-        x: -svgOffset.x + outputNode.position.x + (dragItem.output?.position.x || 0),
-        y: -svgOffset.y + outputNode.position.y + (dragItem.output?.position.y || 0)
-      }
-    : outputNode.position
+  const outputPosition = {
+    x: -svgOffset.x + outputNode.position.x + (dragItem.output?.position.x || 0),
+    y: -svgOffset.y + outputNode.position.y + (dragItem.output?.position.y || 0)
+  }
 
   return <InputConnection key={outputNode.id} outputPosition={outputPosition} inputPosition={newConnectionPosition} />
 }

@@ -1,3 +1,5 @@
+import { MutableRefObject } from "react"
+
 export enum DragItemType {
   node = "node",
   connection = "connection",
@@ -20,6 +22,7 @@ export type NodeGroupsRect = {
 }
 
 export type MountedContexts = {
-  zoomContainer: HTMLDivElement
-  editorContainer: HTMLDivElement
+  isMounted?: boolean
+  zoomContainerRef: MutableRefObject<HTMLDivElement | null>
+  editorContainerRef: MutableRefObject<HTMLDivElement | null>
 }

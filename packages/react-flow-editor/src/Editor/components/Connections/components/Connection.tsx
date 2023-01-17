@@ -21,12 +21,10 @@ export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ outp
 
   const svgOffset = SvgOffsetAtom.get()
 
-  const outputPosition = node.rectPosition
-    ? {
-        x: -svgOffset.x + node.position.x + output.position.x,
-        y: -svgOffset.y + node.position.y + output.position.y
-      }
-    : node.position
+  const outputPosition = {
+    x: -svgOffset.x + node.position.x + output.position.x,
+    y: -svgOffset.y + node.position.y + output.position.y
+  }
 
   const inputPosition = nextNode && {
     x: -svgOffset.x + nextNode.position.x + (nextNode?.inputPosition?.x || 0),

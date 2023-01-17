@@ -2,7 +2,7 @@ import { useStore } from "@nanostores/react"
 import { RefObject, useCallback } from "react"
 
 import { AutoScrollAtom, AutoScrollDirection, DragItemAtom, SelectionZoneAtom, TransformationMap } from "../state"
-import { getRectFromRef } from "./getRectFromRef"
+import { findDOMRect } from "./findDOMRect"
 
 export const useSelectionZone = (zoomContainerRef: RefObject<HTMLElement>) => {
   const selectionZone = useStore(SelectionZoneAtom)
@@ -11,7 +11,7 @@ export const useSelectionZone = (zoomContainerRef: RefObject<HTMLElement>) => {
     (e: React.MouseEvent<HTMLElement>) => {
       if (e.shiftKey) {
         const transformation = TransformationMap.get()
-        const zoomContainerRect = getRectFromRef(zoomContainerRef)
+        const zoomContainerRect = findDOMRect(zoomContainerRef.current)
 
         const left = (e.clientX - zoomContainerRect.left) / transformation.zoom
         const top = (e.clientY - zoomContainerRect.top) / transformation.zoom

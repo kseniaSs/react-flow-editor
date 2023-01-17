@@ -15,7 +15,7 @@ import {
 import { NodeState } from "../../types"
 import { DRAG_AUTO_SCROLL_DIST, DRAG_AUTO_SCROLL_TIME, DRAG_OFFSET_TRANSFORM } from "../constants"
 import { Axis, DragItemType } from "../types"
-import { getRectFromRef } from "./getRectFromRef"
+import { findDOMRect } from "./findDOMRect"
 
 export const getSign = (direction: AutoScrollDirection): -1 | 0 | 1 => {
   if ([AutoScrollDirection.left, AutoScrollDirection.top].includes(direction)) return -1
@@ -42,7 +42,7 @@ const useCheckAutoScrollEnable = (editorContainerRef: React.RefObject<HTMLDivEle
 
   return useCallback(
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      const editorRect = getRectFromRef(editorContainerRef)
+      const editorRect = findDOMRect(editorContainerRef.current)
 
       const leftOverflow = editorRect.left + DRAG_OFFSET_TRANSFORM - e.clientX
       const rightOverflow = e.clientX - (editorRect.right - DRAG_OFFSET_TRANSFORM)

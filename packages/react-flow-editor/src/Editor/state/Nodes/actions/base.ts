@@ -12,14 +12,6 @@ export const changeNodesState = action(NodesAtom, "changeNodesState", (store, no
   store.set(store.get().map((node) => (nodeIds.includes(node.id) ? { ...node, state } : node)))
 })
 
-export const changeNodeRectPos = action(
-  NodesAtom,
-  "changeNodeRectPos",
-  (store, nodeId: string, rectPosition: DOMRect) => {
-    store.set(store.get().map((node) => (node.id === nodeId ? { ...node, rectPosition } : node)))
-  }
-)
-
 export const clearNodesState = action(NodesAtom, "clearNodesState", (store) => {
   store.set(store.get().map((node) => ({ ...node, state: null })))
 })
