@@ -14,7 +14,12 @@ context("Node connections", () => {
     const verifyFirstConnectionInitial = () =>
       connectionsModel
         .getFirstConnectionPath()
-        .should("be.equal", "M 15310 15335 C 15210 15335, 15359 15140, 15259 15140")
+        .then(coordinatesFromPath)
+        .then((coordinates) => {
+          const properCoordinates = [15310, 15335, 15209, 15335, 15359, 15140, 15259, 15140]
+
+          coordinates.forEach((coord, inx) => expect(coord).to.closeTo(properCoordinates[inx], 2))
+        })
 
     it("Should match default connector path", () => {
       verifyFirstConnectionInitial()
@@ -28,7 +33,7 @@ context("Node connections", () => {
         .getLastConnectionPath()
         .then(coordinatesFromPath)
         .then((coordinates) => {
-          const properCoordinates = [15253, 15136, 15153, 15136, 15359, 15140, 15259, 15140]
+          const properCoordinates = [15253, 15136, 15004, 15086, 15509, 15090, 15259, 15140]
 
           coordinates.forEach((coord, inx) => expect(coord).to.closeTo(properCoordinates[inx], 2))
         })

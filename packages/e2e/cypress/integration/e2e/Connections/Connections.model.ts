@@ -5,7 +5,7 @@ export class ConnectionsModel extends RootModel {
     return cy
       .get(selectors.CONNECTION)
       .first()
-      .then(($el) => $el.attr("d"))
+      .then(($el) => $el.attr("d") as string)
   }
   getLastConnectionPath() {
     return cy
