@@ -1,6 +1,6 @@
 import { action } from "nanostores"
 
-import { NodeState, Output } from "@/types"
+import { NodeState } from "@/types"
 import { DragItemType } from "@/Editor/types"
 import { nodeActions, NodesAtom } from "@/Editor/state/Nodes"
 import { SvgOffsetAtom } from "@/Editor/state/SvgOffset"
@@ -12,7 +12,9 @@ import { NewConnectionAtom } from "../store"
 export const startNewConnection = action(
   NewConnectionAtom,
   "startNewConnection",
-  (_, nodeId: string, zoomRect: DOMRect, e: React.MouseEvent<HTMLElement>, output: Output) => {
+  (_, e: React.MouseEvent<HTMLElement>, zoomRect: DOMRect) => {
+    const { output, id: nodeId } = DragItemAtom.get()
+
     const svgOffset = SvgOffsetAtom.get()
     const transformation = TransformationMap.get()
     const node = NodesAtom.get().find((node) => node.id === nodeId)!

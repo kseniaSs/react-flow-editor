@@ -38,7 +38,7 @@ export default ({
       checkAutoScrollEnable(e)
     }
 
-    DragItemAtom.set({ ...dragItem, x: e.clientX, y: e.clientY })
+    DragItemAtom.set({ ...DragItemAtom.get(), x: e.clientX, y: e.clientY })
   }
 
   const onDragEnded = () => {
