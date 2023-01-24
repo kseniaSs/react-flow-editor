@@ -66,7 +66,11 @@ context("Node connections", () => {
 
     it("Should drag connection via autoscroll", () => {
       connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
-      connectionsModel.getRoot().realMouseMove(CANVAS_ZONE_POINTS.RIGHT, CANVAS_ZONE_POINTS.TOP).wait(1000)
+      connectionsModel
+        .getRoot()
+        .realMouseMove(FIRST_NODE_CONNECTOR.X + 10, FIRST_NODE_CONNECTOR.Y)
+        .realMouseMove(CANVAS_ZONE_POINTS.RIGHT, CANVAS_ZONE_POINTS.TOP)
+        .wait(1000)
 
       cy.get(selectors.CONNECTION)
         .last()
@@ -83,7 +87,9 @@ context("Node connections", () => {
     it("Should disable node without empty inputs", () => {
       connectionsModel.getNodeElement(1).then(($el) => expect($el.hasClass(NodeState.disabled)).to.equal(false))
 
-      connectionsModel.mouseDown(SECOND_NODE_CONNECTOR.X, SECOND_NODE_CONNECTOR.Y)
+      connectionsModel
+        .mouseDown(SECOND_NODE_CONNECTOR.X, SECOND_NODE_CONNECTOR.Y)
+        .realMouseMove(SECOND_NODE_CONNECTOR.X + 1, SECOND_NODE_CONNECTOR.Y)
 
       connectionsModel.getNodeElement(1).then(($el) => expect($el.hasClass(NodeState.disabled)).to.equal(true))
     })
