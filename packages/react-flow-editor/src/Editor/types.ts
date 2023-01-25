@@ -3,6 +3,7 @@ import { MutableRefObject } from "react"
 export enum DragItemType {
   node = "node",
   connection = "connection",
+  connectionPoint = "connectionPoint",
   viewPort = "viewPort",
   selectionZone = "selectionZone"
 }

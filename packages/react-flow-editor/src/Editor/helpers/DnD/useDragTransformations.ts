@@ -26,6 +26,9 @@ export const useDragTransformations = ({
     [DragItemType.selectionZone]: (e: React.MouseEvent<HTMLElement>) => {
       expandSelectionZone(e)
       nodeActions.dragSelectionZoneHandler()
+    },
+    [DragItemType.connectionPoint]: (e: React.MouseEvent<HTMLElement>) => {
+      newConnectionActions.startNewConnection(e, zoomRect)
     }
   }
 }
