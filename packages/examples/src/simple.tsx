@@ -49,18 +49,15 @@ const ConnectorsBehaviourComponent: React.FC = () => {
 
   return (
     <div className="connectors-behaviour">
-      <div
-        onClick={() => ConnectorsBehaviourAtom.set(ConnectorsBehaviour.avoidSharpCorners)}
-        className={connectorsBehaviour === ConnectorsBehaviour.avoidSharpCorners ? "active" : ""}
-      >
-        {ConnectorsBehaviour.avoidSharpCorners}
-      </div>
-      <div
-        onClick={() => ConnectorsBehaviourAtom.set(ConnectorsBehaviour.middleInflection)}
-        className={connectorsBehaviour === ConnectorsBehaviour.middleInflection ? "active" : ""}
-      >
-        {ConnectorsBehaviour.middleInflection}
-      </div>
+      {[ConnectorsBehaviour.avoidSharpCorners, ConnectorsBehaviour.middleInflection].map((type) => (
+        <div
+          key={type}
+          onClick={() => ConnectorsBehaviourAtom.set(type)}
+          className={connectorsBehaviour === type ? "active" : ""}
+        >
+          {type}
+        </div>
+      ))}
     </div>
   )
 }
