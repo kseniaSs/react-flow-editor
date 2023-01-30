@@ -21,8 +21,37 @@ context("Node connections", () => {
           coordinates.forEach((coord, inx) => expect(coord).to.closeTo(properCoordinates[inx], 2))
         })
 
+    const verifyFirstConnectionInitialMiddleInflection = () =>
+      connectionsModel
+        .getFirstConnectionPath()
+        .should("be.equal", "M 15310 15335 C 15210 15335, 15359 15140, 15259 15140")
+
     it("Should match default connector path", () => {
       verifyFirstConnectionInitial()
+    })
+
+    it("Should match middleInflection connector path", () => {
+      connectionsModel.enableMiddleInflection()
+      verifyFirstConnectionInitialMiddleInflection()
+    })
+
+    it("Should move connectors middleInflection", () => {
+      connectionsModel.enableMiddleInflection()
+      connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
+      connectionsModel.getRoot().realMouseMove(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
+
+      connectionsModel
+        .getLastConnectionPath()
+        .then(coordinatesFromPath)
+        .then((coordinates) => {
+          const properCoordinates = [15253, 15136, 15153, 15136, 15359, 15140, 15259, 15140]
+          coordinates.forEach((coord, inx) => expect(coord).to.closeTo(properCoordinates[inx], 2))
+        })
+
+      connectionsModel.getRoot().realMouseMove(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y)
+      connectionsModel.mouseUp(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y)
+
+      verifyFirstConnectionInitialMiddleInflection()
     })
 
     it("Should move connectors", () => {

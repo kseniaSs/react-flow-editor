@@ -5,5 +5,6 @@ export default {
   ROOT: ".editor-root",
   DOT: ".dot",
   CONNECTION: ".connection",
-  NODE_ELEMENT: ".nodeElement"
+  NODE_ELEMENT: ".nodeElement",
+  MIDDLE_INFLECTION: "middleInflection"
 }

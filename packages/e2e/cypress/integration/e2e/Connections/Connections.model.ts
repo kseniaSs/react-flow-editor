@@ -16,6 +16,9 @@ export class ConnectionsModel extends RootModel {
   getConnections() {
     return cy.get(selectors.CONNECTION)
   }
+  enableMiddleInflection() {
+    return cy.contains(selectors.MIDDLE_INFLECTION).click()
+  }
 }
 
 export const connectionsModel = new ConnectionsModel()
