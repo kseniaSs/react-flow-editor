@@ -1,7 +1,7 @@
 import { clamp, isEqual } from "lodash"
 import React from "react"
 
-import { Point } from "@/types"
+import { ConnectorsBehaviour, Point } from "@/types"
 import { DEFAULT_COLOR } from "@/Editor/constants"
 import { useEditorContext } from "@/Editor/editor-context"
 
@@ -32,7 +32,14 @@ const backwardHorizontalDy = (dist: number, yDist: number) =>
 const backwardDx = (dist: number) =>
   dist > X_FORWARD_OFFSET_THRESHOLD ? dist / X_FORWARD_OFFSET_DELIMITER : X_FORWARD_OFFSET_MINIMUM
 
-const defineDxDy = (inputPosition: Point, outputPosition: Point) => {
+const defineDxDy = (inputPosition: Point, outputPosition: Point, connectorsBehaviour: ConnectorsBehaviour) => {
+  if (connectorsBehaviour === ConnectorsBehaviour.middleInflection) {
+    return {
+      dx: Math.max(Math.abs(inputPosition.x - outputPosition.x) / 1.5, 100),
+      dy: 0
+    }
+  }
+
   const xDist = inputPosition.x - outputPosition.x
   const yDist = inputPosition.y - outputPosition.y
   const dist = Math.sqrt(xDist ** 2 + yDist ** 2)
@@ -45,9 +52,9 @@ const defineDxDy = (inputPosition: Point, outputPosition: Point) => {
 }
 
 const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition }) => {
-  const { connectorStyleConfig } = useEditorContext()
+  const { connectorStyleConfig, connectorsBehaviour = ConnectorsBehaviour.avoidSharpCorners } = useEditorContext()
 
-  const { dx, dy } = defineDxDy(inputPosition, outputPosition)
+  const { dx, dy } = defineDxDy(inputPosition, outputPosition, connectorsBehaviour)
 
   const a1 = { x: inputPosition.x - dx, y: inputPosition.y + dy }
   const a2 = { x: outputPosition.x + dx, y: outputPosition.y + dy }

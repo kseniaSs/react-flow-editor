@@ -27,6 +27,11 @@ export enum NodeState {
   disabled = "disabled"
 }
 
+export enum ConnectorsBehaviour {
+  middleInflection = "middleInflection",
+  avoidSharpCorners = "avoidSharpCorners"
+}
+
 export type Output = {
   id: string
   position: Point
@@ -83,4 +88,5 @@ export type EditorProps = {
   OutputComponent?: React.FC<OutputComponentProps>
   importantNodeIds?: Array<string>
   connectorStyleConfig?: ConnectorStyleConfig
+  connectorsBehaviour?: ConnectorsBehaviour
 }

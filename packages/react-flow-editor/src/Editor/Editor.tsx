@@ -16,14 +16,16 @@ const Editor: React.FC<EditorProps> = ({
   SelectionZoneComponent,
   importantNodeIds,
   onNodesChange,
-  connectorStyleConfig
+  connectorStyleConfig,
+  connectorsBehaviour
 }) => (
   <EditorContext.Provider
     value={{
       NodeComponent,
       OutputComponent,
       importantNodeIds,
-      connectorStyleConfig
+      connectorStyleConfig,
+      connectorsBehaviour
     }}
   >
     <Canvas
