@@ -6,14 +6,15 @@ import {
   Node,
   ScaleComponentProps,
   OutputComponentProps,
-  MenuComponentProps
+  MenuComponentProps,
+  ConnectorsBehaviour
 } from "@kseniass/react-flow-editor"
 import "./simple.scss"
 
 import { initialNodes, STYLED_CONFIG, TIPS } from "./constants"
 import { createNode } from "./helpers"
 import { NodeAttributes } from "./parts"
-import { NodesAtom } from "./store"
+import { ConnectorsBehaviourAtom, NodesAtom } from "./store"
 
 const NodeComponent = (node: Node) => <div className={`nodeElement ${node.state || ""}`}>Node</div>
 
@@ -43,8 +44,30 @@ const MenuComponent: React.FC<MenuComponentProps> = () => (
   </div>
 )
 
+const ConnectorsBehaviourComponent: React.FC = () => {
+  const connectorsBehaviour = useStore(ConnectorsBehaviourAtom)
+
+  return (
+    <div className="connectors-behaviour">
+      <div
+        onClick={() => ConnectorsBehaviourAtom.set(ConnectorsBehaviour.avoidSharpCorners)}
+        className={connectorsBehaviour === ConnectorsBehaviour.avoidSharpCorners ? "active" : ""}
+      >
+        {ConnectorsBehaviour.avoidSharpCorners}
+      </div>
+      <div
+        onClick={() => ConnectorsBehaviourAtom.set(ConnectorsBehaviour.middleInflection)}
+        className={connectorsBehaviour === ConnectorsBehaviour.middleInflection ? "active" : ""}
+      >
+        {ConnectorsBehaviour.middleInflection}
+      </div>
+    </div>
+  )
+}
+
 const App = () => {
   const nodes = useStore(NodesAtom)
+  const connectorsBehaviour = useStore(ConnectorsBehaviourAtom)
 
   return (
     <div className="editor-root">
@@ -52,6 +75,7 @@ const App = () => {
       <div className="flow-info">
         <NodeAttributes nodes={nodes} />
       </div>
+      <ConnectorsBehaviourComponent />
       <div className="react-editor-container">
         <Editor
           NodeComponent={NodeComponent}
@@ -63,6 +87,7 @@ const App = () => {
           onNodesChange={NodesAtom.set}
           importantNodeIds={[initialNodes[0].id]}
           connectorStyleConfig={STYLED_CONFIG}
+          connectorsBehaviour={connectorsBehaviour}
         />
       </div>
       <pre className="tips">{TIPS}</pre>
