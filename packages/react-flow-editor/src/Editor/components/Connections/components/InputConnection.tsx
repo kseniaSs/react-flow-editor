@@ -52,7 +52,7 @@ const defineDxDy = (inputPosition: Point, outputPosition: Point, connectorsBehav
 }
 
 const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition }) => {
-  const { connectorStyleConfig, connectorsBehaviour = ConnectorsBehaviour.avoidSharpCorners } = useEditorContext()
+  const { connectorStyleConfig, connectorsBehaviour } = useEditorContext()
 
   const { dx, dy } = defineDxDy(inputPosition, outputPosition, connectorsBehaviour)
 
