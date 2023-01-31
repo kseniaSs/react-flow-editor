@@ -5,4 +5,4 @@ import { initialNodes } from "./constants"
 
 export const NodesAtom = atom<Node[]>(initialNodes)
 
-export const ConnectorsBehaviourAtom = atom<ConnectorsBehaviour>(ConnectorsBehaviour.avoidSharpCorners)
+export const ConnectorsBehaviourAtom = atom<ConnectorsBehaviour>("avoidSharpCorners")

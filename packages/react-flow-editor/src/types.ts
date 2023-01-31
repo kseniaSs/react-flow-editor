@@ -27,10 +27,7 @@ export enum NodeState {
   disabled = "disabled"
 }
 
-export enum ConnectorsBehaviour {
-  middleInflection = "middleInflection",
-  avoidSharpCorners = "avoidSharpCorners"
-}
+export type ConnectorsBehaviour = "middleInflection" | "avoidSharpCorners"
 
 export type Output = {
   id: string

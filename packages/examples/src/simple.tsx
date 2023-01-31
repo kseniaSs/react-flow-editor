@@ -49,7 +49,7 @@ const ConnectorsBehaviourComponent: React.FC = () => {
 
   return (
     <div className="connectors-behaviour">
-      {[ConnectorsBehaviour.avoidSharpCorners, ConnectorsBehaviour.middleInflection].map((type) => (
+      {(["avoidSharpCorners", "middleInflection"] as Array<ConnectorsBehaviour>).map((type) => (
         <div
           key={type}
           onClick={() => ConnectorsBehaviourAtom.set(type)}

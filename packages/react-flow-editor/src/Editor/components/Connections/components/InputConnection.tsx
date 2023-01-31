@@ -33,7 +33,7 @@ const backwardDx = (dist: number) =>
   dist > X_FORWARD_OFFSET_THRESHOLD ? dist / X_FORWARD_OFFSET_DELIMITER : X_FORWARD_OFFSET_MINIMUM
 
 const defineDxDy = (inputPosition: Point, outputPosition: Point, connectorsBehaviour: ConnectorsBehaviour) => {
-  if (connectorsBehaviour === ConnectorsBehaviour.middleInflection) {
+  if (connectorsBehaviour === "middleInflection") {
     return {
       dx: Math.max(Math.abs(inputPosition.x - outputPosition.x) / 1.5, 100),
       dy: 0

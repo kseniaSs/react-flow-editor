@@ -1,6 +1,6 @@
 import React from "react"
 
-import { ConnectorsBehaviour, EditorProps } from "@/types"
+import { EditorProps } from "@/types"
 
 import { Canvas } from "./Canvas"
 import { EditorContext } from "./editor-context"
@@ -17,7 +17,7 @@ const Editor: React.FC<EditorProps> = ({
   importantNodeIds,
   onNodesChange,
   connectorStyleConfig,
-  connectorsBehaviour = ConnectorsBehaviour.avoidSharpCorners
+  connectorsBehaviour = "avoidSharpCorners"
 }) => (
   <EditorContext.Provider
     value={{
