@@ -187,3 +187,23 @@ body {
   padding: 4px;
   border-radius: 4px;
 }
+
+.connectors-behaviour {
+  position: fixed;
+  left: 215px;
+  bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fcfcfc;
+  cursor: pointer;
+  display: flex;
+  z-index: 1;
+
+  & > div {
+    padding: 10px;
+
+    &.active {
+      background: #ddd;
+    }
+  }
+}
