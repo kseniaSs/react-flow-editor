@@ -2,7 +2,7 @@ import { isEqual } from "lodash"
 import React from "react"
 import { useStore } from "@nanostores/react"
 
-import { NodeState, Output as OutputType } from "@/types"
+import { Output as OutputType } from "@/types"
 import { DragItemAtom, HoveredNodeIdAtom } from "@/Editor/state"
 import { DragItemType } from "@/Editor/types"
 
@@ -12,11 +12,10 @@ import { resetEvent } from "../../helpers"
 
 type Props = {
   nodeId: string
-  nodeState: NodeState | null
   output: OutputType
 }
 
-export const Output: React.FC<Props> = React.memo(({ nodeId, nodeState, output }) => {
+export const Output: React.FC<Props> = React.memo(({ nodeId, output }) => {
   const { OutputComponent } = useEditorContext()
   const hoveredNodeId = useStore(HoveredNodeIdAtom)
   const dragItem = useStore(DragItemAtom)
@@ -47,7 +46,7 @@ export const Output: React.FC<Props> = React.memo(({ nodeId, nodeState, output }
         transform: "translate(-50%, -50%)"
       }}
     >
-      <OutputComponent isOutlined={hoveredNodeId === nodeId} isActive={isActive} nodeState={nodeState} />
+      <OutputComponent isOutlined={hoveredNodeId === nodeId} isActive={isActive} nodeId={nodeId} />
     </div>
   )
 }, isEqual)
