@@ -47,7 +47,7 @@ export const Output: React.FC<Props> = React.memo(({ nodeId, nodeState, output }
         transform: "translate(-50%, -50%)"
       }}
     >
-      <OutputComponent isOutlined={hoveredNodeId === nodeId} isActive={isActive} nodeState={nodeState} />
+      <OutputComponent isNodeHovered={hoveredNodeId === nodeId} isActive={isActive} nodeState={nodeState} />
     </div>
   )
 }, isEqual)

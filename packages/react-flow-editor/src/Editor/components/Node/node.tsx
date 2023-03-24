@@ -1,7 +1,9 @@
 import React from "react"
 import { isEqual } from "lodash"
+import { useStore } from "@nanostores/react"
 
 import { Node as NodeType } from "@/types"
+import { HoveredNodeIdAtom } from "@/Editor/state"
 
 import { nodeStyle } from "./helpers"
 import { useNodeInteractions } from "./useNodeInteractions"
@@ -24,6 +26,7 @@ const Node: React.FC<
   }
 > = ({ node, nodeInteractions }) => {
   const { NodeComponent } = useEditorContext()
+  const hoveredNodeId = useStore(HoveredNodeIdAtom)
 
   return (
     <div
@@ -38,7 +41,7 @@ const Node: React.FC<
       {node.outputs.map((out) => (
         <Output key={out.id} nodeId={node.id} nodeState={node.state} output={out} />
       ))}
-      <NodeComponent {...node} />
+      <NodeComponent {...node} isNodeHovered={hoveredNodeId === node.id} />
     </div>
   )
 }

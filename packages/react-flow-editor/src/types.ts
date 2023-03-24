@@ -64,8 +64,12 @@ export type ScaleComponentProps = {
 
 export type OutputComponentProps = {
   isActive: boolean
-  isOutlined: boolean
+  isNodeHovered: boolean
   nodeState: NodeState | null
+}
+
+export type NodeComponentProps = Node & {
+  isNodeHovered: boolean
 }
 
 export type MenuComponentProps = {
@@ -78,7 +82,7 @@ export type MenuComponentProps = {
 export type EditorProps = {
   nodes: Node[]
   onNodesChange: (nodes: Node[]) => void
-  NodeComponent: React.FC<Node>
+  NodeComponent: React.FC<NodeComponentProps>
   SelectionZoneComponent?: React.FC
   ScaleComponent?: React.FC<ScaleComponentProps>
   MenuComponent?: React.FC<MenuComponentProps>
