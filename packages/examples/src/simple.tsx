@@ -20,8 +20,8 @@ const NodeComponent = (node: Node) => <div className={`nodeElement ${node.state 
 
 const SelectionZoneComponent = () => <div className="selection-zone" />
 
-const OutputComponent: React.FC<OutputComponentProps> = ({ isActive, nodeState, isOutlined }) => (
-  <div className={`${nodeState || ""} ${isActive ? "active" : ""} ${isOutlined ? "outlined" : ""}`} />
+const OutputComponent: React.FC<OutputComponentProps> = ({ isActive, nodeState, isNodeHovered }) => (
+  <div className={`${nodeState || ""} ${isActive ? "active" : ""} ${isNodeHovered ? "outlined" : ""}`} />
 )
 
 const ScaleComponent: React.FC<ScaleComponentProps> = ({ zoomIn, zoomOut, overview }) => (
