@@ -66,7 +66,7 @@ context(CONTEXT, () => {
   describe("Movements with autoscroll", () => {
     const checkCornerAutoscroll = () =>
       nodesModel.nodePositionNumeric(1).then(([x, y]) => {
-        expect(Number(y)).to.be.lessThan(0)
+        expect(Number(y)).to.be.greaterThan(0)
         expect(Number(x)).to.be.greaterThan(800)
       })
 

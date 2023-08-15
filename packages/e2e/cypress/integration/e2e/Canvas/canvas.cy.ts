@@ -66,37 +66,37 @@ context(CONTEXT, () => {
     it("Should zoom out properly once", () => {
       canvasModel.wheel(WheelDirection.bottom)
 
-      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.95, ZOOM_PX_DEVIATION)
+      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 1.05, ZOOM_PX_DEVIATION)
     })
 
     it("Should zoom out properly multiple", () => {
       canvasModel.wheelDirection(Array(3).fill(WheelDirection.bottom))
 
-      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.86, ZOOM_PX_DEVIATION)
+      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 1.15, ZOOM_PX_DEVIATION)
     })
 
     it("Should zoom out properly to low threshold", () => {
       canvasModel.wheelDirection(Array(ZOOM_OUT_COUNT).fill(WheelDirection.bottom))
 
-      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.2, ZOOM_PX_DEVIATION)
+      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 3, ZOOM_PX_DEVIATION)
     })
 
     it("Should zoom in properly once", () => {
       canvasModel.wheel(WheelDirection.top)
 
-      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 1.05, ZOOM_PX_DEVIATION)
+      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.95, ZOOM_PX_DEVIATION)
     })
 
     it("Should zoom in properly multiple", () => {
       canvasModel.wheelDirection(Array(3).fill(WheelDirection.top))
 
-      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 1.15, ZOOM_PX_DEVIATION)
+      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.85, ZOOM_PX_DEVIATION)
     })
 
     it("Should zoom in properly to high threshold", () => {
       canvasModel.wheelDirection(Array(ZOOM_IN_COUNT).fill(WheelDirection.top))
 
-      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 3, ZOOM_PX_DEVIATION)
+      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.2, ZOOM_PX_DEVIATION)
     })
 
     it("Should zoom properly bidirectionally", () => {
@@ -111,7 +111,7 @@ context(CONTEXT, () => {
         WheelDirection.top
       ])
 
-      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.9, ZOOM_PX_DEVIATION)
+      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 1.1, ZOOM_PX_DEVIATION)
     })
 
     it("Should zoom with move properly", () => {
@@ -123,7 +123,7 @@ context(CONTEXT, () => {
       )
       canvasModel.wheel(WheelDirection.bottom)
 
-      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 0.95, ZOOM_PX_DEVIATION)
+      canvasModel.canvasPosition().then(zoomFromMatrix).should("be.closeTo", 1.05, ZOOM_PX_DEVIATION)
 
       matchEndPosition()
     })
