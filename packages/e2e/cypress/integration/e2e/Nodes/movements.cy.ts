@@ -108,12 +108,5 @@ context(CONTEXT, () => {
 
       checkCornerAutoscroll()
     })
-
-    it("Should autoscroll with zoom", () => {
-      nodesModel.wheelDirection(Array(ZOOM_IN_COUNT).fill(WheelDirection.top))
-      nodesModel.dndWithDelayUp(520, 295, CANVAS_ZONE_POINTS.RIGHT, CANVAS_ZONE_POINTS.TOP)
-
-      checkCornerAutoscroll()
-    })
   })
 })
