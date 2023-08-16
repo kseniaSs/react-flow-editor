@@ -32,9 +32,11 @@ export const useZoom = ({
     (event) => {
       if (currentDragItem.type) return
 
-      const zoomFactor = Math.pow(ZOOM_STEP + 1, Math.sign(event.deltaY))
+      const isScrollUp = event.deltaY > 0
 
-      TransformationMap.setKey("zoom", clampZoom(transformation.zoom * zoomFactor))
+      const newZoom = clampZoom(isScrollUp ? transformation.zoom - ZOOM_STEP : transformation.zoom + ZOOM_STEP)
+
+      TransformationMap.setKey("zoom", newZoom)
     },
     [currentDragItem, transformation]
   )

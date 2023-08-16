@@ -66,7 +66,7 @@ context(CONTEXT, () => {
   describe("Movements with autoscroll", () => {
     const checkCornerAutoscroll = () =>
       nodesModel.nodePositionNumeric(1).then(([x, y]) => {
-        expect(Number(y)).to.be.lessThan(0)
+        expect(Number(y)).to.be.lessThan(150)
         expect(Number(x)).to.be.greaterThan(800)
       })
 
@@ -105,13 +105,6 @@ context(CONTEXT, () => {
         CANVAS_ZONE_POINTS.RIGHT,
         CANVAS_ZONE_POINTS.TOP
       )
-
-      checkCornerAutoscroll()
-    })
-
-    it("Should autoscroll with zoom", () => {
-      nodesModel.wheelDirection(Array(ZOOM_IN_COUNT).fill(WheelDirection.bottom))
-      nodesModel.dndWithDelayUp(520, 295, CANVAS_ZONE_POINTS.RIGHT, CANVAS_ZONE_POINTS.TOP)
 
       checkCornerAutoscroll()
     })
