@@ -88,14 +88,20 @@ const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, output
   }
 
   const onMouseEnterHandler = () => {
-    if (!checkConnectionSelected(hoveredInput, hoveredOutput) && !isNew)
+    if (!checkConnectionSelected(hoveredInput, hoveredOutput) && !isNew && !(hoveredInput && hoveredOutput))
       connectionsActions.setHoveredHanlder([inputPosition, outputPosition])
   }
 
   const onMouseMoveHandler = (evt: MouseEvent) => {
     const target = evt.target as EventTarget & { dataset: { position: string } }
-    if (target.dataset?.position !== `${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`)
+    if (
+      target.dataset?.position !== `${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}` &&
+      hoveredInput &&
+      hoveredOutput
+    ) {
+      document.removeEventListener("mousemove", onMouseMoveHandler)
       connectionsActions.clearHoveredHanlder()
+    }
   }
 
   const clickAwayHandler = (evt: MouseEvent) => {
@@ -124,11 +130,20 @@ const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, output
     }
   }, [hoveredInput, hoveredOutput])
 
+  useEffect(
+    () => () => {
+      document.removeEventListener("mousedown", clickAwayHandler)
+
+      document.removeEventListener("mousemove", onMouseMoveHandler)
+    },
+    []
+  )
+
   return (
-    <g data-position={`${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`}>
+    <g data-position={isNew ? "" : `${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`}>
       {!isNew && (
         <path
-          data-position={`${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`}
+          data-position={isNew ? "" : `${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`}
           ref={pathRef}
           className="connection connection--hidden"
           d={cmd}
@@ -140,7 +155,7 @@ const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, output
         />
       )}
       <path
-        data-position={`${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`}
+        data-position={isNew ? "" : `${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`}
         className="connection"
         d={cmd}
         markerStart={`url(#${ARROW_ID})`}

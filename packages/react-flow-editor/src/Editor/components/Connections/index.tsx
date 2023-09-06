@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 import { useStore } from "@nanostores/react"
 
 import { ConnectionsAtom, NodesAtom, SvgOffsetAtom, SVGOffsetState, TransformationMap } from "@/Editor/state"
-import { Node, Point } from "@/types"
+import { Node, NodeState, Point } from "@/types"
 
 import { Connection } from "./components/Connection"
 import { NewConnection } from "./components/NewConnection"
@@ -22,7 +22,7 @@ const getNodeWithSelectedConnection = ({
   const [selected, hovered] = selectedConnection
 
   const filtredOutputs = node.outputs.filter((out) => {
-    const { x: offsettedXPosition, y: offsettedYPosition } = getOffsettedPosition({ node, output: out, svgOffset })
+    const { x: offsettedXPosition, y: offsettedYPosition } = getOffsettedPosition({ node, position: out, svgOffset })
 
     return !(
       (!!selected.length && offsettedXPosition === selected[1].x && offsettedYPosition === selected[1].y) ||
@@ -44,6 +44,8 @@ export const Container: React.FC = () => {
 
   const { connectorStyleConfig } = useEditorContext()
   const nodes = useStore(NodesAtom)
+  const isDraggingConnector = nodes.some((node) => node.state === NodeState.draggingConnector)
+
   const transformation = useStore(TransformationMap)
 
   const nodesRect = computeNodeGroupsRect(nodes, transformation)
@@ -78,7 +80,10 @@ export const Container: React.FC = () => {
           <NewConnection />
         </svg>
       )}
-      <svg className="connections" style={connectionContainerStyle(nodesRect)}>
+      <svg
+        className={`connections${isDraggingConnector ? " dragging-connection" : ""}`}
+        style={connectionContainerStyle(nodesRect)}
+      >
         <Arrow color={connectorStyleConfig?.color} />
         {nodes.map((node) => (
           <Connection key={node.id} node={node} />

@@ -23,6 +23,14 @@
     height: 100%;
     width: 100%;
 
+    &.dragging-connection {
+      pointer-events: none;
+
+      .connection {
+        pointer-events: none;
+      }
+    }
+
     &--with-selected {
       z-index: 2;
     }
@@ -31,6 +39,10 @@
   .connection {
     pointer-events: visibleStroke;
     cursor: pointer;
+
+    &.disabled {
+      pointer-events: none;
+    }
 
     &:hover:not(.connection--hidden) {
       stroke-width: 2;

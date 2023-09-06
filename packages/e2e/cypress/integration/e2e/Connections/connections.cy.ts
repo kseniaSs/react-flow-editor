@@ -8,7 +8,7 @@ context("Node connections", () => {
   beforeEach(connectionsModel.open)
 
   const checkConnectionsCount = (count: number) =>
-    connectionsModel.getConnections().then(($cons) => expect($cons.length).to.equal(count))
+    connectionsModel.getConnections().then(($cons) => expect($cons.length).to.equal(count * 2))
 
   describe("Connections logic", () => {
     const verifyFirstConnectionInitial = () =>
@@ -73,20 +73,40 @@ context("Node connections", () => {
       verifyFirstConnectionInitial()
     })
 
+    it.only("Should disconnect/connect connectors", () => {
+      checkConnectionsCount(3)
+
+      connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
+      connectionsModel
+        .getRoot()
+        .realMouseMove(FIRST_NODE_CONNECTOR.X + 20, FIRST_NODE_CONNECTOR.Y)
+        .realMouseUp()
+
+      checkConnectionsCount(2)
+
+      connectionsModel.getRoot().realMouseMove(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
+      connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
+      connectionsModel.getRoot().realMouseMove(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y).realMouseUp()
+
+      checkConnectionsCount(3)
+
+      verifyFirstConnectionInitial()
+    })
+
     it("Should disconnect/connect connectors", () => {
       checkConnectionsCount(3)
 
       connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
       connectionsModel
         .getRoot()
-        .realMouseMove(FIRST_NODE_CONNECTOR.X + 10, FIRST_NODE_CONNECTOR.Y)
+        .realMouseMove(FIRST_NODE_CONNECTOR.X + 20, FIRST_NODE_CONNECTOR.Y)
         .realMouseUp()
 
       checkConnectionsCount(2)
 
+      connectionsModel.getRoot().realMouseMove(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
       connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
-      connectionsModel.getRoot().realMouseMove(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y)
-      connectionsModel.mouseUp(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y)
+      connectionsModel.getRoot().realMouseMove(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y).realMouseUp()
 
       checkConnectionsCount(3)
 

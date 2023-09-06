@@ -61,16 +61,16 @@ export const disconnectorStyle = (pos: Point) => ({
 })
 
 export const getOffsettedPosition = ({
-  output,
+  position,
   node,
   svgOffset
 }: {
-  output: Output
+  position?: Partial<Output>
   node: Node
   svgOffset: SVGOffsetState
 }) => {
   return {
-    x: -svgOffset.x + node.position.x + output.position.x,
-    y: -svgOffset.y + node.position.y + output.position.y
+    x: -svgOffset.x + node.position.x + (position?.position?.x || 0),
+    y: -svgOffset.y + node.position.y + (position?.position?.y || 0)
   }
 }
