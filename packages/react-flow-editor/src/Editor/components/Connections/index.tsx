@@ -2,28 +2,13 @@ import React, { useEffect } from "react"
 import { useStore } from "@nanostores/react"
 
 import { ConnectionsAtom, NodesAtom, SvgOffsetAtom, SVGOffsetState, TransformationMap } from "@/Editor/state"
-import { Output, Node, Point } from "@/types"
+import { Node, Point } from "@/types"
 
 import { Connection } from "./components/Connection"
 import { NewConnection } from "./components/NewConnection"
-import { computeNodeGroupsRect, connectionContainerStyle } from "./helpers"
+import { computeNodeGroupsRect, connectionContainerStyle, getOffsettedPosition } from "./helpers"
 import { Arrow } from "./components/Arrow"
 import { useEditorContext } from "../../editor-context"
-
-const getOffsettedPosition = ({
-  output,
-  node,
-  svgOffset
-}: {
-  output: Output
-  node: Node
-  svgOffset: SVGOffsetState
-}) => {
-  return {
-    x: -svgOffset.x + node.position.x + output.position.x,
-    y: -svgOffset.y + node.position.y + output.position.y
-  }
-}
 
 const getNodeWithSelectedConnection = ({
   node,

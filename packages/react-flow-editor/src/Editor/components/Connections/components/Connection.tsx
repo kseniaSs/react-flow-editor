@@ -7,30 +7,23 @@ import { DragItemAtom, NodesAtom, SvgOffsetAtom } from "@/Editor/state"
 
 import ArrowDisconnector from "./ArrowDisconnector"
 import InputConnection from "./InputConnection"
+import { getOffsettedPosition } from "../helpers"
 
 type ConnectionProps = {
   node: Node
 }
 
-const getOffsettedPosition = ({ output, node }: { output: Output; node: Node }) => {
-  const svgOffset = SvgOffsetAtom.get()
-
-  return {
-    x: -svgOffset.x + node.position.x + output.position.x,
-    y: -svgOffset.y + node.position.y + output.position.y
-  }
-}
-
 export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ output, node }) => {
   const nodes = useStore(NodesAtom)
+  const svgOffset = useStore(SvgOffsetAtom)
 
   const nextNode = nodes.find((node) => node.id === output.nextNodeId)
 
   if (!nextNode) return null
 
-  const outputPosition = getOffsettedPosition({ node, output })
+  const outputPosition = getOffsettedPosition({ node, output, svgOffset })
 
-  const inputPosition = nextNode && getOffsettedPosition({ node: nextNode, output })
+  const inputPosition = nextNode && getOffsettedPosition({ node: nextNode, output, svgOffset })
 
   return (
     <React.Fragment key={output.id}>
