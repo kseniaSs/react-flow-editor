@@ -1,9 +1,12 @@
 import { clamp, isEqual } from "lodash"
-import React from "react"
+import React, { useEffect, useRef } from "react"
+import { useStore } from "@nanostores/react"
 
 import { ConnectorsBehaviour, Point } from "@/types"
 import { DEFAULT_COLOR } from "@/Editor/constants"
 import { useEditorContext } from "@/Editor/editor-context"
+import { ConnectionsAtom } from "@/Editor/state/Connections"
+import { connectionsActions } from "@/Editor/state"
 
 import { ARROW_ID } from "./Arrow"
 import {
@@ -21,6 +24,7 @@ import {
 type InputConnectionProps = {
   inputPosition: Point
   outputPosition: Point
+  isNew?: boolean
 }
 
 const backwardHorizontalDx = (dist: number) =>
@@ -51,7 +55,12 @@ const defineDxDy = (inputPosition: Point, outputPosition: Point, connectorsBehav
   }
 }
 
-const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition }) => {
+const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition, isNew = false }) => {
+  const pathRef = useRef<SVGPathElement>(null)
+  const {
+    selectedConnection: [input, output],
+    hoveredConnection: [hoveredInput, hoveredOutput]
+  } = useStore(ConnectionsAtom)
   const { connectorStyleConfig, connectorsBehaviour } = useEditorContext()
 
   const { dx, dy } = defineDxDy(inputPosition, outputPosition, connectorsBehaviour)
@@ -62,14 +71,86 @@ const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, output
   // https://javascript.info/bezier-curve
   const cmd = `M ${inputPosition.x} ${inputPosition.y} C ${a1.x} ${a1.y}, ${a2.x} ${a2.y}, ${outputPosition.x} ${outputPosition.y}`
 
+  const checkConnectionSelected = (input?: Point, output?: Point) => {
+    if (input && output)
+      return (
+        input.x === inputPosition.x &&
+        input.y === inputPosition.y &&
+        output.x === outputPosition.x &&
+        output.y === outputPosition.y
+      )
+
+    return false
+  }
+
+  const onClickHandler = () => {
+    connectionsActions.setSelectedHanlder([inputPosition, outputPosition])
+  }
+
+  const onMouseEnterHandler = () => {
+    if (!checkConnectionSelected(hoveredInput, hoveredOutput) && !isNew)
+      connectionsActions.setHoveredHanlder([inputPosition, outputPosition])
+  }
+
+  const onMouseMoveHandler = (evt: MouseEvent) => {
+    const target = evt.target as EventTarget & { dataset: { position: string } }
+    if (target.dataset?.position !== `${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`)
+      connectionsActions.clearHoveredHanlder()
+  }
+
+  const clickAwayHandler = (evt: MouseEvent) => {
+    if (evt.target !== pathRef.current) {
+      connectionsActions.clearSelectedHanlder()
+    }
+  }
+
+  useEffect(() => {
+    if (!checkConnectionSelected(input, output)) {
+      return document.removeEventListener("mousedown", clickAwayHandler)
+    }
+
+    if (checkConnectionSelected(input, output)) {
+      return document.addEventListener("mousedown", clickAwayHandler)
+    }
+  }, [input, output])
+
+  useEffect(() => {
+    if (!checkConnectionSelected(hoveredInput, hoveredOutput)) {
+      return document.removeEventListener("mousemove", onMouseMoveHandler)
+    }
+
+    if (checkConnectionSelected(hoveredInput, hoveredOutput)) {
+      return document.addEventListener("mousemove", onMouseMoveHandler)
+    }
+  }, [hoveredInput, hoveredOutput])
+
   return (
-    <path
-      className="connection"
-      d={cmd}
-      markerStart={`url(#${ARROW_ID})`}
-      fill="transparent"
-      stroke={connectorStyleConfig.color || DEFAULT_COLOR}
-    />
+    <g data-position={`${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`}>
+      {!isNew && (
+        <path
+          data-position={`${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`}
+          ref={pathRef}
+          className="connection connection--hidden"
+          d={cmd}
+          fill="transparent"
+          stroke="transparent"
+          onClick={onClickHandler}
+          onMouseEnter={onMouseEnterHandler}
+          strokeWidth={15}
+        />
+      )}
+      <path
+        data-position={`${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`}
+        className="connection"
+        d={cmd}
+        markerStart={`url(#${ARROW_ID})`}
+        fill="transparent"
+        strokeWidth={checkConnectionSelected(input, output) ? 2 : 1}
+        stroke={connectorStyleConfig.color || DEFAULT_COLOR}
+        onMouseEnter={onMouseEnterHandler}
+        onClick={onClickHandler}
+      />
+    </g>
   )
 }
 

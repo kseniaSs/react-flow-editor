@@ -17,12 +17,28 @@
   }
 
   svg.connections {
-    pointer-events: none;
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
     width: 100%;
+
+    &--with-selected {
+      z-index: 2;
+    }
+  }
+
+  .connection {
+    pointer-events: visibleStroke;
+    cursor: pointer;
+
+    &:hover:not(.connection--hidden) {
+      stroke-width: 2;
+    }
+
+    &--hidden:hover + .connection {
+      stroke-width: 2;
+    }
   }
 
   .dot {

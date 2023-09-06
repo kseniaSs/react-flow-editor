@@ -22,5 +22,12 @@ export const NewConnection: React.FC = () => {
     y: -svgOffset.y + outputNode.position.y + (dragItem.output?.position.y || 0)
   }
 
-  return <InputConnection key={outputNode.id} outputPosition={outputPosition} inputPosition={newConnectionPosition} />
+  return (
+    <InputConnection
+      key={outputNode.id}
+      outputPosition={outputPosition}
+      inputPosition={newConnectionPosition}
+      isNew={true}
+    />
+  )
 }
