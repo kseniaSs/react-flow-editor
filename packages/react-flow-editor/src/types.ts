@@ -56,13 +56,7 @@ export type ConnectorStyleConfig = {
   width: number
 }
 
-export type SelectedConnections = {
-  selectedConnection: [Point, Point] | []
-}
-
-export type HoveredConnections = {
-  hoveredConnection: [Point, Point] | []
-}
+export type ActiveConnection = [Point, Point] | []
 
 export type ScaleComponentProps = {
   zoomIn: () => void

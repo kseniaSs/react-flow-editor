@@ -47,8 +47,8 @@ const getNodeWithSelectedConnection = ({
 export const Container: React.FC = () => {
   const svgOffset = SvgOffsetAtom.get()
 
-  const { selectedConnection } = useStore(SelectedConnectionAtom)
-  const { hoveredConnection } = useStore(HoveredConnectionAtom)
+  const selectedConnection = useStore(SelectedConnectionAtom)
+  const hoveredConnection = useStore(HoveredConnectionAtom)
 
   const { connectorStyleConfig } = useEditorContext()
   const nodes = useStore(NodesAtom)

@@ -56,12 +56,8 @@ const defineDxDy = (inputPosition: Point, outputPosition: Point, connectorsBehav
 
 const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition, isNew = false }) => {
   const pathRef = useRef<SVGPathElement>(null)
-  const {
-    selectedConnection: [input, output]
-  } = useStore(SelectedConnectionAtom)
-  const {
-    hoveredConnection: [hoveredInput, hoveredOutput]
-  } = useStore(HoveredConnectionAtom)
+  const [input, output] = useStore(SelectedConnectionAtom)
+  const [hoveredInput, hoveredOutput] = useStore(HoveredConnectionAtom)
 
   const { connectorStyleConfig, connectorsBehaviour } = useEditorContext()
 
