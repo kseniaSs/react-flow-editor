@@ -8,34 +8,22 @@ export const setSelectedHanlder = action(
   SelectedConnectionAtom,
   "setSelectedConnectionsHanlder",
   (store, e: [Point, Point]) => {
-    store.set({
-      ...store.get(),
-      selectedConnection: e
-    })
+    store.set(e)
   }
 )
 
 export const clearSelectedHanlder = action(SelectedConnectionAtom, "removeSelectedConnectionsHanlder", (store) => {
-  store.set({
-    ...store.get(),
-    selectedConnection: []
-  })
+  store.set([])
 })
 
 export const setHoveredHanlder = action(
   HoveredConnectionAtom,
   "setHoveredConnectionsHanlder",
   (store, e: [Point, Point]) => {
-    store.set({
-      ...store.get(),
-      hoveredConnection: e
-    })
+    store.set(e)
   }
 )
 
 export const clearHoveredHanlder = action(HoveredConnectionAtom, "removeHoveredConnectionsHanlder", (store) => {
-  store.set({
-    ...store.get(),
-    hoveredConnection: []
-  })
+  store.set([])
 })
