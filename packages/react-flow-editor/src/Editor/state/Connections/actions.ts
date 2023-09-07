@@ -2,10 +2,10 @@ import { action } from "nanostores"
 
 import { Point } from "@/types"
 
-import { ConnectionsAtom } from "./store"
+import { HoveredConnectionAtom, SelectedConnectionAtom } from "./store"
 
 export const setSelectedHanlder = action(
-  ConnectionsAtom,
+  SelectedConnectionAtom,
   "setSelectedConnectionsHanlder",
   (store, e: [Point, Point]) => {
     store.set({
@@ -15,21 +15,25 @@ export const setSelectedHanlder = action(
   }
 )
 
-export const clearSelectedHanlder = action(ConnectionsAtom, "removeSelectedConnectionsHanlder", (store) => {
+export const clearSelectedHanlder = action(SelectedConnectionAtom, "removeSelectedConnectionsHanlder", (store) => {
   store.set({
     ...store.get(),
     selectedConnection: []
   })
 })
 
-export const setHoveredHanlder = action(ConnectionsAtom, "setHoveredConnectionsHanlder", (store, e: [Point, Point]) => {
-  store.set({
-    ...store.get(),
-    hoveredConnection: e
-  })
-})
+export const setHoveredHanlder = action(
+  HoveredConnectionAtom,
+  "setHoveredConnectionsHanlder",
+  (store, e: [Point, Point]) => {
+    store.set({
+      ...store.get(),
+      hoveredConnection: e
+    })
+  }
+)
 
-export const clearHoveredHanlder = action(ConnectionsAtom, "removeHoveredConnectionsHanlder", (store) => {
+export const clearHoveredHanlder = action(HoveredConnectionAtom, "removeHoveredConnectionsHanlder", (store) => {
   store.set({
     ...store.get(),
     hoveredConnection: []

@@ -1,8 +1,11 @@
 import { map } from "nanostores"
 
-import { Connections } from "@/types"
+import { HoveredConnections, SelectedConnections } from "@/types"
 
-export const ConnectionsAtom = map<Connections>({
-  selectedConnection: [],
+export const SelectedConnectionAtom = map<SelectedConnections>({
+  selectedConnection: []
+})
+
+export const HoveredConnectionAtom = map<HoveredConnections>({
   hoveredConnection: []
 })

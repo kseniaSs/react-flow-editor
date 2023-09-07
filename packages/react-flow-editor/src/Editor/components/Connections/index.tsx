@@ -1,7 +1,14 @@
 import React, { useEffect } from "react"
 import { useStore } from "@nanostores/react"
 
-import { ConnectionsAtom, NodesAtom, SvgOffsetAtom, SVGOffsetState, TransformationMap } from "@/Editor/state"
+import {
+  HoveredConnectionAtom,
+  SelectedConnectionAtom,
+  NodesAtom,
+  SvgOffsetAtom,
+  SVGOffsetState,
+  TransformationMap
+} from "@/Editor/state"
 import { Node, NodeState, Point } from "@/types"
 
 import { Connection } from "./components/Connection"
@@ -40,7 +47,8 @@ const getNodeWithSelectedConnection = ({
 export const Container: React.FC = () => {
   const svgOffset = SvgOffsetAtom.get()
 
-  const { selectedConnection, hoveredConnection } = useStore(ConnectionsAtom)
+  const { selectedConnection } = useStore(SelectedConnectionAtom)
+  const { hoveredConnection } = useStore(HoveredConnectionAtom)
 
   const { connectorStyleConfig } = useEditorContext()
   const nodes = useStore(NodesAtom)

@@ -56,8 +56,11 @@ export type ConnectorStyleConfig = {
   width: number
 }
 
-export type Connections = {
+export type SelectedConnections = {
   selectedConnection: [Point, Point] | []
+}
+
+export type HoveredConnections = {
   hoveredConnection: [Point, Point] | []
 }
 

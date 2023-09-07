@@ -5,8 +5,7 @@ import { useStore } from "@nanostores/react"
 import { ConnectorsBehaviour, Point } from "@/types"
 import { DEFAULT_COLOR } from "@/Editor/constants"
 import { useEditorContext } from "@/Editor/editor-context"
-import { ConnectionsAtom } from "@/Editor/state/Connections"
-import { connectionsActions } from "@/Editor/state"
+import { connectionsActions, HoveredConnectionAtom, SelectedConnectionAtom } from "@/Editor/state"
 
 import { ARROW_ID } from "./Arrow"
 import {
@@ -58,9 +57,12 @@ const defineDxDy = (inputPosition: Point, outputPosition: Point, connectorsBehav
 const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, outputPosition, isNew = false }) => {
   const pathRef = useRef<SVGPathElement>(null)
   const {
-    selectedConnection: [input, output],
+    selectedConnection: [input, output]
+  } = useStore(SelectedConnectionAtom)
+  const {
     hoveredConnection: [hoveredInput, hoveredOutput]
-  } = useStore(ConnectionsAtom)
+  } = useStore(HoveredConnectionAtom)
+
   const { connectorStyleConfig, connectorsBehaviour } = useEditorContext()
 
   const { dx, dy } = defineDxDy(inputPosition, outputPosition, connectorsBehaviour)

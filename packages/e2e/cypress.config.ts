@@ -11,7 +11,7 @@ export default defineConfig({
   modifyObstructiveCode: false,
   chromeWebSecurity: false,
   video: false,
-  screenshotOnRunFailure: true,
+  screenshotOnRunFailure: false,
   watchForFileChanges: true,
   env: {
     HOST: getHost()
