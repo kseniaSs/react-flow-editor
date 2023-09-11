@@ -41,7 +41,7 @@ const getNodeWithSelectedConnection = ({
     return node
   }
 
-  return undefined
+  return
 }
 
 export const Container: React.FC = () => {

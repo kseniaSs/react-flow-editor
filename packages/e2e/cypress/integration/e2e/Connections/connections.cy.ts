@@ -73,7 +73,7 @@ context("Node connections", () => {
       verifyFirstConnectionInitial()
     })
 
-    it.only("Should disconnect/connect connectors", () => {
+    it("Should disconnect/connect connectors", () => {
       checkConnectionsCount(3)
 
       connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)

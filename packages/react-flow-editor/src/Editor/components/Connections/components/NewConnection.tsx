@@ -23,11 +23,6 @@ export const NewConnection: React.FC = () => {
   }
 
   return (
-    <InputConnection
-      key={outputNode.id}
-      outputPosition={outputPosition}
-      inputPosition={newConnectionPosition}
-      isNew={true}
-    />
+    <InputConnection key={outputNode.id} outputPosition={outputPosition} inputPosition={newConnectionPosition} isNew />
   )
 }

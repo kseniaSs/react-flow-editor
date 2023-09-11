@@ -136,12 +136,13 @@ const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, output
     },
     []
   )
+  const dataAttribute = isNew ? "" : `${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`
 
   return (
-    <g data-position={isNew ? "" : `${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`}>
+    <g data-position={dataAttribute}>
       {!isNew && (
         <path
-          data-position={isNew ? "" : `${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`}
+          data-position={dataAttribute}
           ref={pathRef}
           className="connection connection--hidden"
           d={cmd}
@@ -153,7 +154,7 @@ const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, output
         />
       )}
       <path
-        data-position={isNew ? "" : `${inputPosition.x}:${inputPosition.y}:${outputPosition.x}:${outputPosition.y}`}
+        data-position={dataAttribute}
         className="connection"
         d={cmd}
         markerStart={`url(#${ARROW_ID})`}
