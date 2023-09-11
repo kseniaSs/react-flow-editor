@@ -40,7 +40,8 @@ export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ outp
 
 export const ActiveConnection: React.FC<ConnectionProps> = ({ node }) => {
   const svgOffset = useStore(SvgOffsetAtom)
-  const [selectedConnection, hoveredConnection] = [useStore(SelectedConnectionAtom), useStore(HoveredConnectionAtom)]
+  const selectedConnection = useStore(SelectedConnectionAtom)
+  const hoveredConnection = useStore(HoveredConnectionAtom)
 
   const filteredConnections = node.outputs.filter((out) => {
     const { x, y } = getOffsettedPosition({ position: out, node, svgOffset })
