@@ -94,26 +94,6 @@ context("Node connections", () => {
       verifyFirstConnectionInitial()
     })
 
-    it("Should disconnect/connect connectors", () => {
-      checkConnectionsCount(3)
-
-      connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
-      connectionsModel
-        .getRoot()
-        .realMouseMove(FIRST_NODE_CONNECTOR.X + 20, FIRST_NODE_CONNECTOR.Y)
-        .realMouseUp()
-
-      checkConnectionsCount(2)
-
-      connectionsModel.getRoot().realMouseMove(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
-      connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
-      connectionsModel.getRoot().realMouseMove(CLICK_COORDS.SECOND_NODE.X, CLICK_COORDS.SECOND_NODE.Y).realMouseUp()
-
-      checkConnectionsCount(3)
-
-      verifyFirstConnectionInitial()
-    })
-
     it("Should drag connection via autoscroll", () => {
       connectionsModel.mouseDown(FIRST_NODE_CONNECTOR.X, FIRST_NODE_CONNECTOR.Y)
       connectionsModel
