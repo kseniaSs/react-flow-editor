@@ -59,7 +59,7 @@ export const useNodeInteractions = (node: Node) => {
 
   const onMouseEnter: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
     HoveredNodeIdAtom.set(node.id)
-  }, [dragItem.id])
+  }, [dragItem.id, node.id])
 
   const onMouseLeave: React.MouseEventHandler<HTMLDivElement> = useCallback(() => {
     HoveredNodeIdAtom.set(null)

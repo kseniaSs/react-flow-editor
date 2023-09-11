@@ -14,12 +14,11 @@ type ConnectionProps = {
 
 export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ output, node }) => {
   const nodes = useStore(NodesAtom)
+  const svgOffset = useStore(SvgOffsetAtom)
 
   const nextNode = nodes.find((node) => node.id === output.nextNodeId)
 
   if (!nextNode) return null
-
-  const svgOffset = SvgOffsetAtom.get()
 
   const outputPosition = {
     x: -svgOffset.x + node.position.x + output.position.x,
@@ -42,14 +41,13 @@ export const ConnectionTrack: React.FC<{ output: Output; node: Node }> = ({ outp
 export const Connection: React.FC<ConnectionProps> = ({ node }) => {
   const dragItem = useStore(DragItemAtom)
 
-  const filteredConnections = node.outputs.filter(
-    (out) =>
-      !(
-        dragItem.type === DragItemType.connection &&
-        out.nextNodeId === dragItem.output?.nextNodeId &&
-        out.id === dragItem.output.id
-      )
-  )
+  const filteredConnections = node.outputs.filter((out) => {
+    return !(
+      dragItem.type === DragItemType.connection &&
+      out.nextNodeId === dragItem.output?.nextNodeId &&
+      out.id === dragItem.output.id
+    )
+  })
 
   return (
     <>

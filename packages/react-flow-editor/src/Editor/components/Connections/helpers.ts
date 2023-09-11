@@ -1,5 +1,6 @@
-import { Node, Point, Transformation } from "@/types"
+import { Node, Output, Point, Transformation } from "@/types"
 import { DISCONNECTOR_ZONE, LARGEST_RECT, MINIMUM_SVG_SIZE } from "@/Editor/constants"
+import { SVGOffsetState } from "@/Editor/state"
 
 import { Axis, NodeGroupsRect } from "../../types"
 
@@ -58,3 +59,18 @@ export const connectionContainerStyle = (rect: NodeGroupsRect): React.CSSPropert
 export const disconnectorStyle = (pos: Point) => ({
   transform: `translate(${pos.x - DISCONNECTOR_ZONE / 2}px, ${pos.y - DISCONNECTOR_ZONE / 2}px)`
 })
+
+export const getOffsettedPosition = ({
+  position,
+  node,
+  svgOffset
+}: {
+  position?: Partial<Output>
+  node: Node
+  svgOffset: SVGOffsetState
+}) => {
+  return {
+    x: -svgOffset.x + node.position.x + (position?.position?.x || 0),
+    y: -svgOffset.y + node.position.y + (position?.position?.y || 0)
+  }
+}

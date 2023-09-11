@@ -56,6 +56,8 @@ export type ConnectorStyleConfig = {
   width: number
 }
 
+export type ActiveConnection = [Point, Point] | []
+
 export type ScaleComponentProps = {
   zoomIn: () => void
   zoomOut: () => void
