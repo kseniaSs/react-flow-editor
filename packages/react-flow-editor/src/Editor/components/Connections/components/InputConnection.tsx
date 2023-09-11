@@ -155,7 +155,7 @@ const InputConnection: React.FC<InputConnectionProps> = ({ inputPosition, output
       )}
       <path
         data-position={dataAttribute}
-        className="connection"
+        className={`connection${isNew ? " connection--new" : ""}`}
         d={cmd}
         markerStart={`url(#${ARROW_ID})`}
         fill="transparent"

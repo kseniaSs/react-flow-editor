@@ -33,6 +33,7 @@
 
     &--with-selected {
       z-index: 2;
+      pointer-events: none;
     }
   }
 
@@ -45,11 +46,15 @@
     }
 
     &:hover:not(.connection--hidden) {
-      stroke-width: 2;
+      stroke-width: 1.5;
     }
 
     &--hidden:hover + .connection {
-      stroke-width: 2;
+      stroke-width: 1.5;
+    }
+
+    &--new {
+      stroke-width: 1.5;
     }
   }
 
