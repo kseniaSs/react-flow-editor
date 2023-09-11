@@ -1,7 +1,7 @@
-import { map } from "nanostores"
+import { atom } from "nanostores"
 
 import { ActiveConnection } from "@/types"
 
-export const SelectedConnectionAtom = map<ActiveConnection>([])
+export const SelectedConnectionAtom = atom<ActiveConnection>([])
 
-export const HoveredConnectionAtom = map<ActiveConnection>([])
+export const HoveredConnectionAtom = atom<ActiveConnection>([])
