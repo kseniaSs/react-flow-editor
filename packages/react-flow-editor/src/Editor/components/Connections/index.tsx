@@ -16,6 +16,7 @@ import { NewConnection } from "./components/NewConnection"
 import { computeNodeGroupsRect, connectionContainerStyle, getOffsettedPosition } from "./helpers"
 import { Arrow } from "./components/Arrow"
 import { useEditorContext } from "../../editor-context"
+import { ActiveConnection } from "./components/ActiveConnection"
 
 const getNodeWithSelectedConnection = ({
   node,
@@ -83,7 +84,7 @@ export const Container: React.FC = () => {
         <svg className="connections connections--with-selected" style={connectionContainerStyle(nodesRect)}>
           <Arrow color={connectorStyleConfig?.color} />
           {nodesWithSelectedConnection.map((node) => (
-            <Connection key={node.id} node={node} />
+            <ActiveConnection key={node.id} node={node} />
           ))}
           <NewConnection />
         </svg>
